@@ -1,4 +1,4 @@
-#!/home/mohammadhossein/PycharmProjects/KIA_payment/venv/bin/python
+#!/home/mha/Desktop/KIA/KIA_payment/venv/bin/python
 from django.core import management
 
 if __name__ == "__main__":

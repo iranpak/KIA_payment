@@ -34,10 +34,10 @@ deactivate () {
     fi
 }
 
-# unset irrelevant variables
+# unset irrelavent variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/home/mohammadhossein/PycharmProjects/KIA_payment/venv"
+VIRTUAL_ENV="/home/mha/Desktop/KIA/KIA_payment/venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
