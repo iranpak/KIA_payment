@@ -16,7 +16,7 @@ class NotEmptyField(unittest.TestCase):
         password = driver.find_element_by_name("password")
         repassword = driver.find_element_by_name("repassword")
         email = driver.find_element_by_name("email")
-        phone_number = driver.find_element_by_name("phoneNumber")
+        phone_number = driver.find_element_by_name("")
         register_button = driver.find_element_by_name("registerButton")
         first_name.send_keys("ali")
         last_name.send_keys("alavi")
