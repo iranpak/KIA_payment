@@ -11,13 +11,13 @@ class NotEmptyField(unittest.TestCase):
 
     def test_not_empty_field(self):
         driver = self.driver
-        driver.get("http://127.0.0.1:8000/register/")
+        driver.get("http://127.0.0.1:8085/register/")
         first_name = driver.find_element_by_name("firstName")
         last_name = driver.find_element_by_name("lastName")
         password = driver.find_element_by_name("password")
         repassword = driver.find_element_by_name("repassword")
         email = driver.find_element_by_name("email")
-        phone_number = driver.find_element_by_name("")
+        phone_number = driver.find_element_by_name("phoneNumber")
         register_button = driver.find_element_by_name("registerButton")
         first_name.send_keys("ali")
         last_name.send_keys("alavi")
