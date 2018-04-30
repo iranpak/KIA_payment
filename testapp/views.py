@@ -8,9 +8,9 @@ def register(request):
     template = loader.get_template('testapp/register.html')
     return HttpResponse(template.render(context, request))
 
-def contact_manager(request):
+def contact_us(request):
     context = {}
-    template = loader.get_template('testapp/contact_manager.html')
+    template = loader.get_template('testapp/contact_us.html')
     return HttpResponse(template.render(context, request))
 
 

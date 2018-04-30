@@ -20,6 +20,6 @@ from testapp import views
 
 urlpatterns = [
     path('register/', views.register, name='register'),
-    path('contact_manager/', views.contact_manager, name='contact_manager'),
+    path('contact_us/', views.contact_us, name='contact_us'),
     path('admin/', admin.site.urls),
 ]
