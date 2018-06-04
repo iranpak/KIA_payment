@@ -3,6 +3,7 @@ import unittest
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
+
 class NotEmptyField(unittest.TestCase):
 
     def setUp(self):
@@ -16,7 +17,7 @@ class NotEmptyField(unittest.TestCase):
         password = driver.find_element_by_name("password")
         repassword = driver.find_element_by_name("repassword")
         email = driver.find_element_by_name("email")
-        phone_number = driver.find_element_by_name("")
+        phone_number = driver.find_element_by_name("phoneNumber")
         register_button = driver.find_element_by_name("registerButton")
         first_name.send_keys("ali")
         last_name.send_keys("alavi")
