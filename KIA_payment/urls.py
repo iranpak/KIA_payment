@@ -21,5 +21,6 @@ from testapp import views
 urlpatterns = [
     path('register/', views.register, name='register'),
     path('contact_us/', views.contact_us, name='contact_us'),
+    path('add_feature/', views.add_feature, name='add_feature'),
     path('admin/', admin.site.urls),
 ]
