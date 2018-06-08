@@ -13,5 +13,10 @@ def contact_us(request):
     template = loader.get_template('testapp/contact_us.html')
     return HttpResponse(template.render(context, request))
 
+def add_feature(request):
+    context = {}
+    template = loader.get_template('testapp/add_feature.html')
+    return HttpResponse(template.render(context, request))
+
 
 # Create your views here.
