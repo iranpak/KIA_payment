@@ -22,5 +22,11 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('contact_us/', views.contact_us, name='contact_us'),
     path('add_feature/', views.add_feature, name='add_feature'),
+    path('currency_to_rial/', views.currency_to_rial, name='currency_to_rial'),
+    path('get_service_price/', views.get_service_price, name='get_service_price'),
+    #login
+    path('user_login/', views.user_login, name='user_login'),
+    path('employee_login/', views.employee_login, name='employee_login'),
+    path('admin_login/', views.admin_login, name='admin_login'),
     path('admin/', admin.site.urls),
 ]

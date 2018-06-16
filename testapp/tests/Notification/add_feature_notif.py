@@ -2,12 +2,12 @@ from selenium import webdriver
 import unittest
 
 
-class PasswordsEqualityTest(unittest.TestCase):
+class AddFeatureTest(unittest.TestCase):
 
     def setUp(self):
         self.driver = webdriver.Firefox()
 
-    def test_passwords_equality(self):
+    def test_add_feature_notif(self):
         driver = self.driver
         driver.get("http://127.0.0.1:8085/add_feature/")
         feature_name = driver.find_element_by_name("featureName")
