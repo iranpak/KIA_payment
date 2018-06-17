@@ -58,4 +58,10 @@ def admin_panel(request):
     return HttpResponse(template.render(context, request))
 
 
+def admin_restrict_user(request):
+    context = {}
+    template = loader.get_template('testapp/restrict_user.html')
+    return HttpResponse(template.render(context, request))
+
+
 # Create your views here.

@@ -24,6 +24,8 @@ urlpatterns = [
     path('add_feature/', views.add_feature, name='add_feature'),
     path('currency_to_rial/', views.currency_to_rial, name='currency_to_rial'),
     path('get_service_price/', views.get_service_price, name='get_service_price'),
+    path('admin/panel', views.admin_panel, name='admin_panel'),
+    path('admin/restrict_user', views.admin_restrict_user, name='admin_restrict_user'),
     #login
     path('user_login/', views.user_login, name='user_login'),
     path('employee_login/', views.employee_login, name='employee_login'),
