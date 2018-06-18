@@ -22,6 +22,13 @@ media
 .idea/**/workspace.xml
 .idea/**/tasks.xml
 .idea/dictionaries
+.idea/KIA_payment.iml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+.idea/
+.idea/*.xml
+.idea/*.iml
 
 # Sensitive or high-churn files:
 .idea/**/dataSources/
