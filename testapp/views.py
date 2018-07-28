@@ -9,6 +9,12 @@ def register(request):
     return HttpResponse(template.render(context, request))
 
 
+def login(request):
+    context = {}
+    template = loader.get_template('testapp/user_login.html')
+    return HttpResponse(template.render(context, request))
+
+
 def contact_us(request):
     context = {}
     template = loader.get_template('testapp/contact_us.html')

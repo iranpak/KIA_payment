@@ -20,6 +20,7 @@ from testapp import views
 
 urlpatterns = [
     path('register/', views.register, name='register'),
+    path('login/', views.user_login, name='login'),
     path('contact_us/', views.contact_us, name='contact_us'),
     path('add_feature/', views.add_feature, name='add_feature'),
     path('currency_to_rial/', views.currency_to_rial, name='currency_to_rial'),
