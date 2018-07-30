@@ -28,7 +28,7 @@ urlpatterns = [
     path('admin/restrict_user', views.admin_restrict_user, name='admin_restrict_user'),
     path('add_transaction/', views.add_transaction, name='add_transaction'),
     # login
-    path('user_login/', views.user_login, name='user_login'),
+    path('login/', views.user_login, name='user_login'),
     path('employee_login/', views.employee_login, name='employee_login'),
     path('admin_login/', views.admin_login, name='admin_login'),
     path('admin/', admin.site.urls),
