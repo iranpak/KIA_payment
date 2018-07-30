@@ -16,10 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from test_app import views
+from KIA_auth import views as auth_views
 
 urlpatterns = [
     path('register/', views.register, name='register'),
-    path('login/', views.user_login, name='login'),
     path('contact_us/', views.contact_us, name='contact_us'),
     # admin
     path('add_feature/', views.add_feature, name='add_feature'),
@@ -28,7 +28,7 @@ urlpatterns = [
     path('admin/restrict_user', views.admin_restrict_user, name='admin_restrict_user'),
     path('add_transaction/', views.add_transaction, name='add_transaction'),
     # login
-    path('login/', views.user_login, name='user_login'),
+    path('login/', auth_views.login, name='login'),
     path('employee_login/', views.employee_login, name='employee_login'),
     path('admin_login/', views.admin_login, name='admin_login'),
     path('admin/', admin.site.urls),
