@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Account</title>
+</head>
+<body>
+    <form action = "/user_profile/" method=post>{% csrf_token %}
+        <div class="col-md-42 mb-3">
+            <input type=text name=first_name class=form-control id=first_name aria-describedby=emailHelp placeholder="نام" required>
+        </div>
+        <div class="col-md-42 mb-3">
+            <input type=text name=last_name class=form-control id=last_name placeholder="نام خانوداگی" required>
+        </div>
+        <div class="col-md-42 mb-3">
+            <input type=tel name=phone_number class=form-control id=phone_number placeholder="شماره تلفن" required>
+        </div>
+        <div class="col-md-42 mb-3">
+            <input type=email name=email class=form-control id=email placeholder="آدرس ایمیل" required>
+        </div>
+        <div class="col-md-42 mb-3">
+            <input type=password name=old_pass class=form-control id=old_pass  placeholder="رمز عبور قبلی" readonly required>
+        </div>
+        <div class="col-md-42 mb-3">
+            <input type=password name=new_pass class=form-control id=new_pass placeholder="رمز عبور جدید">
+        </div>
+        <div class="col-md-42 mb-3">
+            <input type=password name=new_pass_again class=form-control id=new_pass_again placeholder="تکرار رمز عبور جدید">
+        </div>
+        <button type=submit name="sendButton", id="sendButton_id" class="btn btn-primary">ذخیره تغییرات</button>
+    </form>
+</body>
+</html>

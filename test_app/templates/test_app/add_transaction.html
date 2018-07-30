@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Transaction</title>
+</head>
+<body>
+    <form action = /add_transaction/ method=post>{% csrf_token %}
+    <div class="col-md-42 mb-3">
+      <label for=transaction_name></label>
+      <input type=text name=transaction_name class=form-control id=transaction_name aria-describedby=emailHelp placeholder="نام" required>
+    </div>
+    <div class="col-md-42 mb-3">
+        <label for=pay_amount></label>
+        <input type=number name=pay_amount class=form-control id=pay_amount placeholder="مبلغ تراکنش" required>
+    </div>
+       <button type=submit class="btn btn-primary", name="submit_button", id="submit_button">اضافه کردن</button>
+    </form>
+</body>
+</html>

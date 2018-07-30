@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Send Email</title>
+</head>
+<body>
+    <form action = /send_email/ method=post>{% csrf_token %}
+      <div class="col-md-42 mb-3">
+        <textarea rows="12" cols="50" name="text" id="text" required>
+        </textarea>
+      </div>
+      <div class="col-md-42 mb-3">
+        <input type=text name=subject class=form-control id=subject aria-describedby=emailHelp placeholder="Subject" required>
+      </div>
+      <div class="col-md-42 mb-3">
+        <input type=email name=email class=form-control id=email placeholder="Email Address" required>
+      </div>
+        <button type=send name="sendButton", id="sendButton_id" class="btn btn-primary">send</button>
+    </form>
+</body>
+</html>
