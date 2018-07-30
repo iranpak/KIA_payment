@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Anonymous Money</title>
+</head>
+<body>
+
+    <form action =/anonymous_money method=post>{% csrf_token %}
+        <div class="col-md-42 mb-3">
+            میزان پول واریزی به ریال:
+            <input type=number name=value class=form-control id=value value="میزان پول واریزی" required>
+        </div>
+
+        <div class="col-md-42 mb-3">
+            ایمیل:
+            <input type="email" name=email class=form-control id=email placeholder="ایمیل" required>
+        </div>
+
+        <div class="col-md-42 mb-3">
+            شماره حساب مقصد:
+            <input type="number" name=account_number class=form-control id=account_number placeholder="شماره حساب" required>
+        </div>
+
+       <button type=submit class="btn btn-primary", name="registerButton", id="registerButton_id">انتقال مبلغ</button>
+    </form>
+
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Transaction</title>
+</head>
+<body>
+
+    <div id="state">
+        وضعیت تراکنش:
+    </div>
+
+    <div id="data">
+        <div id="user">
+            کاربر:
+        </div>
+        <div id="type">
+            نوع تراکنش:
+        </div>
+        <div id="date">
+            تاریخ:
+        </div>
+        <div id="time">
+            زمان:
+        </div>
+    </div>
+
+    <div id="details">
+        <div id="currency_type">
+            نوع ارز:
+        </div>
+        <div id="credit">
+            میزان موجودی کارت:
+        </div>
+        <div id="name">
+            نام و نام خانوادگی به انگلیسی:
+        </div>
+        <div id="date">
+            تاریخ تولد میلادی:
+        </div>
+        <div id="solar_date">
+            تاریخ تولد شمسی:
+        </div>
+        <div id>
+            سایر ملاحظات:
+        </div>
+    </div>
+
+    <form action =/all_transactions/1234 method=post>{% csrf_token %}
+        <div class="col-md-42 mb-3">
+            شناسه تراکنش:
+            <input type="number" name=transaction_id class=form-control id=transaction_id value="1234" readonly>
+        </div>
+
+        <button type=submit class="btn btn-primary" name="pick_button" id="pick_button" value="pick">انجام تراکنش</button>
+        <button type=submit class="btn btn-primary" name="report_button" id="report_button" value="report">گزارش تراکنش مشکوک</button>
+        <button type=submit class="btn btn-primary" name="finish_button" id="finish_button" value="finish">اتمام تراکنش</button>
+
+    </form>
+
+</body>
+</html>

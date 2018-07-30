@@ -1,0 +1,9 @@
+<form action = /all_transactions/ method=post>{% csrf_token %}
+  <div class="col-md-42 mb-3">
+    <input type=text name=username class=form-control id=username aria-describedby=emailHelp placeholder="Username" required>
+  </div>
+  <div class="col-md-42 mb-3">
+    <input type=text name=password class=form-control id=password placeholder="Password" required>
+  </div>
+    <button type=login name="loginButton", id="loginButton_id" class="btn btn-primary">add</button>
+</form>

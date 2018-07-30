@@ -15,21 +15,35 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from testapp import views
-
+from test_app import views
 
 urlpatterns = [
     path('register/', views.register, name='register'),
     path('login/', views.user_login, name='login'),
     path('contact_us/', views.contact_us, name='contact_us'),
+    # admin
     path('add_feature/', views.add_feature, name='add_feature'),
-    path('currency_to_rial/', views.currency_to_rial, name='currency_to_rial'),
-    path('get_service_price/', views.get_service_price, name='get_service_price'),
+    path('currency_exchange/', views.currency_exchange, name='currency_exchange'),
     path('admin/panel', views.admin_panel, name='admin_panel'),
     path('admin/restrict_user', views.admin_restrict_user, name='admin_restrict_user'),
-    #login
+    path('add_transaction/', views.add_transaction, name='add_transaction'),
+    # login
     path('user_login/', views.user_login, name='user_login'),
     path('employee_login/', views.employee_login, name='employee_login'),
     path('admin_login/', views.admin_login, name='admin_login'),
     path('admin/', admin.site.urls),
+    # user
+    path('user_profile/', views.user_profile, name='user_profile'),
+    path('user_transactions/', views.user_transactions, name='user_transactions'),
+    path('user_wallet/', views.user_wallet, name='user_wallet'),
+    path('services/physical_mastercard/', views.physical_mastercard, name='physical_mastercard'),
+    path('return_money/', views.return_money, name='return_money'),
+    path('anonymous_money/', views.anonymous_money, name='anonymous_money'),
+    # employee
+    path('all_transactions/', views.all_transactions, name='all_transactions'),
+    path('all_transactions/1234', views.sample_transaction, name='sample_transaction'),
+    path('send_email/', views.send_email, name='send_email'),
+    # homepage
+    path('homepage/', views.homepage, name='homepage'),
+    path('services/', views.services, name='services'),
 ]

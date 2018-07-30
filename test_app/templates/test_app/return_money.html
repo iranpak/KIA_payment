@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Return Money</title>
+</head>
+<body>
+
+    <form action =/return_money method=post>{% csrf_token %}
+        <div class="col-md-42 mb-3">
+            اعتبار فعلی:
+            <input type="text" name=current_credit class=form-control id= current_credit value="اعتبار فعلی" readonly>
+        </div>
+
+        <div class="col-md-42 mb-3">
+            میزان مبلغ بازگشتی:
+            <input type="number" name=return_credit class=form-control id=return_credit placeholder="میزان مبلغ بازگشتی" required> ریال
+        </div>
+
+       <button type=submit class="btn btn-primary", name="registerButton", id="registerButton_id">بازگشت مبلغ اعتبار</button>
+    </form>
+
+</body>
+</html>
