@@ -17,10 +17,13 @@ from django.contrib import admin
 from django.urls import path, include
 from test_app import views
 from KIA_auth import views as auth_views
+from KIA_general import views as general_views
 
 urlpatterns = [
-    path('register/', views.register, name='register'),
-    path('contact_us/', views.contact_us, name='contact_us'),
+    path('register/', auth_views.register, name='register'),
+    # path('contact_us/', views.contact_us, name='contact_us'),
+    path('contact_us/', general_views.contact_us, name='contact_us'),
+    path('about/', general_views.about, name='about'),
     # admin
     path('add_feature/', views.add_feature, name='add_feature'),
     path('currency_exchange/', views.currency_exchange, name='currency_exchange'),
