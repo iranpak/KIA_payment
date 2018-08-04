@@ -1,0 +1,103 @@
+{% extends "master.html" %}
+
+{% block content %}
+    <div class="container p-5" dir="rtl">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header text-right">برای ثبت نام در سامانه، مشخصات لازم را وارد کنید</div>
+
+                    <div class="card-body">
+                        <form method="POST" action="{% url 'login' %}">
+{#                            @csrf#}
+{#                            @include('Admin.section.errors')#}
+                            <div class="form-group row">
+                                <label for="name" class="col-sm-4 col-form label text-md-right">نام</label>
+                                <div class="col-md-6">
+                                    <input id="name" class="form-control" name="name"
+                                    required autofocus
+                                           oninvalid="this.setCustomValidity('نام نمی‌تواند خالی باشد')"
+                                           oninput="setCustomValidity('')">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="last_name" class="col-sm-4 col-form label text-md-right">نام خانوادگی</label>
+                                <div class="col-md-6">
+                                    <input id="last_name" class="form-control" name="last_name"
+                                    required autofocus
+                                           oninvalid="this.setCustomValidity('نام خانوادگی نمی‌تواند خالی باشد')"
+                                           oninput="setCustomValidity('')">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="username" class="col-sm-4 col-form-label text-md-right">ایمیل</label>
+
+                                <div class="col-md-6">
+                                    <input id="email" type="email" class="form-control" name="email"
+                                           required autofocus
+                                           oninvalid="this.setCustomValidity('لطفا فیلد را وارد کنید')"
+                                           oninput="setCustomValidity('')">
+
+
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="phone_number" class="col-sm-4 col-form-label text-md-right">شماره تلفن</label>
+
+                                <div class="col-md-6">
+                                    <input id="phone_number" type="number" class="form-control" name="phone_number"
+                                           required autofocus
+                                           oninvalid="this.setCustomValidity('لطفا فیلد را وارد کنید')"
+                                           oninput="setCustomValidity('')">
+
+
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="password" class="col-md-4 col-form-label text-md-right">رمز عبور</label>
+
+                                <div class="col-md-6">
+                                    <input id="password" type="password" class="form-control" name="password" required
+                                           oninvalid="this.setCustomValidity('لطفا فیلد را وارد کنید')"
+                                           oninput="setCustomValidity('')">
+
+{#                                    @if ($errors->has('password'))#}
+{#                                    <span class="invalid-feedback">#}
+{#</span>#}
+{#                                    @endif#}
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="password" class="col-md-4 col-form-label text-md-right">تکرار رمز عبور</label>
+
+                                <div class="col-md-6">
+                                    <input id="password" type="password" class="form-control" name="rep_password" required
+                                           oninvalid="this.setCustomValidity('لطفا فیلد را وارد کنید')"
+                                           oninput="setCustomValidity('')">
+
+{#                                    @if ($errors->has('password'))#}
+{#                                    <span class="invalid-feedback">#}
+{#</span>#}
+{#                                    @endif#}
+                                </div>
+                            </div>
+
+                            <div class="form-group row mb-0">
+                                <div class="col-md-8 offset-md-4">
+                                    <button type="submit" class="btn btn-primary">
+                                        ورود
+                                    </button>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
