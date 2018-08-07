@@ -16,14 +16,18 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from test_app import views
-from KIA_auth import views as auth_views
-from KIA_general import views as general_views
+from django.contrib.auth import views as auth_views
+from KIA_auth import views as KIA_auth_views
+from django.views.generic import RedirectView
+
+
 
 urlpatterns = [
-    path('register/', auth_views.register, name='register'),
-    # path('contact_us/', views.contact_us, name='contact_us'),
-    path('contact_us/', general_views.contact_us, name='contact_us'),
-    path('about/', general_views.about, name='about'),
+    path('', auth_views.login, {'template_name': 'KIA_auth/home.html'}, name='home'),
+    path('accounts/profile/', RedirectView.as_view(pattern_name='home')),
+    path('signup/', KIA_auth_views.sign_up, name='signup'),
+    # path('register_store/', KIA_auth_views.register_store, name='register.store'),
+    path('contact_us/', views.contact_us, name='contact_us'),
     # admin
     path('add_feature/', views.add_feature, name='add_feature'),
     path('currency_exchange/', views.currency_exchange, name='currency_exchange'),
@@ -31,7 +35,8 @@ urlpatterns = [
     path('admin/restrict_user', views.admin_restrict_user, name='admin_restrict_user'),
     path('add_transaction/', views.add_transaction, name='add_transaction'),
     # login
-    path('login/', auth_views.login, name='login'),
+    path('login/', auth_views.login, {'template_name': 'KIA_auth/login.html'}, name='login'),
+    path('logout/', auth_views.logout, {'template_name': 'KIA_auth/logout.html'}, name='logout'),
     path('employee_login/', views.employee_login, name='employee_login'),
     path('admin_login/', views.admin_login, name='admin_login'),
     path('admin/', admin.site.urls),
