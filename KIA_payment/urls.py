@@ -15,10 +15,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import RedirectView
+
 from test_app import views as test_app_views
 from kia_services import views as kia_services_views
+from KIA_auth import views as auth_views
 
 urlpatterns = [
+    path('', auth_views.login, {'template_name': 'KIA_auth/home.html'}, name='home'),
+    path('accounts/profile/', RedirectView.as_view(pattern_name='home')),
+    path('signup/', auth_views.sign_up, name='signup'),
     path('register/', test_app_views.register, name='register'),
     path('contact_us/', test_app_views.contact_us, name='contact_us'),
     # admin
@@ -28,7 +34,8 @@ urlpatterns = [
     path('admin/restrict_user', test_app_views.admin_restrict_user, name='admin_restrict_user'),
     path('add_transaction/', test_app_views.add_transaction, name='add_transaction'),
     # login
-    path('user_login/', test_app_views.user_login, name='user_login'),
+    path('login/', auth_views.login, {'template_name': 'KIA_auth/login.html'}, name='login'),
+    path('logout/', auth_views.logout, {'template_name': 'KIA_auth/logout.html'}, name='logout'),
     path('employee_login/', test_app_views.employee_login, name='employee_login'),
     path('admin_login/', test_app_views.admin_login, name='admin_login'),
     path('admin/', admin.site.urls),
