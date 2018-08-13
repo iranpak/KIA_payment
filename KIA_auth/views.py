@@ -7,6 +7,7 @@ from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from KIA_auth.models import Profile
 from django.contrib.auth import hashers
+from django.core.mail import send_mail
 
 # Create your views here.
 
@@ -29,17 +30,40 @@ def sign_up(request):
             user.save()
             account_number = cleaned_data.get('account_number')
             phone_number = cleaned_data.get('phone_number')
-            print(account_number, phone_number)
             profile = Profile.objects.create(user=user, phone_number=phone_number, account_number=account_number)
             profile.save()
-            print(profile.phone_number)
-            print(profile.account_number)
-            print(user)
+            send_registration_email(user.email)
             login(request, user)
             return redirect('home')
-        # TODO: send email to user
         else:
             return HttpResponse(str(form.errors))
     elif request.method == 'GET':
         form = SignUpForm()
         return render(request, 'KIA_auth/signup.html', {'form': form})
+
+
+def send_registration_email(email_address):
+    subject = 'ثبت‌نام در سامانه KIA_payment'
+    message_body = 'شما در سامانه KIA_payment ثبت‌نام کرده‌اید. برای فعالسازی حساب خود روی لینک زیر کلیک کنید.\n www.sample_link.com'
+    sender_address = 'mh.iranpak1997@gmail.com'
+    receiver_addresses = [email_address]
+    send_mail(subject, message_body, sender_address, receiver_addresses)
+
+
+def edit_profile(request):
+    if request.user.is_authenticated:
+        user = request.user
+        user_profile = Profile.objects.get(user=user)
+
+        context = {
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'username': user.username,
+            'email': user.email,
+            'account_number': user_profile.account_number,
+            'phone_number': user_profile.phone_number,
+        }
+
+        return render(request, 'KIA_auth/edit_profile.html', context)
+    else:
+        return HttpResponse("fail")

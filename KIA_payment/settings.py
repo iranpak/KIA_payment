@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'kia_services',
+    'KIA_auth'
 ]
 
 MIDDLEWARE = [
@@ -116,6 +117,12 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'kiapayment2018@gmail.com'
+EMAIL_HOST_PASSWORD = 'kiapayment'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 
 
 # Static files (CSS, JavaScript, Images)
