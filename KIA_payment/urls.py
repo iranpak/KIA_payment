@@ -35,7 +35,7 @@ urlpatterns = [
     path('add_transaction/', test_app_views.add_transaction, name='add_transaction'),
     # login
     path('login/', auth_views.login, {'template_name': 'KIA_auth/login.html'}, name='login'),
-    path('logout/', auth_views.logout, {'template_name': 'KIA_auth/logout.html'}, name='logout'),
+    # path('logout/', auth_views.logout, {'template_name': 'KIA_auth/logout.html'}, name='logout'),
     path('employee_login/', test_app_views.employee_login, name='employee_login'),
     path('admin_login/', test_app_views.admin_login, name='admin_login'),
     path('admin/', admin.site.urls),
