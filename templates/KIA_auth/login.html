@@ -1,0 +1,59 @@
+{% extends "master.html" %}
+
+{% block content %}
+    <div class="container p-5" dir="rtl">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card" style="background: #E0E0E0; height: 240px; width: 500px;">
+                    <div class="card-header text-right">برای ورود به سامانه لطفا وارد شوید</div>
+
+                    <div class="card-body">
+                        <form method="POST">
+                            {% csrf_token %}
+                            {#                            @include('Admin.section.errors')#}
+                            <div class="form-group row">
+                                <label for="username" class="col-sm-4 col-form-label text-md-right">نام کاربری</label>
+
+                                <div class="col-md-6">
+                                    <input id="username" type="text" class="form-control" name="username"
+                                           required autofocus
+                                           oninvalid="this.setCustomValidity('لطفا فیلد را وارد کنید')"
+                                           oninput="setCustomValidity('')">
+
+
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="password" class="col-md-4 col-form-label text-md-right">رمز عبور</label>
+
+                                <div class="col-md-6">
+                                    <input id="password" type="password" class="form-control" name="password" required
+                                           oninvalid="this.setCustomValidity('لطفا فیلد را وارد کنید')"
+                                           oninput="setCustomValidity('')">
+
+                                    {#                                    @if ($errors->has('password'))#}
+                                    {#                                    <span class="invalid-feedback">#}
+                                    {#</span>#}
+                                    {#                                    @endif#}
+                                </div>
+                            </div>
+
+
+                            <div class="form-group row mb-0">
+                                <div class="col-md-8 offset-md-4">
+                                    <button type="submit" class="btn btn-outline-primary">
+                                        ورود
+                                    </button>
+                                    <a class="btn btn-outline-success" href="/signup">
+                                        ثبت‌نام
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

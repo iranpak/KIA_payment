@@ -1,0 +1,18 @@
+{% extends "master.html" %}
+
+{% block content %}
+
+
+    {% if form.errors %}
+        <p style="color: red;">
+            Please correct the error{{ form.errors|pluralize }} below.
+        </p>
+    {% endif %}
+
+    <form action="" method="post" novalidate>
+        {{ form.as_ul }}
+        {% csrf_token %}
+        <input type="submit" value="Submit">
+    </form>
+
+{% endblock %}
