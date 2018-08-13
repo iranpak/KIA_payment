@@ -37,6 +37,7 @@ def sign_up(request):
             print(user)
             login(request, user)
             return redirect('home')
+        # TODO: send email to user
         else:
             return HttpResponse(str(form.errors))
     elif request.method == 'GET':
