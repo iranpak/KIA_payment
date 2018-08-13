@@ -1,6 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.template import loader
+
+from kia_services.forms import KIAServiceForm
+from kia_services.models import KIAService
 
 
 def register(request):
@@ -115,12 +118,6 @@ def send_email(request):
 def homepage(request):
     context = {}
     template = loader.get_template('test_app/homepage.html')
-    return HttpResponse(template.render(context, request))
-
-
-def services(request):
-    context = {}
-    template = loader.get_template('test_app/services.html')
     return HttpResponse(template.render(context, request))
 
 
