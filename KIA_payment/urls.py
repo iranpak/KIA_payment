@@ -25,7 +25,7 @@ from KIA_general import views as KIA_gen_views
 from KIA_panel import views as KIA_panel_views
 
 urlpatterns = [
-    path('', auth_views.login, {'template_name': 'KIA_auth/home.html'}, name='home'),
+    path('', KIA_auth_views.redirect_to_home, name='home'),
     # path('', auth_views.auth_login, {'template_name': 'KIA_auth/home.html'}, name='home'),
     path('accounts/profile/', RedirectView.as_view(pattern_name='home')),
     # path('contact_us/', test_app_views.contact_us, name='contact_us'),
