@@ -10,7 +10,9 @@
     {% endif %}
 
     <form action="" method="post" novalidate>
-        {{ form.as_ul }}
+        <table border="1" align="center">
+            {{ form }}
+        </table>
         {% csrf_token %}
         <input type="submit" value="Submit">
     </form>
