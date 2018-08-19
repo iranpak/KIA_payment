@@ -50,12 +50,17 @@ def redirect_to_home(request):
         user_profile = Profile.objects.get(user=user)
         if user_profile.is_restricted:
             # TODO: show message about his restricting
-            return HttpResponse("You are restricted by admin")
+            context = {}
+            template = loader.get_template('KIA_general/user_restricted.html')
+            return HttpResponse(template.render(context, request))
+            # return HttpResponse("You are restricted by admin")
         else:
             return render(request, 'KIA_auth/home.html')
-
     else:
-        return HttpResponse("not authorized")
+        context = {}
+        template = loader.get_template('KIA_general/not_authorized.html')
+        return HttpResponse(template.render(context, request))
+        # return HttpResponse("not authorized")
 
 
 def send_registration_email(email_address):
@@ -108,7 +113,10 @@ def edit_profile(request):
             else:
                 return HttpResponse(str(form.errors))
     else:
-        return HttpResponse("not authorized")
+        context = {}
+        template = loader.get_template('KIA_general/not_authorized.html')
+        return HttpResponse(template.render(context, request))
+        # return HttpResponse("not authorized")
 
 
 def change_password(request):
@@ -153,5 +161,7 @@ def change_password(request):
             else:
                 return HttpResponse(str(form.errors))
     else:
-        return HttpResponse("no authenticate")
-
+        context = {}
+        template = loader.get_template('KIA_general/not_authorized.html')
+        return HttpResponse(template.render(context, request))
+        # return HttpResponse("not authorized")

@@ -17,5 +17,26 @@ def contact_us(request):
     return HttpResponse(template.render(context, request))
 
 
+def not_found(request):
+    context = {}
+    template = loader.get_template('KIA_general/404.html')
+    return HttpResponse(template.render(context, request))
 
+
+def not_authorized(request):
+    context = {}
+    template = loader.get_template('KIA_general/not_authorized.html')
+    return HttpResponse(template.render(context, request))
+
+
+def access_denied(request):
+    context = {}
+    template = loader.get_template('KIA_general/access_denied.html')
+    return HttpResponse(template.render(context, request))
+
+
+def user_restricted(request):
+    context = {}
+    template = loader.get_template('KIA_general/user_restricted.html')
+    return HttpResponse(template.render(context, request))
 

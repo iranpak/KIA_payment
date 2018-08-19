@@ -22,23 +22,31 @@ from kia_services import views as kia_services_views
 from django.contrib.auth import views as auth_views
 from KIA_auth import views as KIA_auth_views
 from KIA_general import views as KIA_gen_views
-from KIA_panel import views as KIA_panel_views
+from KIA_admin import views as KIA_admin_views
 
 urlpatterns = [
     path('', KIA_auth_views.redirect_to_home, name='home'),
     # path('', auth_views.auth_login, {'template_name': 'KIA_auth/home.html'}, name='home'),
     path('accounts/profile/', RedirectView.as_view(pattern_name='home')),
     # path('contact_us/', test_app_views.contact_us, name='contact_us'),
+    # general
     path('contact_us/', KIA_gen_views.contact_us, name='contact_us'),
     path('about/', KIA_gen_views.about, name='about'),
+    path('404/', KIA_gen_views.not_found, name='not_found'),
+    path('not_authorized/', KIA_gen_views.not_authorized, name='not_authorized'),
+    path('access_denied/', KIA_gen_views.access_denied, name='access_denied'),
+    path('user_restricted/', KIA_gen_views.user_restricted, name='user_restricted'),
     # admin
     # panels
-    path('admin_panel/', KIA_panel_views.admin_panel, name='admin_panel'),
 
     path('add_feature/', test_app_views.add_feature, name='add_feature'),
     path('currency_exchange/', test_app_views.currency_exchange, name='currency_exchange'),
-    path('admin/panel', test_app_views.admin_panel, name='admin_panel'),
-    path('admin/restrict_user', test_app_views.admin_restrict_user, name='admin_restrict_user'),
+    # admin
+    # path('admin/panel', test_app_views.admin_panel, name='admin_panel'),
+    path('admin/panel', KIA_admin_views.panel, name='admin_panel'),
+    # path('admin/restrict_user', test_app_views.admin_restrict_user, name='admin_restrict_user'),
+    path('admin/restrict_user', KIA_admin_views.restrict_user, name='restrict_user'),
+    path('admin/remove_user_restriction', KIA_admin_views.remove_user_restriction, name='remove_user_restriction'),
     path('add_transaction/', test_app_views.add_transaction, name='add_transaction'),
     # auth
     path('login/', auth_views.login, {'template_name': 'KIA_auth/login.html'}, name='login'),

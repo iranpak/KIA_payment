@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from KIA_auth.models import Profile
+from django.template import loader
 
 
 def restrict_user(request):
@@ -15,9 +16,15 @@ def restrict_user(request):
             return HttpResponse("user restricted")
 
         else:
-            return HttpResponse("Access Denied")
+            context = {}
+            template = loader.get_template('KIA_general/access_denied.html')
+            return HttpResponse(template.render(context, request))
+            # return HttpResponse("Access Denied")
     else:
-        return HttpResponse("not authorized")
+        context = {}
+        template = loader.get_template('KIA_general/not_authorized.html')
+        return HttpResponse(template.render(context, request))
+        # return HttpResponse("not authorized")
 
 
 def remove_user_restriction(request):
@@ -29,14 +36,19 @@ def remove_user_restriction(request):
             user_profile.is_restricted = False
             user_profile.save()
             return HttpResponse("user restriction removed")
-
         else:
-            return HttpResponse("Access Denied")
+            context = {}
+            template = loader.get_template('KIA_general/access_denied.html')
+            return HttpResponse(template.render(context, request))
+            # return HttpResponse("Access Denied")
     else:
-        return HttpResponse("not authorized")
+        context = {}
+        template = loader.get_template('KIA_general/not_authorized.html')
+        return HttpResponse(template.render(context, request))
+        # return HttpResponse("not authorized")
 
 
-
-
-
-
+def panel(request):
+    context = {}
+    template = loader.get_template('KIA_admin/admin_panel.html')
+    return HttpResponse(template.render(context, request))

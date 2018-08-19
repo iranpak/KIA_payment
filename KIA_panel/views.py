@@ -7,5 +7,5 @@ from django.template import loader
 
 def admin_panel(request):
     context = {}
-    template = loader.get_template('KIA_panel/admin_panel.html')
+    template = loader.get_template('KIA_admin/admin_panel.html')
     return HttpResponse(template.render(context, request))

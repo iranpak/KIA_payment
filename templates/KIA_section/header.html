@@ -41,12 +41,16 @@
           </div>
         </li>{% endcomment %}
         {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/panel">پنل مدیریت</a>
+          </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownBlog" data-toggle="dropdown"
                aria-haspopup="true" aria-expanded="false">
               پروفایل
             </a>
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownBlog">
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownBlog"
+                 style="padding-left: 18px">
               <a class="dropdown-item" href="/edit_profile">تغییر مشخصات</a>
               <a class="dropdown-item" href="/change_password">تغییر رمز عبور</a>
               <a class="dropdown-item" href="faq.html">افزایش اعتبار</a>
