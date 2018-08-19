@@ -44,7 +44,10 @@ urlpatterns = [
     path('login/', auth_views.login, {'template_name': 'KIA_auth/login.html'}, name='login'),
     path('logout/', auth_views.logout, {'template_name': 'KIA_auth/logout.html'}, name='logout'),
     path('signup/', KIA_auth_views.sign_up, name='signup'),
+
     path('edit_profile', KIA_auth_views.edit_profile, name='edit_profile'),
+    path('change_password', KIA_auth_views.change_password, name='change_password'),
+
     path('employee_login/', test_app_views.employee_login, name='employee_login'),
     path('admin_login/', test_app_views.admin_login, name='admin_login'),
     path('admin/', admin.site.urls),
