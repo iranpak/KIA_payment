@@ -35,6 +35,9 @@ def increase_balance(request):
             user_profile.balance += increasing_balance_amount
             user_profile.save()
 
+    else:
+        return HttpResponse("not authorized")
+
 
 def settle_part_of_balance_to_account_number(request):
     user = request.user
@@ -50,5 +53,8 @@ def settle_part_of_balance_to_account_number(request):
                 pass
             else:
                 user_profile.balance -= settling_amount
+
+    else:
+        return HttpResponse("not authorized")
 
 

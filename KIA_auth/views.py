@@ -44,6 +44,20 @@ def sign_up(request):
         return render(request, 'KIA_auth/signup.html', {'form': form})
 
 
+def redirect_to_home(request):
+    user = request.user
+    if user.is_authenticated:
+        user_profile = Profile.objects.get(user=user)
+        if user_profile.is_restricted:
+            # TODO: show message about his restricting
+            return HttpResponse("You are restricted by admin")
+        else:
+            return render(request, 'KIA_auth/home.html')
+
+    else:
+        return HttpResponse("not authorized")
+
+
 def send_registration_email(email_address):
     subject = 'ثبت‌نام در سامانه KIA_payment'
     message_body = 'شما در سامانه KIA_payment ثبت‌نام کرده‌اید. برای فعالسازی حساب خود روی لینک زیر کلیک کنید.\n www.sample_link.com'
@@ -94,7 +108,7 @@ def edit_profile(request):
             else:
                 return HttpResponse(str(form.errors))
     else:
-        return HttpResponse("no authenticate")
+        return HttpResponse("not authorized")
 
 
 def change_password(request):
