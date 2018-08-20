@@ -13,7 +13,10 @@ def restrict_user(request):
             # TODO: show field for restricting user
             user_profile.is_restricted = True
             user_profile.save()
-            return HttpResponse("user restricted")
+            context = {}
+            template = loader.get_template('KIA_admin/restrict_user.html')
+            return HttpResponse(template.render(context, request))
+            # return HttpResponse("user restricted")
 
         else:
             context = {}
@@ -35,7 +38,10 @@ def remove_user_restriction(request):
             # TODO: show field for restricting user
             user_profile.is_restricted = False
             user_profile.save()
-            return HttpResponse("user restriction removed")
+            context = {}
+            template = loader.get_template('KIA_admin/remove_restriction.html')
+            return HttpResponse(template.render(context, request))
+            # return HttpResponse("user restriction removed")
         else:
             context = {}
             template = loader.get_template('KIA_general/access_denied.html')

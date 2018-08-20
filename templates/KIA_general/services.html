@@ -1,0 +1,50 @@
+{% extends "master.html" %}
+
+{% block content %}
+
+  <!-- Page Content -->
+  <div class="container">
+
+    <!-- Page Heading/Breadcrumbs -->
+    <div align="right">
+      <h1 class="mt-4 mb-3">Services
+        <small>Subheading</small>
+      </h1>
+    </div>
+
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="/">خانه</a>
+      </li>
+      <li class="breadcrumb-item active">سرویس‌ها</li>
+    </ol>
+
+    <!-- Image Header -->
+    {#    <img class="img-fluid rounded mb-4" src="http://placehold.it/1200x300" alt="">#}
+
+    <!-- Marketing Icons Section -->
+    {% for s in ss %}
+      {% if forloop.counter0|divisibleby:3 %}
+        <div class="row" align="center">
+      {% endif %}
+
+    <div class="col-lg-4 mb-4">
+      <div class="card h-100">
+        <h4 class="card-header">{{ s.name }}</h4>
+        <div class="card-body">
+          <p class="card-text">{{ s.info }}</p>
+        </div>
+        <div class="card-footer">
+          <a href="#" class="btn btn-primary">توضیحات بیشتر</a>
+        </div>
+      </div>
+    </div>
+
+    {% if forloop.counter0|add:1|divisibleby:3 or forloop.counter == ss|length %}
+      </div>
+    {% endif %}
+
+    {% endfor %}
+
+  </div>
+{% endblock content %}
