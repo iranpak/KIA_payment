@@ -58,3 +58,47 @@ def panel(request):
     context = {}
     template = loader.get_template('KIA_admin/admin_panel.html')
     return HttpResponse(template.render(context, request))
+
+
+def users_activities(request):
+    acts = [
+        {'username': 'hello',
+         'type': 'purchase',
+         'date': '29.9.2018'},
+        {'username': 'hi',
+         'type': 'charge',
+         'date': '10.11.2010'},
+        {'username': 'lol',
+         'type': 'steal',
+         'date': '25.2.2018'},
+        {'username': 'user',
+         'type': 'charge',
+         'date': '5.3.2018'},
+    ]
+    return render(request, 'KIA_admin/users_activities.html', {'acts': acts})
+    # context = {}
+    # template = loader.get_template('KIA_admin/users_activities.html')
+    # return HttpResponse(template.render(context, request))
+
+
+def employees_activities(request):
+    context = {}
+    template = loader.get_template('KIA_admin/employees_activities.html')
+    return HttpResponse(template.render(context, request))
+
+
+def my_history(request):
+    context = {}
+    template = loader.get_template('KIA_admin/my_history.html')
+    return HttpResponse(template.render(context, request))
+
+
+def financial_account_details(request):
+    context = {}
+    template = loader.get_template('KIA_admin/financial_account_details.html')
+    return HttpResponse(template.render(context, request))
+
+
+
+
+

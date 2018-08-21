@@ -14,7 +14,7 @@
       </div>
     </div>
 
-    <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
+    <div id="page-content" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
       <form>
         <div class="form-group row">
           <h3 class="col-sm-2">محدود کردن کاربر</h3>
@@ -40,12 +40,61 @@
 
 
         <div style="padding-left: 150px">
-          <button type="submit" class="btn btn-primary">ثبت</button>
+          <button type="submit" class="btn btn-primary" onclick="restrictionDone()">ثبت</button>
         </div>
 
       </form>
+
     </div>
 
   </div>
 
+{#  <h1>با موفقیت انجام شد</h1>\n\n" +#}
+{#          "  <button type="submit" class="btn btn-primary" onclick="turnBack()">بازگشت</button>#}
+
+  <script>
+      var regular = "<form>\n" +
+          "        <div class=\"form-group row\">\n" +
+          "          <h3 class=\"col-sm-2\">محدود کردن کاربر</h3>\n" +
+          "          <div class=\"col-sm-7\">\n" +
+          "            <input type=\"text\" readonly class=\"form-control-plaintext\" id=\"staticEmail\" value=\"\">\n" +
+          "          </div>\n" +
+          "        </div>\n" +
+          "\n" +
+          "        <div class=\"form-group row\">\n" +
+          "          <label for=\"inputName\" class=\"col-sm-2 col-form-label\">نام کاربری</label>\n" +
+          "          <div class=\"col-sm-7\">\n" +
+          "            <input class=\"form-control\" id=\"res_username\" aria-describedby=\"emailHelp\"\n" +
+          "                   placeholder=\"username\" dir=\"ltr\">\n" +
+          "          </div>\n" +
+          "        </div>\n" +
+          "        <div class=\"form-group row\">\n" +
+          "          <div class=\"col-sm-2\"><label for=\"exampleFormControlTextarea1\">پیغام مربوطه</label></div>\n" +
+          "          <div class=\"col-sm-7\"><textarea class=\"form-control\" id=\"restrict_message\" rows=\"3\"\n" +
+          "                                          placeholder=\"پیام مورد نظر برای ارسال به کاربر خاطی را اینجا وارد کنید\"></textarea>\n" +
+          "          </div>\n" +
+          "\n" +
+          "        </div>\n" +
+          "\n" +
+          "\n" +
+          "        <div style=\"padding-left: 150px\">\n" +
+          "          <button type=\"submit\" class=\"btn btn-primary\" onclick=\"restrictionDone()\">ثبت</button>\n" +
+          "        </div>\n" +
+          "\n" +
+          "      </form>";
+      var done = "<h1>با موفقیت انجام شد</h1>\n\n" +
+          "  <button type=\"submit\" class=\"btn btn-primary\" onclick=\"turnBack()\">بازگشت</button>";
+
+      {#document.onload = function () {#}
+      {#    document.getElementById("page-content").innerHTML = regular;#}
+      {#};#}
+
+      function restrictionDone() {
+          document.getElementById("page-content").innerHTML = done;
+      }
+
+      function turnBack() {
+          document.getElementById("page-content").innerHTML = regular;
+      }
+  </script>
 {% endblock content %}

@@ -45,6 +45,11 @@ urlpatterns = [
     # admin
     # path('admin/panel', test_app_views.admin_panel, name='admin_panel'),
     path('admin/panel', KIA_admin_views.panel, name='admin_panel'),
+    path('admin/users_activities', KIA_admin_views.users_activities, name='users_activities'),
+    path('admin/employees_activities', KIA_admin_views.employees_activities, name='employees_activities'),
+    path('admin/my_history', KIA_admin_views.my_history, name='my_history'),
+    path('admin/financial_account_details', KIA_admin_views.financial_account_details, name='financial_account_details'),
+
     # path('admin/restrict_user', test_app_views.admin_restrict_user, name='admin_restrict_user'),
     path('admin/restrict_user', KIA_admin_views.restrict_user, name='restrict_user'),
     path('admin/remove_user_restriction', KIA_admin_views.remove_user_restriction, name='remove_user_restriction'),
