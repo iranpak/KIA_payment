@@ -8,6 +8,8 @@ from django.contrib.auth.models import User
 from KIA_auth.models import Profile
 from django.contrib.auth import hashers
 from django.core.mail import send_mail
+
+
 # from django.contrib.auth.forms import S
 
 
@@ -213,4 +215,142 @@ def add_credit(request):
         template = loader.get_template('KIA_general/not_authorized.html')
         return HttpResponse(template.render(context, request))
         # return HttpResponse("not authorized")
+
+
+def withdraw_credit(request):
+    if request.user.is_authenticated:
+        if request.method == 'GET':
+            user = request.user
+            user_profile = Profile.objects.get(user=user)
+
+            information = {
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'username': user.username,
+                'email': user.email,
+                'account_number': user_profile.account_number,
+                'phone_number': user_profile.phone_number,
+            }
+
+            form = SignUpForm()
+            return render(request, 'KIA_auth/withdraw_credit.html', {'form': form, 'information': information})
+
+        elif request.method == 'POST':
+            form = SignUpForm(request.POST)
+            form_data = form.data
+            print(form_data)
+            if form.is_valid() and form_data['password1'] == form_data['password2']:
+                cleaned_data = form.cleaned_data
+                print(cleaned_data)
+                username = cleaned_data.get('username')
+                password = cleaned_data.get('password1')
+                hashed_password = hashers.make_password(password)
+                user = User.objects.get(user=username)
+                user.first_name = cleaned_data.get('first_name')
+                user.last_name = cleaned_data.get('last_name')
+                user.password = hashed_password
+                user.email = cleaned_data.get('email')
+                user.save()
+                account_number = cleaned_data.get('account_number')
+                phone_number = cleaned_data.get('phone_number')
+                profile = Profile.objects.create(user=user, phone_number=phone_number, account_number=account_number)
+                profile.save()
+                return redirect('home')
+            else:
+                return HttpResponse(str(form.errors))
+    else:
+        context = {}
+        template = loader.get_template('KIA_general/not_authorized.html')
+        return HttpResponse(template.render(context, request))
+        # return HttpResponse("not authorized")
+
+
+def anonymous_transfer(request):
+    if request.user.is_authenticated:
+        if request.method == 'GET':
+            user = request.user
+            user_profile = Profile.objects.get(user=user)
+
+            information = {
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'username': user.username,
+                'email': user.email,
+                'account_number': user_profile.account_number,
+                'phone_number': user_profile.phone_number,
+            }
+
+            form = SignUpForm()
+            return render(request, 'KIA_auth/anonymous_transfer.html', {'form': form, 'information': information})
+
+        elif request.method == 'POST':
+            form = SignUpForm(request.POST)
+            form_data = form.data
+            print(form_data)
+            if form.is_valid() and form_data['password1'] == form_data['password2']:
+                cleaned_data = form.cleaned_data
+                print(cleaned_data)
+                username = cleaned_data.get('username')
+                password = cleaned_data.get('password1')
+                hashed_password = hashers.make_password(password)
+                user = User.objects.get(user=username)
+                user.first_name = cleaned_data.get('first_name')
+                user.last_name = cleaned_data.get('last_name')
+                user.password = hashed_password
+                user.email = cleaned_data.get('email')
+                user.save()
+                account_number = cleaned_data.get('account_number')
+                phone_number = cleaned_data.get('phone_number')
+                profile = Profile.objects.create(user=user, phone_number=phone_number, account_number=account_number)
+                profile.save()
+                return redirect('home')
+            else:
+                return HttpResponse(str(form.errors))
+    else:
+        context = {}
+        template = loader.get_template('KIA_general/not_authorized.html')
+        return HttpResponse(template.render(context, request))
+        # return HttpResponse("not authorized")
+
+
+def transaction_history(request):
+    acts = [
+        {'type': 'TOEFL',
+         'amount': '10000',
+         'date': '29.9.2018'},
+        {'type': 'University',
+         'amount': '4624',
+         'date': '29.9.2018'},
+        {'type': 'TOEFL',
+         'amount': '435',
+         'date': '29.9.2018'},
+        {'type': 'TOEFL',
+         'amount': '234646',
+         'date': '29.9.2018'},
+        {'type': 'GRE',
+         'amount': '13423',
+         'date': '29.9.2018'},
+    ]
+    return render(request, 'KIA_auth/transaction_history.html', {'acts': acts})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

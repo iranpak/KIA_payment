@@ -1,0 +1,49 @@
+{% extends "master.html" %}
+
+{% block content %}
+
+  <!-- Page Content -->
+  <div class="container">
+
+    <!-- Page Heading/Breadcrumbs -->
+    <div align="right">
+      <h1 class="mt-4 mb-3">نرخ تبدیل
+        <small>ارزها</small>
+      </h1>
+    </div>
+
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="/">خانه</a>
+      </li>
+      <li class="breadcrumb-item active">نرخ تبدیل</li>
+    </ol>
+
+
+    <div align="center">
+      <div id="page-content-wrapper" class="col-8" align="center" style="padding-left: 50px; padding-right: 50px">
+        <table class="table table-striped table-hover">
+          <thead class="thead-dark">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">نام ارز</th>
+            <th scope="col">قیمت</th>
+          </tr>
+          </thead>
+          <tbody>
+
+          {% for rate in rates %}
+            <tr>
+              <th scope="row">{{ forloop.counter }}</th>
+              <td>{{ rate.name }}</td>
+              <td>{{ rate.to_rial }}</td>
+            </tr>
+          {% endfor %}
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+{% endblock content %}

@@ -9,8 +9,8 @@
       <div class="list-group">
         <a href="/edit_profile" class="list-group-item list-group-item-action">ویرایش پروفایل</a>
         <a href="/change_password" class="list-group-item list-group-item-action">تغییر رمز عبور</a>
-        <a href="/add_credit" class="list-group-item list-group-item-action active">اضافه کردن اعتبار</a>
-        <a href="/withdraw_credit" class="list-group-item list-group-item-action">برداشت پول از اعتبار</a>
+        <a href="/add_credit" class="list-group-item list-group-item-action ">اضافه کردن اعتبار</a>
+        <a href="/withdraw_credit" class="list-group-item list-group-item-action active">برداشت پول از اعتبار</a>
         <a href="/anonymous_transfer" class="list-group-item list-group-item-action">واریز مخفیانهٔ پول</a>
         <a href="/transaction_history" class="list-group-item list-group-item-action">تاریخچهٔ تراکنش‌ها</a>
       </div>
@@ -19,7 +19,7 @@
     <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
       <form>
         <div class="form-group row">
-          <h3 class="col-sm-3">افزایش اعتبار</h3>
+          <h3 class="col-sm-3">برداشت پول از حساب</h3>
           <div class="col-sm-6">
             <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="">
           </div>
@@ -28,22 +28,22 @@
         <div class="form-group row">
           <label for="staticEmail" class="col-sm-2 col-form-label">اعتبار فعلی</label>
           <div class="col-sm-7">
-            <input type="text" readonly class="form-control-plaintext" id="old_credit" value={{ 0 }}>
+            <input type="text" readonly class="form-control-plaintext" id="old_credit" value={{ 10000 }}>
           </div>
         </div>
 
         <div class="form-group row">
-          <label for="inputPassword" class="col-sm-2 col-form-label">اعتبار اضافه (تومان)</label>
+          <label for="inputPassword" class="col-sm-2 col-form-label">اعتبار برداشتی (تومان)</label>
           <div class="col-sm-7">
-            <input type="number" min="0" step="1000" class="form-control" id="added_credit" placeholder="0" dir="ltr"
-                   onchange="calcSum(); msgTest()">
+            <input type="number" min="0" step="1000" class="form-control" id="sub_credit" placeholder="0" dir="ltr"
+                   onchange="calcDiff(); checkNotNeg()">
           </div>
         </div>
 
         <div class="form-group row">
           <label for="staticEmail" class="col-sm-2 col-form-label" id="test_label">اعتبار حاصل</label>
           <div class="col-sm-7">
-            <input type="text" readonly class="form-control-plaintext" id="final_credit" value={{ 0 }}>
+            <input type="text" readonly class="form-control-plaintext" id="final_credit" value={{ 10000 }}>
           </div>
         </div>
 
@@ -57,21 +57,19 @@
   </div>
 
   <script>
-      function calcSum() {
-          var sum = parseInt(document.getElementById("old_credit").value) +
-              parseInt(document.getElementById("added_credit").value);
-          document.getElementById("final_credit").value = sum;
+      function calcDiff() {
+          var diff = parseInt(document.getElementById("old_credit").value) -
+              parseInt(document.getElementById("sub_credit").value);
+          document.getElementById("final_credit").value = diff;
       }
 
-      function msgTest() {
-          if (parseInt(document.getElementById("added_credit").value) > 10000)
-              alert("دمت گرم چه قدر اعتبار خریدی");
-      }
-
-      window.onload = function() {
-          document.getElementById("test_label").onclick = function() {
-              alert("wow");
-          };
+      function checkNotNeg() {
+          if (parseInt(document.getElementById("sub_credit").value) >
+              parseInt(document.getElementById("old_credit").value)) {
+              document.getElementById("sub_credit").value = parseInt(document.getElementById("old_credit").value);
+              document.getElementById("final_credit").value = 0;
+              alert("نمی‌توانید بیشتر از اعتبارتان بردارید!");
+          }
       }
   </script>
 

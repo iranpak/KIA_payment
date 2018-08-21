@@ -25,11 +25,14 @@
           <a class="nav-link" href="/services" id="services">سرویس‌ها</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" href="/currency_rates" id="currency_rates">نرخ تبدیل‌ها</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" href="/contact_us" id="contact_us">ارتباط با ما</a>
         </li>
-{#        <li class="nav-item active">#}
-{#          <a class="nav-link" id="testA" href="/404">تست</a>#}
-{#        </li>#}
+        {#        <li class="nav-item active">#}
+        {#          <a class="nav-link" id="testA" href="/404">تست</a>#}
+        {#        </li>#}
         {% if user.is_authenticated %}
           <li class="nav-item">
             <a class="nav-link" href="/admin/panel" id="admin">پنل مدیریت</a>
@@ -44,7 +47,10 @@
               <a class="dropdown-item" href="/edit_profile">تغییر مشخصات</a>
               <a class="dropdown-item" href="/change_password">تغییر رمز عبور</a>
               <a class="dropdown-item" href="/add_credit">افزایش اعتبار</a>
-{#              <a class="dropdown-item" href="faq.html">افزایش اعتبار</a>#}
+              <a class="dropdown-item" href="/withdraw_credit">برداشت پول از اعتبار</a>
+              <a class="dropdown-item" href="/anonymous_transfer">واریز مخفیانهٔ پول</a>
+              <a class="dropdown-item" href="/transaction_history">تاریخچهٔ تراکنش‌ها</a>
+              {#              <a class="dropdown-item" href="faq.html">افزایش اعتبار</a>#}
             </div>
           </li>
           <li class="nav-item">
@@ -76,24 +82,26 @@
         crossorigin="anonymous"></script>
 
 <script>
-  var loc = document.URL.match(/\/[a-z_]+\//)[0];
-  loc = loc.substring(1, loc.length - 1);
-  {#document.getElementById("testA").innerHTML = loc;#}
+    var loc = document.URL.match(/\/[a-z_]+\//)[0];
+    loc = loc.substring(1, loc.length - 1);
+    {#document.getElementById("testA").innerHTML = loc;#}
 
-  if (loc == 'services')
-      document.getElementById("services").className += " active";
-  else if (loc == 'admin')
-      document.getElementById("admin").className += " active";
-  else if (loc == 'about')
-      document.getElementById("about").className += " active";
-  else if (loc == 'contact_us')
-      document.getElementById("contact_us").className += " active";
-  else if (loc == 'login')
-      document.getElementById("login").className += " active";
-  else if (loc == 'signup')
-      document.getElementById("signup").className += " active";
-  else
-      document.getElementById("profile").className += " active";
+    if (loc == 'services')
+        document.getElementById("services").className += " active";
+    else if (loc == 'admin')
+        document.getElementById("admin").className += " active";
+    else if (loc == 'about')
+        document.getElementById("about").className += " active";
+    else if (loc == 'contact_us')
+        document.getElementById("contact_us").className += " active";
+    else if (loc == 'login')
+        document.getElementById("login").className += " active";
+    else if (loc == 'signup')
+        document.getElementById("signup").className += " active";
+    else if (loc == 'currency_rates')
+        document.getElementById("currency_rates").className += " active";
+    else
+        document.getElementById("profile").className += " active";
 </script>
 
 {#<div class="container-fluid mt-5" style="height: 45px; background: linear-gradient(to right, #00ffff, #006666);">#}

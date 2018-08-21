@@ -1,0 +1,62 @@
+{% extends "master.html" %}
+
+{% block content %}
+
+  <!-- Page Content -->
+  <div class="container">
+
+    <!-- Page Heading/Breadcrumbs -->
+    <div align="right">
+      <h1 class="mt-4 mb-3">Services
+        <small>Subheading</small>
+      </h1>
+    </div>
+
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="/">خانه</a>
+      </li>
+      <li class="breadcrumb-item active">توضیح سرویس</li>
+    </ol>
+
+
+    <div class="row" align="center">
+      <div class="col-2"></div>
+      <div class="col-2">نام</div>
+      <div class="col-6">{{ info.name }}</div>
+      <div class="col-2"></div>
+    </div>
+
+    <div class="row" align="center">
+      <div class="col-2"></div>
+      <div class="col-2">قیمت</div>
+      <div class="col-6">{{ info.price }}</div>
+      <div class="col-2"></div>
+    </div>
+
+    <div class="row" align="center">
+      <div class="col-2"></div>
+      <div class="col-2">واحد پولی</div>
+      <div class="col-6">{{ info.currency }}</div>
+      <div class="col-2"></div>
+    </div>
+
+    <div class="row" align="center">
+      <div class="col-2"></div>
+      <div class="col-2">توضیحات</div>
+      <div class="col-6">{{ info.detail }}</div>
+      <div class="col-2"></div>
+    </div>
+
+    <div class="col" align="center">
+    <a href="/purchase">خرید</a>
+    </div>
+{#    <form>#}
+{#      <div class="col" align="center" style="padding-bottom: 50px">#}
+{#        <button type="submit" class="btn btn-primary">خرید</button>#}
+{#      </div>#}
+{#    </form>#}
+
+  </div>
+
+{% endblock content %}

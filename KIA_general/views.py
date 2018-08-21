@@ -64,4 +64,39 @@ def services(request):
     # return HttpResponse(template.render(context, request))
 
 
+def currency_rates(request):
+    rates = [
+        {'name': 'Dollar',
+         'to_rial': '10000'},
+        {'name': 'Euro',
+         'to_rial': '12500'},
+
+    ]
+    return render(request, 'KIA_general/currency_rates.html', {'rates': rates})
+
+
+def service_info(request):
+    info = {
+        'name': 'TOEFL',
+        'price': '215',
+        'currency': 'Dollar',
+        'detail': 'An English exam',
+    }
+    return render(request, 'KIA_general/service_info.html', {'info': info})
+
+
+def purchase(request):
+    name = 'TOEFL'
+    info = [
+        'مرکز مورد نظر',
+        'تاریخ ثبت نام',
+        'پول',
+        'ملاحظات',
+    ]
+    return render(request, 'KIA_general/purchase.html', {'name': name, 'info': info})
+
+
+
+
+
 

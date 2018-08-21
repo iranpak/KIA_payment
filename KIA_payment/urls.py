@@ -37,6 +37,9 @@ urlpatterns = [
     path('access_denied/', KIA_gen_views.access_denied, name='access_denied'),
     path('user_restricted/', KIA_gen_views.user_restricted, name='user_restricted'),
     path('services/', KIA_gen_views.services, name='services'),
+    path('service_info/', KIA_gen_views.service_info, name='service_info'),
+    path('purchase/', KIA_gen_views.purchase, name='purchase'),
+    path('currency_rates/', KIA_gen_views.currency_rates, name='currency_rates'),
     # admin
     # panels
 
@@ -61,11 +64,13 @@ urlpatterns = [
     path('login/', auth_views.login, {'template_name': 'KIA_auth/login.html'}, name='login'),
     path('logout/', auth_views.logout, {'template_name': 'KIA_auth/logout.html'}, name='logout'),
     path('signup/', KIA_auth_views.sign_up, name='signup'),
-
     # user panel
     path('edit_profile/', KIA_auth_views.edit_profile, name='edit_profile'),
     path('change_password/', KIA_auth_views.change_password, name='change_password'),
     path('add_credit/', KIA_auth_views.add_credit, name='add_credit'),
+    path('withdraw_credit/', KIA_auth_views.withdraw_credit, name='withdraw_credit'),
+    path('anonymous_transfer/', KIA_auth_views.anonymous_transfer, name='anonymous_transfer'),
+    path('transaction_history/', KIA_auth_views.transaction_history, name='transaction_history'),
 
     path('employee_login/', test_app_views.employee_login, name='employee_login'),
     path('admin_login/', test_app_views.admin_login, name='admin_login'),
