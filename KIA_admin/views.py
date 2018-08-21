@@ -99,6 +99,15 @@ def financial_account_details(request):
     return HttpResponse(template.render(context, request))
 
 
+def add_system_credit(request):
+    context = {}
+    template = loader.get_template('KIA_admin/add_system_credit.html')
+    return HttpResponse(template.render(context, request))
 
+
+def add_transaction(request):
+    context = {}
+    template = loader.get_template('KIA_admin/add_transaction.html')
+    return HttpResponse(template.render(context, request))
 
 
