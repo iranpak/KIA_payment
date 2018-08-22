@@ -2,19 +2,57 @@
 
 {% block content %}
 
+  <div class="container p-5" dir="rtl">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card" style="background: #E0E0E0; height: 660px; width: 500px;">
+          <div class="card-header text-right">لطفا ابتدا در سامانه ثبت نام کنید</div>
 
-    {% if form.errors %}
-        <p style="color: red;">
-            Please correct the error{{ form.errors|pluralize }} below.
-        </p>
-    {% endif %}
-
-    <form action="" method="post" novalidate>
-        <table border="1" align="center">
-            {{ form }}
-        </table>
-        {% csrf_token %}
-        <input type="submit" value="Submit">
-    </form>
+          <div class="card-body">
+            <form method="post">
+              {% csrf_token %}
+              {% for field in form %}
+                <div class="form-group row">
+                  <div class="col-sm-4 col-form-label text-md-right">
+                    {{ field.label_tag }}
+                  </div>
+                  <div class="col-md-6">
+                    {{ field }}
+{#                    {% if field.help_text %}#}
+{#                      <small style="color: grey">{{ field.help_text }}</small>#}
+{#                    {% endif %}#}
+{#                    {% for error in field.errors %}#}
+{#                      <p style="color: red">{{ error }}</p>#}
+{#                    {% endfor %}#}
+                  </div>
+                </div>
+                {#                <p>#}
+                {#                                  {% if field.help_text %}#}
+                {#                                    <small style="color: grey">{{ field.help_text }}</small>#}
+                {#                                  {% endif %}#}
+                {#                                  {% for error in field.errors %}#}
+                {#                                    <p style="color: red">{{ error }}</p>#}
+                {#                                  {% endfor %}#}
+                {#                </p>#}
+              {% endfor %}
+              <div class="form-group row mb-0">
+                <div class="col-md-8 offset-md-4">
+                  <button type="submit" class="btn btn-outline-primary">
+                    ثبت نام
+                  </button>
+                </div>
+              </div>
+              {#              <button type="submit">Sign up</button>#}
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 {% endblock %}
+
+
+
+
+

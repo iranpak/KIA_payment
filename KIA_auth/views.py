@@ -40,7 +40,8 @@ def sign_up(request):
             login(request, user)
             return redirect('home')
         else:
-            return HttpResponse(str(form.errors))
+            return render(request, 'KIA_auth/signup_error.html', {'errors': form.errors})
+            # return HttpResponse(str(form.errors))
     elif request.method == 'GET':
         form = SignUpForm()
         return render(request, 'KIA_auth/signup.html', {'form': form})

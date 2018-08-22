@@ -1,0 +1,50 @@
+{% extends "master.html" %}
+
+{% block content %}
+
+  <div class="container p-5" dir="rtl">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card" style="background: #E0E0E0; height: 400px; width: 500px;">
+          <div class="card-header text-right">خطاهای زیر در هنگام ثبت نام پیش آمده:</div>
+          <div class="card-body">
+
+            <div class="col">
+              {% for key, value in errors.items %}
+                <div class="row">
+                  <label for="username" class="col-sm-4 col-form-label text-md-right">خطا مربوط به:</label>
+                  <div class="col-md-8">
+                    {{ key }}
+                  </div>
+                </div>
+
+                <div class="row">
+                  <label for="username" class="col-sm-4 col-form-label text-md-right">توضیح خطا:</label>
+                  <div class="col-md-8" dir="ltr">
+                    {{ value }}
+                  </div>
+                </div>
+
+              {% endfor %}
+
+            </div>
+
+            <div class="form-group row mb-0">
+              <div class="col-md-8 offset-md-4">
+                <button type="button" onclick="javascript:history.back()" class="btn btn-outline-primary">
+                  بازگشت
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+
+
+
+
