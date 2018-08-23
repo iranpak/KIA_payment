@@ -5,17 +5,15 @@
 {#  <title>Title</title>#}
 {#</head>#}
 {#<body>#}
-{#{% if authenticated %}#}
-{#  <form action="" method="post" novalidate>#}
-{#    <table>#}
-{#      {{ form.as_table }}#}
-{#    </table>#}
-{#    {% csrf_token %}#}
-{#    <input type="submit" value="Submit">#}
-{#  </form>#}
-{#{% else %}#}
-{#  <p>You must login to see the form!</p>#}
-{#{% endif %}#}
+{#<form action="" method="post" novalidate>#}
+{#  <table>#}
+{#    {{ form.as_table }}#}
+{#  </table>#}
+{#  {% csrf_token %}#}
+{#  <input type="submit" name="delete" value="حذف سرویس">#}
+{#  <input type="submit" name="augment" value="افزودن فیلد به سرویس">#}
+{#  <input type="submit" name="exclude" value="حذف فیلد از سرویس">#}
+{#</form>#}
 {#</body>#}
 {#</html>#}
 
@@ -26,23 +24,17 @@
 
   <div id="wrapper" class="row" style="padding-bottom:20px;">
     <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
-      {% if authenticated %}
         <form action="" method="post" novalidate>
           {% csrf_token %}
 
           <div class="form-group row">
-            <h3 class="col-sm-2">خرید سرویس {{ label }}</h3>
+            <h3 class="col-sm-2">مشاهده و ویرایش سرویس {{ label }}</h3>
             <div class="col-sm-7">
               <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="">
             </div>
           </div>
 
-          {#          <table>#}
-          {#            {{ form.as_table }}#}
-          {#          </table>#}
-
           {% for item in form %}
-            {#            {{ item.label_tag }}{{ item }}#}
             <div class="form-group row">
               <div class="col-sm-4 col-form-label text-md-right">
                 {{ item.label_tag }}
@@ -54,15 +46,12 @@
           {% endfor %}
 
           <div style="padding-left: 150px">
-            <input type="submit" value="تایید" class="btn btn-primary">
-{#            <button type="submit" class="btn btn-primary">خرید</button>#}
+            <input type="submit" name="delete" value="حذف سرویس" class="btn btn-primary">
+            <input type="submit" name="augment" value="افزودن فیلد به سرویس" class="btn btn-primary">
+            <input type="submit" name="exclude" value="حذف فیلد از سرویس" class="btn btn-primary">
           </div>
 
         </form>
-      {% else %}
-        <p>You must login to see the form!</p>
-      {% endif %}
-
 
     </div>
 

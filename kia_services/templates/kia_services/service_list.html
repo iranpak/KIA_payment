@@ -1,0 +1,75 @@
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#  <meta charset="UTF-8">#}
+{#  <title>service list</title>#}
+{#</head>#}
+{#<body>#}
+{#<h1>همه‌ی سرویسا!</h1>#}
+{#{% if services %}#}
+{#  <ul>#}
+{#    {% for service in services %}#}
+{#      <li>#}
+{#        <a href="{{ service.name }}">{{ service.label }}</a>)#}
+{#      </li>#}
+{#    {% endfor %}#}
+{#  </ul>#}
+{#{% else %}#}
+{#  <p>خدمت نداریم :(</p>#}
+{#{% endif %}#}
+{#</body>#}
+{#</html>#}
+
+
+
+{% extends "master.html" %}
+
+{% block content %}
+
+  <!-- Page Content -->
+  <div class="container" align="right">
+
+    <!-- Page Heading/Breadcrumbs -->
+    <div align="right">
+      <h1 class="mt-4 mb-3">سرویس‌ها
+        <small>در سایت</small>
+      </h1>
+    </div>
+
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="/">خانه</a>
+      </li>
+      <li class="breadcrumb-item active">سرویس‌ها</li>
+    </ol>
+
+    {% if services %}
+      {% for service in services %}
+        {% if forloop.counter0|divisibleby:3 %}
+          <div class="row" align="center">
+        {% endif %}
+
+      <div class="col-lg-4 mb-4">
+        <div class="card h-100">
+          <h4 class="card-header">{{ service.name }}</h4>
+          <div class="card-body">
+            <p class="card-text">{{ service.details }}</p>
+          </div>
+          <div class="card-footer">
+            <a href="{{ service.name }}" class="btn btn-primary">خرید</a>
+          </div>
+        </div>
+      </div>
+
+      {% if forloop.counter0|add:1|divisibleby:3 or forloop.counter == services|length %}
+        </div>
+      {% endif %}
+
+      {% endfor %}
+    {% else %}
+      <h1>سرویسی وجود ندارد</h1>
+    {% endif %}
+
+
+  </div>
+{% endblock content %}
