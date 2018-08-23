@@ -28,7 +28,7 @@
         <div class="form-group row">
           <label for="inputName" class="col-sm-2 col-form-label">ایمیل مقصد</label>
           <div class="col-sm-7">
-            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+            <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp"
                    placeholder="example@something.com">
           </div>
         </div>
@@ -36,7 +36,8 @@
         <div class="form-group row">
           <label for="inputName" class="col-sm-2 col-form-label">شماره حساب مقصد</label>
           <div class="col-sm-7">
-            <input type="number" class="form-control" id="exampleInputAccount" aria-describedby="emailHelp"
+            <input type="number" class="form-control" id="account_number" name="account_number"
+                   aria-describedby="emailHelp"
                    placeholder="0000000000000000">
           </div>
         </div>
@@ -51,7 +52,8 @@
         <div class="form-group row">
           <label for="inputPassword" class="col-sm-2 col-form-label">اعتبار واریزی (تومان)</label>
           <div class="col-sm-7">
-            <input type="number" min="0" step="1000" class="form-control" id="sub_credit" placeholder="0" dir="ltr"
+            <input type="number" min="0" step="1000" class="form-control" id="transfer_credit" name="transfer_credit"
+                   placeholder="0" dir="ltr"
                    onchange="calcDiff(); checkNotNeg()">
           </div>
         </div>

@@ -31,13 +31,13 @@
         <div class="form-group row">
           <label for="inputName" class="col-sm-2 col-form-label">نام کاربری</label>
           <div class="col-sm-7">
-            <input class="form-control" id="res_username" aria-describedby="emailHelp"
+            <input type="text" class="form-control" id="res_username" name="res_username" aria-describedby="emailHelp"
                    placeholder="username" dir="ltr">
           </div>
         </div>
         <div class="form-group row">
           <div class="col-sm-2"><label for="exampleFormControlTextarea1">پیغام مربوطه</label></div>
-          <div class="col-sm-7"><textarea class="form-control" id="restrict_message" rows="3"
+          <div class="col-sm-7"><textarea class="form-control" id="restrict_message" name="restrict_message" rows="3"
                                           placeholder="پیام مورد نظر برای ارسال به کاربر خاطی را اینجا وارد کنید"></textarea>
           </div>
 
@@ -54,8 +54,8 @@
 
   </div>
 
-{#  <h1>با موفقیت انجام شد</h1>\n\n" +#}
-{#          "  <button type="submit" class="btn btn-primary" onclick="turnBack()">بازگشت</button>#}
+  {#  <h1>با موفقیت انجام شد</h1>\n\n" +#}
+  {#          "  <button type="submit" class="btn btn-primary" onclick="turnBack()">بازگشت</button>#}
 
   <script>
       var regular = "<form>\n" +
@@ -92,14 +92,16 @@
 
       {#document.onload = function () {#}
       {#    document.getElementById("page-content").innerHTML = regular;#}
-      {#};#}
+      {
+          #};
+          #}
 
-      function restrictionDone() {
-          document.getElementById("page-content").innerHTML = done;
-      }
+          function restrictionDone() {
+              document.getElementById("page-content").innerHTML = done;
+          }
 
-      function turnBack() {
-          document.getElementById("page-content").innerHTML = regular;
-      }
+          function turnBack() {
+              document.getElementById("page-content").innerHTML = regular;
+          }
   </script>
 {% endblock content %}
