@@ -8,5 +8,5 @@ class SystemCredit(models.Model):
     rial_credit = models.IntegerField(default=0)
 
 
-class AdminHistoryOfActivities(models.Model):
+class HistoryOfAdminActivities(models.Model):
     description = models.CharField(max_length=256)

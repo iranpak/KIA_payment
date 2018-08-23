@@ -3,7 +3,11 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User
 from KIA_auth.models import Profile
 from .models import SystemCredit
+from .models import HistoryOfAdminActivities
 from django.template import loader
+
+access_denied_template = loader.get_template('KIA_general/access_denied.html')
+not_authorized_template = loader.get_template('KIA_general/not_authorized.html')
 
 
 def restrict_user(request):
@@ -20,15 +24,9 @@ def restrict_user(request):
             # return HttpResponse("user restricted")
 
         else:
-            context = {}
-            template = loader.get_template('KIA_general/access_denied.html')
-            return HttpResponse(template.render(context, request))
-            # return HttpResponse("Access Denied")
+            return render(request, access_denied_template)
     else:
-        context = {}
-        template = loader.get_template('KIA_general/not_authorized.html')
-        return HttpResponse(template.render(context, request))
-        # return HttpResponse("not authorized")
+        return render(request, not_authorized_template)
 
 
 def remove_user_restriction(request):
@@ -42,17 +40,10 @@ def remove_user_restriction(request):
             context = {}
             template = loader.get_template('KIA_admin/remove_restriction.html')
             return HttpResponse(template.render(context, request))
-            # return HttpResponse("user restriction removed")
         else:
-            context = {}
-            template = loader.get_template('KIA_general/access_denied.html')
-            return HttpResponse(template.render(context, request))
-            # return HttpResponse("Access Denied")
+            return render(request, access_denied_template)
     else:
-        context = {}
-        template = loader.get_template('KIA_general/not_authorized.html')
-        return HttpResponse(template.render(context, request))
-        # return HttpResponse("not authorized")
+        return render(request, not_authorized_template)
 
 
 def panel(request):
@@ -77,9 +68,6 @@ def users_activities(request):
          'date': '5.3.2018'},
     ]
     return render(request, 'KIA_admin/users_activities.html', {'acts': acts})
-    # context = {}
-    # template = loader.get_template('KIA_admin/users_activities.html')
-    # return HttpResponse(template.render(context, request))
 
 
 def employees_activities(request):
@@ -89,9 +77,17 @@ def employees_activities(request):
 
 
 def my_history(request):
-    context = {}
     template = loader.get_template('KIA_admin/my_history.html')
-    return HttpResponse(template.render(context, request))
+    user = request.user
+    if user.is_authenticated:
+        user_profile = Profile.objects.get(user=user)
+        if user_profile.role == 'Admin':
+            actions = HistoryOfAdminActivities.objects.all()
+            return render(request, template, {'actions': actions})
+        else:
+            return render(request, access_denied_template)
+    else:
+        return render(request, not_authorized_template)
 
 
 def financial_account_details(request):
@@ -114,13 +110,9 @@ def add_system_credit(request):
                 system_credit.rial_credit += increasing_credit
                 system_credit.save()
         else:
-            context = {}
-            template = loader.get_template('KIA_general/access_denied.html')
-            return HttpResponse(template.render(context, request))
+            return render(request, access_denied_template)
     else:
-        context = {}
-        template = loader.get_template('KIA_general/not_authorized.html')
-        return HttpResponse(template.render(context, request))
+        return render(request, not_authorized_template)
 
 
 def add_transaction(request):
