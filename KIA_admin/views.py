@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from KIA_auth.models import Profile
+from .models import SystemCredit
 from django.template import loader
 
 
@@ -100,9 +101,26 @@ def financial_account_details(request):
 
 
 def add_system_credit(request):
-    context = {}
-    template = loader.get_template('KIA_admin/add_system_credit.html')
-    return HttpResponse(template.render(context, request))
+    user = request.user
+    if user.is_authenticated:
+        user_profile = Profile.objects.get(user=user)
+        if user_profile.role == 'Admin':
+            if request.method == 'GET':
+                # TODO: show field for restricting user
+                return HttpResponse("TODO")
+            elif request.method == 'POST':
+                increasing_credit = request.POST.get("added_credit")
+                system_credit = SystemCredit.objects.get(owner='system')
+                system_credit.rial_credit += increasing_credit
+                system_credit.save()
+        else:
+            context = {}
+            template = loader.get_template('KIA_general/access_denied.html')
+            return HttpResponse(template.render(context, request))
+    else:
+        context = {}
+        template = loader.get_template('KIA_general/not_authorized.html')
+        return HttpResponse(template.render(context, request))
 
 
 def add_transaction(request):
