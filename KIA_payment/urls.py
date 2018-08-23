@@ -40,6 +40,7 @@ urlpatterns = [
     path('service_info/', KIA_gen_views.service_info, name='service_info'),
     path('purchase/', KIA_gen_views.purchase, name='purchase'),
     path('currency_rates/', KIA_gen_views.currency_rates, name='currency_rates'),
+    path('FAQ/', KIA_gen_views.faq, name='faq'),
     # admin
     # panels
 

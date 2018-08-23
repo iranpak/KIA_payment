@@ -1,0 +1,67 @@
+{% extends "master.html" %}
+
+{% block content %}
+  <div class="container" align="right">
+
+    <!-- Page Heading/Breadcrumbs -->
+    <h1 class="mt-4 mb-3">پرسش‌های
+      <small>متداول</small>
+    </h1>
+
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="/">Home</a>
+      </li>
+      <li class="breadcrumb-item active">سوالات متداول</li>
+    </ol>
+
+    <div class="mb-4" id="accordion" role="tablist" aria-multiselectable="true" align="right">
+      <div class="card">
+        <div class="card-header" role="tab" id="headingOne">
+          <h5 class="mb-0">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true"
+               aria-controls="collapseOne">آیا پولم را می‌دزدید؟</a>
+          </h5>
+        </div>
+
+        <div id="collapseOne" class="collapse show" role="tabpanel" aria-labelledby="headingOne">
+          <div class="card-body">
+            نه. تیم ما بسیار حرفه‌ای بوده و این کار را انجام نمی‌دهد.
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" role="tab" id="headingTwo">
+          <h5 class="mb-0">
+            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"
+               aria-expanded="false" aria-controls="collapseTwo">مراحل خرید چه طور است؟
+            </a>
+          </h5>
+        </div>
+        <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo">
+          <div class="card-body">
+            بسیار ساده و راحت است.
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" role="tab" id="headingThree">
+          <h5 class="mb-0">
+            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree"
+               aria-expanded="false" aria-controls="collapseThree">چه طور می‌توانم به شما اعتماد کنم؟</a>
+          </h5>
+        </div>
+        <div id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="headingThree">
+          <div class="card-body">
+            متاسفانه نمی‌توانید.
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+  </div>
+{% endblock content %}

@@ -40,6 +40,11 @@ def user_restricted(request):
     template = loader.get_template('KIA_general/user_restricted.html')
     return HttpResponse(template.render(context, request))
 
+def faq(request):
+    context = {}
+    template = loader.get_template('KIA_general/FAQ.html')
+    return HttpResponse(template.render(context, request))
+
 
 def services(request):
     ss = [
