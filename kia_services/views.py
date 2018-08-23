@@ -31,7 +31,8 @@ def services(request, name):
 
     if request.method == "GET":
         form = KIAServiceForm(service)
-        return render(request, 'kia_services/service.html', {'form': form, 'authenticated': authenticated})
+        return render(request, 'kia_services/service.html',
+                      {'form': form, 'authenticated': authenticated, 'label': service.label})
 
     elif request.method == "POST":
         form = KIAServiceForm(service, request.POST)
@@ -157,6 +158,8 @@ class AdminServiceListView(ListView):
     queryset = KIAService.objects.all()
     template_name = 'kia_services/admin_service_list.html'
     context_object_name = 'services'
+
+
 def increase_balance(request):
     user = request.user
     if user.is_authenticated:
@@ -190,5 +193,3 @@ def settle_part_of_balance_to_account_number(request):
 
     else:
         return HttpResponse("not authorized")
-
-

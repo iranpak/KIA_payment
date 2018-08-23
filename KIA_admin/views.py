@@ -77,7 +77,7 @@ def employees_activities(request):
 
 
 def my_history(request):
-    template = loader.get_template('KIA_admin/my_history.html')
+    template = 'KIA_admin/my_history.html'
     user = request.user
     if user.is_authenticated:
         user_profile = Profile.objects.get(user=user)
@@ -98,12 +98,14 @@ def financial_account_details(request):
 
 def add_system_credit(request):
     user = request.user
+    template = 'KIA_admin/add_system_credit.html'
+
     if user.is_authenticated:
         user_profile = Profile.objects.get(user=user)
         if user_profile.role == 'Admin':
             if request.method == 'GET':
                 # TODO: show field for restricting user
-                return HttpResponse("TODO")
+                return render(request, template)
             elif request.method == 'POST':
                 increasing_credit = request.POST.get("added_credit")
                 system_credit = SystemCredit.objects.get(owner='system')
