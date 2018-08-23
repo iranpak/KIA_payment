@@ -77,6 +77,10 @@ def get_form_field(service_field):
             return forms.MultipleChoiceField(label=service_field.label, choices=choices, required=True)
 
 
+def date_handler(obj):
+    return obj.isoformat() if hasattr(obj, 'isoformat') else obj
+
+
 class KIAServiceForm(forms.Form):
     def __init__(self, service, *args, **kwargs):
         super(KIAServiceForm, self).__init__(*args, **kwargs)
@@ -86,7 +90,7 @@ class KIAServiceForm(forms.Form):
 
     def get_json_data(self):
         data = self.cleaned_data
-        json_string = json.dumps(data)
+        json_string = json.dumps(data, default=date_handler)
         return json_string
 
 
@@ -113,4 +117,3 @@ class KIAServiceFieldCreationForm(forms.ModelForm):
             'optional': 'اختیاری بودن یا نبودن فیلد',
             'args': 'گزینه‌های فیلد',
         }
-

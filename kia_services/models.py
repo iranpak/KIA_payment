@@ -5,6 +5,7 @@ from jsonfield import JSONField
 
 
 # Create your models here.
+from KIA_auth.models import Profile
 
 
 class KIAService(models.Model):
@@ -65,10 +66,11 @@ class KIATransaction(models.Model):
         (failed, "Failed")
     )
 
-    service_name = models.CharField(max_length=100)
+    service = models.ForeignKey(KIAService, on_delete=models.SET_NULL, null=True)
     # TODO: remove null=True from next field after passing login info in view
-    username = models.CharField(max_length=100)
+    user = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True)
     state = models.IntegerField(choices=STATE_CHOICES)
+    assigned_emp = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True)
     data = JSONField()
 
     def initialize(self, service_name):
