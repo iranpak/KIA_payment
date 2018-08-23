@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'kia_services',
-    'KIA_auth'
+    'KIA_auth',
+    'KIA_admin'
 ]
 
 MIDDLEWARE = [
