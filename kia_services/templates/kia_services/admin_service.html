@@ -2,9 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>$Title$</title>
+    <title>Title</title>
 </head>
 <body>
-$END$
+     <form action="" method="post" novalidate>
+        <table>
+            {{ form.as_table }}
+        </table>
+        {% csrf_token %}
+        <input type="submit" name="delete" value="حذف سرویس">
+        <input type="submit" name="augment" value="افزودن فیلد به سرویس">
+        <input type="submit" name="exclude" value="حذف فیلد از سرویس">
+    </form>
 </body>
 </html>

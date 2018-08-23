@@ -2,9 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>$Title$</title>
+    <title>service list</title>
 </head>
 <body>
-$END$
+    <h1>همه‌ی سرویسا!</h1>
+     {% if services %}
+      <ul>
+        {% for service in services %}
+          <li>
+            <a href="{{ service.name }}">{{ service.label }}</a>)
+          </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+        <p>خدمت نداریم :(</p>
+      {% endif %}
 </body>
 </html>

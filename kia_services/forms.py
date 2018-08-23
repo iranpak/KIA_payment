@@ -2,7 +2,7 @@ import json
 
 from django import forms
 
-from kia_services.models import KIAServiceField
+from kia_services.models import KIAServiceField, KIAService
 
 
 def get_form_field(service_field):
@@ -89,4 +89,28 @@ class KIAServiceForm(forms.Form):
         json_string = json.dumps(data)
         return json_string
 
-# TODO: adding form and template for creating services
+
+class KIAServiceCreationForm(forms.ModelForm):
+    class Meta:
+        model = KIAService
+        fields = ('name', 'label', 'details', 'image_url')
+        labels = {
+            'name': 'نام انگلیسی خدمت',
+            'label': 'نام فارسی خدمت',
+            'details': 'توضیحات خدمت',
+            'image_url': 'آدرس عکس خدمت',
+        }
+
+
+class KIAServiceFieldCreationForm(forms.ModelForm):
+    class Meta:
+        model = KIAServiceField
+        fields = ('name', 'label', 'type', 'optional', 'args')
+        labels = {
+            'name': 'نام انگلیسی فیلد',
+            'label': 'نام فارسی فیلد(برای نمایش به کاربر)',
+            'type': 'نوع فیلد',
+            'optional': 'اختیاری بودن یا نبودن فیلد',
+            'args': 'گزینه‌های فیلد',
+        }
+

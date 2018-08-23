@@ -9,6 +9,7 @@ from jsonfield import JSONField
 
 class KIAService(models.Model):
     name = models.CharField(max_length=100)
+    label = models.CharField(max_length=100, null=True)
     # TODO: let user insert html for details
     details = models.TextField()
     image_url = models.URLField(null=True)
@@ -29,16 +30,16 @@ class KIAServiceField(models.Model):
     integer_field = 13
     multiple_choice_field = 14
     TYPE_CHOICES = (
-        (boolean_field, "BooleanField"),
-        (char_field, "CharField"),
-        (choice_field, "CharField"),
-        (date_field, "DateField"),
-        (date_time_field, "DateTimeField"),
-        (decimal_field, "DecimalField"),
-        (email_field, "EmailField"),
-        (file_field, "FileField"),
-        (integer_field, "IntegerField"),
-        (multiple_choice_field, "MultipleChoiceField"),
+        (boolean_field, "فیلد صحیح و غلط"),
+        (char_field, "فیلد متنی"),
+        (choice_field, "فیلد انتخاب یک گزینه"),
+        (date_field, "فیلد تاریخ"),
+        (date_time_field, "فیلد تاریخ و زمان"),
+        (decimal_field, "فیلد عدد اعشاری"),
+        (email_field, "فیلد ایمیل"),
+        (file_field, "فیلد فایل"),
+        (integer_field, "فیلد عدد صحیح"),
+        (multiple_choice_field, "فیلد انتخاب چند گزینه"),
     )
 
     service = models.ForeignKey(KIAService, on_delete=models.SET_NULL, null=True)
@@ -66,7 +67,7 @@ class KIATransaction(models.Model):
 
     service_name = models.CharField(max_length=100)
     # TODO: remove null=True from next field after passing login info in view
-    username = models.CharField(max_length=100, null=True)
+    username = models.CharField(max_length=100)
     state = models.IntegerField(choices=STATE_CHOICES)
     data = JSONField()
 

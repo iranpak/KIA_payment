@@ -32,6 +32,10 @@ urlpatterns = [
     path('admin/panel', test_app_views.admin_panel, name='admin_panel'),
     path('admin/restrict_user', test_app_views.admin_restrict_user, name='admin_restrict_user'),
     path('add_transaction/', test_app_views.add_transaction, name='add_transaction'),
+    # TODO: must be here or in services?
+    path('admin/services/', kia_services_views.AdminServiceListDispatchView.as_view(), name='admin_service_list'),
+    path('admin/services/<str:name>', kia_services_views.admin_service, name='admin_service'),
+    path('admin/services/<str:name>/fields', kia_services_views.admin_service_fields, name='admin_service_fields'),
     # auth
     path('login/', auth_views.login, {'template_name': 'KIA_auth/login.html'}, name='login'),
     path('logout/', auth_views.logout, {'template_name': 'KIA_auth/logout.html'}, name='logout'),
@@ -55,4 +59,7 @@ urlpatterns = [
     path('homepage/', test_app_views.homepage, name='homepage'),
     # kia_services
     path('services/<str:name>/', kia_services_views.services, name='services'),
+    path('create_service/', kia_services_views.create_service, name='service_creation'),
+    path('create_service/<str:name>/', kia_services_views.create_service_cont, name='create_service_cont'),
+    path('services/', kia_services_views.ServiceListView.as_view(), name='service_list')
 ]
