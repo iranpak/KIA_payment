@@ -26,9 +26,7 @@ from KIA_admin import views as KIA_admin_views
 
 urlpatterns = [
     path('', KIA_auth_views.redirect_to_home, name='home'),
-    # path('', auth_views.auth_login, {'template_name': 'KIA_auth/home.html'}, name='home'),
     path('accounts/profile/', RedirectView.as_view(pattern_name='home')),
-    # path('contact_us/', test_app_views.contact_us, name='contact_us'),
     # general
     path('contact_us/', KIA_gen_views.contact_us, name='contact_us'),
     path('about/', KIA_gen_views.about, name='about'),
@@ -36,7 +34,7 @@ urlpatterns = [
     path('not_authorized/', KIA_gen_views.not_authorized, name='not_authorized'),
     path('access_denied/', KIA_gen_views.access_denied, name='access_denied'),
     path('user_restricted/', KIA_gen_views.user_restricted, name='user_restricted'),
-    # path('services/', KIA_gen_views.services, name='services'),
+    path('services/', KIA_gen_views.services, name='services'),
     path('service_info/', KIA_gen_views.service_info, name='service_info'),
     path('purchase/', KIA_gen_views.purchase, name='purchase'),
     path('currency_rates/', KIA_gen_views.currency_rates, name='currency_rates'),
@@ -47,7 +45,6 @@ urlpatterns = [
     path('add_feature/', test_app_views.add_feature, name='add_feature'),
     path('currency_exchange/', test_app_views.currency_exchange, name='currency_exchange'),
     # admin
-    # path('admin/panel', test_app_views.admin_panel, name='admin_panel'),
     path('admin/panel', KIA_admin_views.panel, name='admin_panel'),
     path('admin/users_activities', KIA_admin_views.users_activities, name='users_activities'),
     path('admin/employees_activities', KIA_admin_views.employees_activities, name='employees_activities'),
@@ -55,11 +52,11 @@ urlpatterns = [
     path('admin/financial_account_details', KIA_admin_views.financial_account_details,
          name='financial_account_details'),
     path('admin/add_system_credit', KIA_admin_views.add_system_credit, name='add_system_credit'),
-    # path('admin/restrict_user', test_app_views.admin_restrict_user, name='admin_restrict_user'),
     path('admin/restrict_user', KIA_admin_views.restrict_user, name='restrict_user'),
     path('admin/remove_user_restriction', KIA_admin_views.remove_user_restriction, name='remove_user_restriction'),
-    # path('add_transaction/', test_app_views.add_transaction, name='add_transaction'),
     path('admin/add_transaction/', KIA_admin_views.add_transaction, name='add_transaction'),
+    path('admin/add_user', KIA_admin_views.add_user, name='add_user'),
+    path('admin/show_system_transactions', KIA_admin_views.show_system_transactions, name='show_system_transactions'),
 
     path('admin/panel', test_app_views.admin_panel, name='admin_panel'),
     path('admin/restrict_user', test_app_views.admin_restrict_user, name='admin_restrict_user'),

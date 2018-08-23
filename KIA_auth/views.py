@@ -41,7 +41,6 @@ def sign_up(request):
             return redirect('home')
         else:
             return render(request, 'KIA_auth/signup_error.html', {'errors': form.errors})
-            # return HttpResponse(str(form.errors))
     elif request.method == 'GET':
         form = SignUpForm()
         return render(request, 'KIA_auth/signup.html', {'form': form})
@@ -69,7 +68,7 @@ def redirect_to_home(request):
 def send_registration_email(email_address):
     subject = 'ثبت‌نام در سامانه KIA_payment'
     message_body = 'شما در سامانه KIA_payment ثبت‌نام کرده‌اید. برای فعالسازی حساب خود روی لینک زیر کلیک کنید.\n www.sample_link.com'
-    sender_address = 'mh.iranpak1997@gmail.com'
+    sender_address = 'kiapayment2018@gmail.com'
     receiver_addresses = [email_address]
     send_mail(subject, message_body, sender_address, receiver_addresses)
 

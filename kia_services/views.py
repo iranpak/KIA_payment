@@ -1,5 +1,8 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
+from kia_services.forms import KIAServiceForm
+from kia_services.models import KIAService, KIATransaction
+from KIA_auth.models import Profile
 from kia_services.forms import KIAServiceForm
 from django.views.generic.list import ListView, View
 
@@ -193,3 +196,5 @@ def settle_part_of_balance_to_account_number(request):
 
     else:
         return HttpResponse("not authorized")
+
+

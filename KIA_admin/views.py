@@ -4,7 +4,12 @@ from django.contrib.auth.models import User
 from KIA_auth.models import Profile
 from .models import SystemCredit
 from .models import HistoryOfAdminActivities
+from .models import SystemTransactions
 from django.template import loader
+from django.contrib.auth import hashers
+from django.core.mail import send_mail
+from KIA_auth.forms import AdminCreateUserForm
+from django.shortcuts import redirect
 
 access_denied_template = 'KIA_general/access_denied.html'
 not_authorized_template = 'KIA_general/not_authorized.html'
@@ -123,3 +128,61 @@ def add_transaction(request):
     return HttpResponse(template.render(context, request))
 
 
+def add_user(request):
+    user = request.user
+    if user.is_authenticated:
+        user_profile = Profile.objects.get(user=user)
+        if user_profile.role == 'Admin':
+            if request.method == 'GET':
+                form = AdminCreateUserForm()
+                return render(request, 'KIA_admin/add_user.html', {'form': form})
+            elif request.method == 'POST':
+                if request.method == 'POST':
+                    form = AdminCreateUserForm(request.POST)
+                    form_data = form.data
+                    print(form_data)
+                    if form.is_valid() and form_data['password1'] == form_data['password2']:
+                        cleaned_data = form.cleaned_data
+                        print(cleaned_data)
+                        username = cleaned_data.get('username')
+                        password = cleaned_data.get('password1')
+                        hashed_password = hashers.make_password(password)
+                        user = User.objects.create(username=username, password=hashed_password)
+                        user.first_name = cleaned_data.get('first_name')
+                        user.last_name = cleaned_data.get('last_name')
+                        user.email = cleaned_data.get('email')
+                        user.save()
+                        account_number = cleaned_data.get('account_number')
+                        phone_number = cleaned_data.get('phone_number')
+                        role = cleaned_data.get('role')
+                        profile = Profile.objects.create(user=user, phone_number=phone_number,
+                                                         account_number=account_number, role=role)
+                        profile.save()
+                        send_registration_email(user.email, username, password, role)
+                        return redirect('admin_panel')
+        else:
+            return render(request, access_denied_template)
+    else:
+        return render(request, not_authorized_template)
+
+
+def send_registration_email(email_address, username, password, role):
+    subject = 'ثبت‌نام در سامانه KIA_payment'
+    message_body = ('برای شما در سامانه KIA_payment یک حساب کاربری ساخته شده است. برای فعالسازی حساب خود روی لینک زیر کلیک کنید.\n www.sample_link.com\n نقش شما: %s \n نام کاربری: %s \n رمز عبور: %s \n' %(role, username, password))
+    sender_address = 'kiapayment2018@gmail.com'
+    receiver_addresses = [email_address]
+    send_mail(subject, message_body, sender_address, receiver_addresses)
+
+
+def show_system_transactions(request):
+    template = 'KIA_admin/show_system_transactions.html'
+    user = request.user
+    if user.is_authenticated:
+        user_profile = Profile.objects.get(user=user)
+        if user_profile.role == 'Admin':
+            transactions = SystemTransactions.objects.all()
+            return render(request, template, {'transactions': transactions})
+        else:
+            return render(request, access_denied_template)
+    else:
+        return render(request, not_authorized_template)
