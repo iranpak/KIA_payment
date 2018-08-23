@@ -55,6 +55,7 @@ urlpatterns = [
     path('admin/remove_user_restriction', KIA_admin_views.remove_user_restriction, name='remove_user_restriction'),
     path('admin/add_transaction/', KIA_admin_views.add_transaction, name='add_transaction'),
     path('admin/add_user', KIA_admin_views.add_user, name='add_user'),
+    path('admin/show_system_transactions', KIA_admin_views.show_system_transactions, name='show_system_transactions'),
 
     # auth
     path('login/', auth_views.login, {'template_name': 'KIA_auth/login.html'}, name='login'),

@@ -10,3 +10,7 @@ class SystemCredit(models.Model):
 
 class HistoryOfAdminActivities(models.Model):
     description = models.CharField(max_length=256)
+
+
+class SystemTransactions(models.Model):
+    description = models.CharField(max_length=256)

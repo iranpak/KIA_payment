@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from KIA_auth.models import Profile
 from .models import SystemCredit
 from .models import HistoryOfAdminActivities
+from .models import SystemTransactions
 from django.template import loader
 from django.contrib.auth import hashers
 from django.core.mail import send_mail
@@ -82,7 +83,7 @@ def employees_activities(request):
 
 
 def my_history(request):
-    template = loader.get_template('KIA_admin/my_history.html')
+    template = 'KIA_admin/my_history.html'
     user = request.user
     if user.is_authenticated:
         user_profile = Profile.objects.get(user=user)
@@ -171,3 +172,16 @@ def send_registration_email(email_address, username, password, role):
     receiver_addresses = [email_address]
     send_mail(subject, message_body, sender_address, receiver_addresses)
 
+
+def show_system_transactions(request):
+    template = 'KIA_admin/show_system_transactions.html'
+    user = request.user
+    if user.is_authenticated:
+        user_profile = Profile.objects.get(user=user)
+        if user_profile.role == 'Admin':
+            transactions = SystemTransactions.objects.all()
+            return render(request, template, {'transactions': transactions})
+        else:
+            return render(request, access_denied_template)
+    else:
+        return render(request, not_authorized_template)
