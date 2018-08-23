@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>service list</title>
+</head>
+<body>
+    <h1>سرویس‌های موجود در سایت</h1>
+     {% if services %}
+      <ul>
+        {% for service in services %}
+          <li>
+            <a href="{{ service.name }}">{{ service.label }}</a>)
+          </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+        <p>خدمت نداریم :(</p>
+      {% endif %}
+</body>
+</html>

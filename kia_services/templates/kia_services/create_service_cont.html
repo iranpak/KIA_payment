@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!-- این‌جا لازمه یه توضیحاتی بدیم درباره نحوه پر کردن فرم، به خصوص اون بخش ولیوها
+-->
+    <form action="" method="post" novalidate>
+        <table>
+            {{ form.as_table }}
+        </table>
+        {% csrf_token %}
+        <input type="submit" name="cont" value="ادامه ساخت خدمت">
+        <input type="submit" name="finish" value="پایان ساخت خدمت">
+    </form>
+</body>
+</html>
