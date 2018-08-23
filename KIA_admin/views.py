@@ -6,8 +6,8 @@ from .models import SystemCredit
 from .models import HistoryOfAdminActivities
 from django.template import loader
 
-access_denied_template = loader.get_template('KIA_general/access_denied.html')
-not_authorized_template = loader.get_template('KIA_general/not_authorized.html')
+access_denied_template = 'KIA_general/access_denied.html'
+not_authorized_template = 'KIA_general/not_authorized.html'
 
 
 def restrict_user(request):
