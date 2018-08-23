@@ -28,14 +28,15 @@
         <div class="form-group row">
           <label for="staticEmail" class="col-sm-2 col-form-label">اعتبار فعلی</label>
           <div class="col-sm-7">
-            <input type="text" readonly class="form-control-plaintext" id="old_credit" value={{ 0 }}>
+            <input type="number" readonly class="form-control-plaintext" id="old_credit" value={{ 0 }}>
           </div>
         </div>
 
         <div class="form-group row">
           <label for="inputPassword" class="col-sm-2 col-form-label">اعتبار اضافه (تومان)</label>
           <div class="col-sm-7">
-            <input type="number" min="0" step="1000" class="form-control" id="added_credit" placeholder="0" dir="ltr"
+            <input type="number" min="0" step="1000" class="form-control" id="added_credit" name="added_credit"
+                   placeholder="0" dir="ltr"
                    onchange="calcSum(); msgTest()">
           </div>
         </div>
@@ -43,7 +44,8 @@
         <div class="form-group row">
           <label for="staticEmail" class="col-sm-2 col-form-label" id="test_label">اعتبار حاصل</label>
           <div class="col-sm-7">
-            <input type="text" readonly class="form-control-plaintext" id="final_credit" value={{ 0 }}>
+            <input type="text" readonly class="form-control-plaintext" id="final_credit" name="final_credit"
+                   value={{ 0 }}>
           </div>
         </div>
 
@@ -65,11 +67,13 @@
 
       function msgTest() {
           if (parseInt(document.getElementById("added_credit").value) > 10000)
-              alert("دمت گرم چه قدر اعتبار خریدی");
+              swal("دمت گرم چه قدر اعتبار خریدی", "کارت درسته", "success").then((value => {
+                  swal("عجب", "چرا بستی؟", "warning")
+              }));
       }
 
-      window.onload = function() {
-          document.getElementById("test_label").onclick = function() {
+      window.onload = function () {
+          document.getElementById("test_label").onclick = function () {
               alert("wow");
           };
       }

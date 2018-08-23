@@ -3,11 +3,11 @@
 {% block content %}
   <div class="container p-5" dir="rtl">
     <div class="row justify-content-center">
-      <div class="col-md-8">
+      <div class="col-md-8" align="center">
         <div class="card" style="background: #E0E0E0; height: 240px; width: 500px;">
           <div class="card-header text-right">برای ورود به سامانه لطفا وارد شوید</div>
 
-          <div class="card-body">
+          <div class="card-body" align="center">
             <form method="POST">
               {% csrf_token %}
               {#                            @include('Admin.section.errors')#}

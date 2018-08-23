@@ -35,7 +35,8 @@
         <div class="form-group row">
           <label for="inputPassword" class="col-sm-2 col-form-label">اعتبار برداشتی (تومان)</label>
           <div class="col-sm-7">
-            <input type="number" min="0" step="1000" class="form-control" id="sub_credit" placeholder="0" dir="ltr"
+            <input type="number" min="0" step="1000" class="form-control" id="sub_credit" name="sub_credit"
+                   placeholder="0" dir="ltr"
                    onchange="calcDiff(); checkNotNeg()">
           </div>
         </div>
@@ -43,7 +44,8 @@
         <div class="form-group row">
           <label for="staticEmail" class="col-sm-2 col-form-label" id="test_label">اعتبار حاصل</label>
           <div class="col-sm-7">
-            <input type="text" readonly class="form-control-plaintext" id="final_credit" value={{ 10000 }}>
+            <input type="text" readonly class="form-control-plaintext" id="final_credit" name="final_credit"
+                   value={{ 10000 }}>
           </div>
         </div>
 
