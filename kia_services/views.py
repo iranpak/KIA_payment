@@ -1,4 +1,6 @@
-from django.http import HttpResponse
+import json
+
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from kia_services.forms import KIAServiceForm
 from kia_services.models import KIAService, KIATransaction
@@ -23,6 +25,17 @@ def is_user_admin(request):
     return False
 
 
+def is_user_emp(request):
+    if request.user.is_authenticated:
+        user = request.user
+        user_profile = Profile.objects.get(user=user)
+        role = user_profile.role
+        if role == 'user':  # TODO: change to employee
+            return True
+        return False
+    return False
+
+
 def services(request, name):
     service = get_object_or_404(KIAService, name=name)
 
@@ -42,7 +55,7 @@ def services(request, name):
         if form.is_valid():
             transaction = KIATransaction()
             transaction.initialize(service.name)
-
+            transaction.username = username
             transaction.data = form.get_json_data()
             transaction.save()
             return HttpResponse("Transaction saved")  # TODO: return a proper response
@@ -198,3 +211,22 @@ def settle_part_of_balance_to_account_number(request):
         return HttpResponse("not authorized")
 
 
+
+
+class EmpTransactionListView(ListView):
+    model = KIATransaction
+    queryset = KIATransaction.objects.filter(state=KIATransaction.registered)
+    template_name = 'kia_services/emp_transaction_list.html'
+    context_object_name = 'transactions'
+
+
+def emp_transaction(request, index):
+    if not is_user_emp(request):
+        return HttpResponse("Forbidden")
+
+    transaction = get_object_or_404(KIATransaction, id=index)
+    decoded_data = json.loads(transaction.data)
+
+    if request.method == "GET":
+        return render(request, 'kia_services/emp_transaction.html'
+                      , {'transaction': transaction, 'data': decoded_data})

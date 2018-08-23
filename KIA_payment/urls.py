@@ -89,7 +89,11 @@ urlpatterns = [
     path('anonymous_money/', test_app_views.anonymous_money, name='anonymous_money'),
     # employee
     path('all_transactions/', test_app_views.all_transactions, name='all_transactions'),
+    # TODO converted to:
+    path('emp/transactions/', kia_services_views.EmpTransactionListView.as_view(), name='emp_transactions'),
     path('all_transactions/1234', test_app_views.sample_transaction, name='sample_transaction'),
+    # TODO converted to:
+    path('emp/transactions/<int:index>/', kia_services_views.emp_transaction, name='emp_transaction'),
     path('send_email/', test_app_views.send_email, name='send_email'),
     # homepage
     path('homepage/', test_app_views.homepage, name='homepage'),

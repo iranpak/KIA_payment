@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Transaction</title>
+</head>
+<body>
+    <ul>
+        <li>نام خدمت: {{ transaction.service.name }}</li>
+        <li>نام کاربر: {{ transaction.user.username }}</li>
+        <li>وضعیت درخواست: {{ transaction.state }}</li>
+        <li>اطلاعات درخواست:
+            {% for key, values in data.items %}
+                <ul>
+                    <li>{{ key }} : {{ values }}</li>
+                </ul>
+            {% endfor %}
+        </li>
+    </ul>
+    <form action="" method="post" novalidate>
+        {% csrf_token %}
+        <input type="submit" name="cont" value="انجام خدمت">
+        <input type="submit" name="finish" value="پایان ساخت خدمت">
+    </form>
+</body>
+</html>

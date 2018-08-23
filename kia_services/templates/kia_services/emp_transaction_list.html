@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>همه‌ی درخواستا!</h1>
+     {% if transactions %}
+      <ul>
+        {% for transaction in transactions %}
+          <li>
+            <a href="{{ transaction.id }}">{{ transaction.service_name }}</a>)
+          </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+        <p>خدمت درخواستی ثبت نشده :(</p>
+      {% endif %}
+</body>
+</html>
