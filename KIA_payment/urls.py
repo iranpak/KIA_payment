@@ -21,12 +21,20 @@ from test_app import views as test_app_views
 from kia_services import views as kia_services_views
 from django.contrib.auth import views as auth_views
 from KIA_auth import views as KIA_auth_views
+from KIA_general import views as KIA_gen_views
+from KIA_panel import views as KIA_panel_views
 
 urlpatterns = [
     path('', auth_views.login, {'template_name': 'KIA_auth/home.html'}, name='home'),
+    # path('', auth_views.auth_login, {'template_name': 'KIA_auth/home.html'}, name='home'),
     path('accounts/profile/', RedirectView.as_view(pattern_name='home')),
-    path('contact_us/', test_app_views.contact_us, name='contact_us'),
+    # path('contact_us/', test_app_views.contact_us, name='contact_us'),
+    path('contact_us/', KIA_gen_views.contact_us, name='contact_us'),
+    path('about/', KIA_gen_views.about, name='about'),
     # admin
+    # panels
+    path('admin_panel/', KIA_panel_views.admin_panel, name='admin_panel'),
+
     path('add_feature/', test_app_views.add_feature, name='add_feature'),
     path('currency_exchange/', test_app_views.currency_exchange, name='currency_exchange'),
     path('admin/panel', test_app_views.admin_panel, name='admin_panel'),
