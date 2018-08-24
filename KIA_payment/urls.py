@@ -77,6 +77,10 @@ urlpatterns = [
     path('all_transactions/1234', test_app_views.sample_transaction, name='sample_transaction'),
     # TODO converted to:
     path('emp/transactions/<int:index>/', kia_services_views.emp_transaction, name='emp_transaction'),
+    path('emp/taken_transactions', kia_services_views.emp_taken_transactions, name='emp_taken_transactions'),
+    path('send_email/', test_app_views.send_email, name='send_email'),
+    # homepage
+    path('homepage/', test_app_views.homepage, name='homepage'),
     # kia_services
     path('services/<str:name>/', kia_services_views.services, name='services'),
     path('create_service/', kia_services_views.create_service, name='service_creation'),

@@ -37,6 +37,7 @@
       <div class="list-group">
         <a href="/emp/panel" class="list-group-item list-group-item-action">پنل کارمند</a>
         <a href="/emp/transactions" class="list-group-item list-group-item-action active">مشاهدهٔ تمام تراکنش‌ها</a>
+        <a href="/emp/taken_transactions" class="list-group-item list-group-item-action">تراکنش‌های شما</a>
         <a href="/send_email" class="list-group-item list-group-item-action">ارسال پیام برای کاربر</a>
       </div>
     </div>
@@ -52,7 +53,7 @@
       <div class="row" align="center">
         <div class="col-2"></div>
         <div class="col-2">نام کاربر</div>
-        <div class="col-6">{{ transaction.user.username }}</div>
+        <div class="col-6">{{ transaction.user }}</div>
         <div class="col-2"></div>
       </div>
 
@@ -63,7 +64,14 @@
         <div class="col-2"></div>
       </div>
 
-      {% for key, value in date.items %}
+      <div class="row" align="center">
+        <div class="col-2"></div>
+        <div class="col-2">کارمند در حال کار</div>
+        <div class="col-6">{{ transaction.assigned_emp }}</div>
+        <div class="col-2"></div>
+      </div>
+
+      {% for key, value in data.items %}
         <div class="row" align="center">
           <div class="col-2"></div>
           <div class="col-2">{{ key }}</div>
@@ -74,8 +82,12 @@
 
       <form action="" method="post" novalidate>
         {% csrf_token %}
-        <input type="submit" name="cont" value="انجام خدمت" class="btn btn-primary">
-        <input type="submit" name="finish" value="پایان ساخت خدمت" class="btn btn-primary">
+        {% if transaction.assigned_emp == user%}
+            <input type="submit" name="finish" value="اتمام درخواست" class="btn btn-primary">
+            <input type="submit" name="report" value="گزارش مورد مشکوک" class="btn btn-primary">
+        {% elif transaction.assigned_emp == null %}
+            <input type="submit" name="take" value="انتخاب درخواست" class="btn btn-primary">
+        {% endif %}
         <button type="button" onclick="javascript:history.back()" class="btn btn-primary">
           بازگشت
         </button>
