@@ -3,6 +3,7 @@ import json
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.views.generic.list import ListView, View
+from django.contrib.auth.models import User
 
 from kia_services.forms import KIAServiceForm, KIAServiceCreationForm, KIAServiceFieldCreationForm
 from kia_services.models import KIAService, KIATransaction
@@ -35,10 +36,10 @@ def services(request, name):
     service = get_object_or_404(KIAService, name=name)
 
     authenticated = False
-    username = None
+    user = None
     if request.user.is_authenticated:
         authenticated = True
-        username = request.user.username
+        user = request.user
 
     if request.method == "GET":
         form = KIAServiceForm(service)
@@ -48,10 +49,13 @@ def services(request, name):
         form = KIAServiceForm(service, request.POST)
         if form.is_valid():
             transaction = KIATransaction()
-            transaction.initialize(service.name)
-            transaction.username = username
+            transaction.initialize(service)
+            user_profile = Profile.objects.get(user=user)
+            transaction.user = user_profile
             transaction.data = form.get_json_data()
             transaction.save()
+            transaction.assigned_emp = None
+            # TODO: send mail to user
             return HttpResponse("Transaction saved")  # TODO: return a proper response
 
 
@@ -66,13 +70,11 @@ def admin_service(request, name):
         return render(request, 'kia_services/admin_service.html', {'form': form})
 
     elif request.method == "POST":
-        field_form = KIAServiceFieldCreationForm(request.POST)
-
-        if 'delete' in field_form.data:
+        if 'delete' in request.POST:
             return service.delete()
-        elif 'augment' in field_form.data:
+        elif 'augment' in request.POST:
             return HttpResponseRedirect('/create_service/' + service.name)
-        elif 'exclude' in field_form.data:
+        elif 'exclude' in request.POST:
             return HttpResponseRedirect('fields')
 
 
@@ -184,6 +186,57 @@ def emp_transaction(request, index):
     transaction = get_object_or_404(KIATransaction, id=index)
     decoded_data = json.loads(transaction.data)
 
+    user = request.user
+    user_profile = Profile.objects.get(user=user)
+
     if request.method == "GET":
         return render(request, 'kia_services/emp_transaction.html'
-                      , {'transaction': transaction, 'data': decoded_data})
+                      , {'transaction': transaction, 'data': decoded_data, 'user': user_profile})
+
+    # TODO: decorate problem happened s
+    elif request.method == 'POST':
+        if "take" in request.POST:
+
+            if transaction.assigned_emp is None:
+                transaction.assigned_emp = user_profile
+                transaction.state = transaction.being_done
+                transaction.save()
+            else:
+                return HttpResponse("A problem happened")
+
+        elif 'finish' in request.POST:
+
+            if transaction.assigned_emp == user_profile:
+                transaction.state = transaction.done
+                transaction.save()
+                # TODO: send mail to user
+            else:
+                return HttpResponse("A problem happened")
+
+        elif 'report' in request.POST:
+
+            if transaction.assigned_emp == user_profile:
+                transaction.state = transaction.suspicious
+                transaction.save()
+            else:
+                return HttpResponse("A problem happened")
+
+        else:
+            return HttpResponse(request.POST)
+
+        return HttpResponse("Successful")
+
+
+def emp_taken_transactions(request):
+    if not is_user_emp(request):
+        return HttpResponse("Forbidden")
+
+    user = request.user
+    user_profile = Profile.objects.get(user=user)
+
+    transactions = KIATransaction.objects.filter(assigned_emp=user_profile
+                                                 , state=KIATransaction.being_done)
+
+    return render(request, 'kia_services/emp_taken_transactions.html', {'transactions': transactions})
+
+# TODO: adding view for employee finished transactions

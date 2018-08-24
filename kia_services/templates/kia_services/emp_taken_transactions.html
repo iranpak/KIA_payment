@@ -2,15 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Employee Transactions</title>
 </head>
 <body>
-<h1>همه‌ی درخواستا!</h1>
-     {% if transactions %}
+    {% if transactions %}
       <ul>
         {% for transaction in transactions %}
           <li>
-            <a href="{{ transaction.id }}">{{ transaction.service.label }}</a>)
+            <a href="transactions/{{ transaction.id }}">
+                {{ transaction.service.label }}</a>)
           </li>
         {% endfor %}
       </ul>

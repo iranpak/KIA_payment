@@ -59,22 +59,24 @@ class KIATransaction(models.Model):
     being_done = 2
     done = 3
     failed = 4
+    suspicious = 5
     STATE_CHOICES = (
         (registered, "Registered"),
         (being_done, "Being done"),
         (done, "Done"),
-        (failed, "Failed")
+        (failed, "Failed"),
+        (suspicious, "Suspicious"),
     )
 
     service = models.ForeignKey(KIAService, on_delete=models.SET_NULL, null=True)
     # TODO: remove null=True from next field after passing login info in view
-    user = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, related_name='user_transactions')
     state = models.IntegerField(choices=STATE_CHOICES)
-    assigned_emp = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True)
+    assigned_emp = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, related_name='emp_transactions')
     data = JSONField()
 
-    def initialize(self, service_name):
+    def initialize(self, service):
         self.state = self.registered
-        self.service_name = service_name
+        self.service = service
 
 

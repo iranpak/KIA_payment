@@ -7,8 +7,8 @@
 <body>
     <ul>
         <li>نام خدمت: {{ transaction.service.name }}</li>
-        <li>نام کاربر: {{ transaction.user.username }}</li>
-        <li>وضعیت درخواست: {{ transaction.state }}</li>
+        <li>نام کاربر: {{ transaction.user }}</li>
+        <li>وضعیت درخواست: {{ transaction.get_state_display }}</li>
         <li>اطلاعات درخواست:
             {% for key, values in data.items %}
                 <ul>
@@ -19,8 +19,13 @@
     </ul>
     <form action="" method="post" novalidate>
         {% csrf_token %}
-        <input type="submit" name="cont" value="انجام خدمت">
-        <input type="submit" name="finish" value="پایان ساخت خدمت">
+
+        {% if transaction.assigned_emp == user%}
+            <input type="submit" name="finish" value="اتمام درخواست">
+            <input type="submit" name="report" value="گزارش مورد مشکوک">
+        {% elif transaction.assigned_emp == null %}
+            <input type="submit" name="take" value="انتخاب درخواست">
+        {% endif %}
     </form>
 </body>
 </html>
