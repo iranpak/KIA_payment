@@ -17,7 +17,8 @@
     </div>
 
     <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
-      <form>
+      <form method="post">
+          {% csrf_token %}
         <div class="form-group row">
           <h3 class="col-sm-3">افزایش اعتبار</h3>
           <div class="col-sm-6">
@@ -28,7 +29,7 @@
         <div class="form-group row">
           <label for="staticEmail" class="col-sm-2 col-form-label">اعتبار فعلی</label>
           <div class="col-sm-7">
-            <input type="number" readonly class="form-control-plaintext" id="old_credit" value={{ 0 }}>
+            <input type="number" readonly class="form-control-plaintext" id="old_credit" value={{ current_credit }}>
           </div>
         </div>
 
@@ -45,7 +46,7 @@
           <label for="staticEmail" class="col-sm-2 col-form-label" id="test_label">اعتبار حاصل</label>
           <div class="col-sm-7">
             <input type="text" readonly class="form-control-plaintext" id="final_credit" name="final_credit"
-                   value={{ 0 }}>
+                   value={{ current_credit }}>
           </div>
         </div>
 

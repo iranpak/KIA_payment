@@ -35,3 +35,9 @@ class EditProfileForm(forms.Form):
     last_name = forms.CharField(required=True)
     account_number = forms.CharField(required=True)
     phone_number = forms.CharField(max_length=11)
+
+
+class ChangePasswordForm(forms.Form):
+    old_password = forms.CharField(required=True)
+    new_password = forms.CharField(required=True)
+    new_password_confirmation = forms.CharField(required=True)
