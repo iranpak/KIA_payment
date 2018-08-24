@@ -146,58 +146,24 @@ def change_password(request):
                 print(str(form.errors))
                 return HttpResponse(str(form.errors))
     else:
-        context = {}
-        template = loader.get_template('KIA_general/not_authorized.html')
-        return HttpResponse(template.render(context, request))
-        # return HttpResponse("not authorized")
+        return render(request, not_authorized_template)
 
 
 def add_credit(request):
-    if request.user.is_authenticated:
+    user = request.user
+    if user.is_authenticated:
+        user_profile = Profile.objects.get(user=user)
         if request.method == 'GET':
-            user = request.user
-            user_profile = Profile.objects.get(user=user)
-
-            information = {
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-                'username': user.username,
-                'email': user.email,
-                'account_number': user_profile.account_number,
-                'phone_number': user_profile.phone_number,
-            }
-
-            form = SignUpForm()
-            return render(request, 'KIA_auth/add_credit.html', {'form': form, 'information': information})
+            current_credit = user_profile.credit
+            return render(request, 'KIA_auth/add_credit.html', {'current_credit': current_credit})
 
         elif request.method == 'POST':
-            form = SignUpForm(request.POST)
-            form_data = form.data
-            print(form_data)
-            if form.is_valid() and form_data['password1'] == form_data['password2']:
-                cleaned_data = form.cleaned_data
-                print(cleaned_data)
-                username = cleaned_data.get('username')
-                password = cleaned_data.get('password1')
-                hashed_password = hashers.make_password(password)
-                user = User.objects.get(user=username)
-                user.first_name = cleaned_data.get('first_name')
-                user.last_name = cleaned_data.get('last_name')
-                user.password = hashed_password
-                user.email = cleaned_data.get('email')
-                user.save()
-                account_number = cleaned_data.get('account_number')
-                phone_number = cleaned_data.get('phone_number')
-                profile = Profile.objects.create(user=user, phone_number=phone_number, account_number=account_number)
-                profile.save()
+                increasing_credit = int(request.POST.get("added_credit"))
+                user_profile.credit += increasing_credit
+                user_profile.save()
                 return redirect('home')
-            else:
-                return HttpResponse(str(form.errors))
     else:
-        context = {}
-        template = loader.get_template('KIA_general/not_authorized.html')
-        return HttpResponse(template.render(context, request))
-        # return HttpResponse("not authorized")
+        return render(request, not_authorized_template)
 
 
 def withdraw_credit(request):
