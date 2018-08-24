@@ -1,6 +1,12 @@
-from django.shortcuts import render
+import json
+
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.template import loader
+
+from django.db.models import Q
+
+from kia_services.models import KIATransaction
 from .forms import SignUpForm
 from .forms import EditProfileForm
 from django.contrib.auth import authenticate, login
@@ -311,33 +317,37 @@ def anonymous_transfer(request):
 
 
 def transaction_history(request):
-    acts = [
-        {'type': 'TOEFL',
-         'amount': '10000',
-         'date': '29.9.2018'},
-        {'type': 'University',
-         'amount': '4624',
-         'date': '29.9.2018'},
-        {'type': 'TOEFL',
-         'amount': '435',
-         'date': '29.9.2018'},
-        {'type': 'TOEFL',
-         'amount': '234646',
-         'date': '29.9.2018'},
-        {'type': 'GRE',
-         'amount': '13423',
-         'date': '29.9.2018'},
-    ]
-    return render(request, 'KIA_auth/transaction_history.html', {'acts': acts})
+    user = None
+    if request.user.is_authenticated:
+        user = Profile.objects.get(user=request.user)
+    else:
+        return HttpResponse("Login first")
+
+    registered_transactions = KIATransaction.objects.filter(user=user, state=KIATransaction.registered)
+    being_done_transactions = KIATransaction.objects.filter(Q(user=user) &
+                                                            (Q(state=KIATransaction.being_done) | Q(
+                                                                state=KIATransaction.suspicious)))
+
+    finished_transactions = KIATransaction.objects.filter(user=user, state=KIATransaction.done)
+    return render(request, 'KIA_auth/transaction_history.html', {'registered': registered_transactions,
+                                                                 'being_done': being_done_transactions,
+                                                                 'done': finished_transactions})
 
 
+def transaction(request, index):
+    if request.user.is_authenticated:
+        user = Profile.objects.get(user=request.user)
+    else:
+        return HttpResponse("Login first")
 
+    t = get_object_or_404(KIATransaction, id=index)
+    decoded_data = json.loads(t.data)
 
+    if t.user != user:
+        return HttpResponse("Forbidden")
 
-
-
-
-
+    return render(request, 'kia_services/transaction.html'
+                  , {'transaction': t, 'data': decoded_data})
 
 
 

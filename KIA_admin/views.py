@@ -55,6 +55,12 @@ def panel(request):
     return HttpResponse(template.render(context, request))
 
 
+def activities(request):
+    context = {}
+    template = loader.get_template('KIA_admin/activities.html')
+    return HttpResponse(template.render(context, request))
+
+
 def users_activities(request):
     acts = [
         {'username': 'hello',

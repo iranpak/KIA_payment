@@ -30,8 +30,9 @@ urlpatterns = [
 
     # admin
     path('admin/panel', KIA_admin_views.panel, name='admin_panel'),
-    path('admin/users_activities', KIA_admin_views.users_activities, name='users_activities'),
-    path('admin/employees_activities', KIA_admin_views.employees_activities, name='employees_activities'),
+    # path('admin/users_activities', KIA_admin_views.users_activities, name='users_activities'),
+    # path('admin/employees_activities', KIA_admin_views.employees_activities, name='employees_activities'),
+    path('admin/activities', KIA_admin_views.activities, name='activities'),
     path('admin/my_history', KIA_admin_views.my_history, name='my_history'),
     path('admin/financial_account_details', KIA_admin_views.financial_account_details,
          name='financial_account_details'),
@@ -59,7 +60,8 @@ urlpatterns = [
     path('add_credit/', KIA_auth_views.add_credit, name='add_credit'),
     path('withdraw_credit/', KIA_auth_views.withdraw_credit, name='withdraw_credit'),
     path('anonymous_transfer/', KIA_auth_views.anonymous_transfer, name='anonymous_transfer'),
-    path('transaction_history/', KIA_auth_views.transaction_history, name='transaction_history'),
+    path('transactions/', KIA_auth_views.transaction_history, name='transaction_history'),
+    path('transactions/<int:index>/', KIA_auth_views.transaction, name='transaction_history'),
 
     path('admin/', admin.site.urls),
     # user

@@ -63,6 +63,7 @@ def services(request, name):
             transaction.assigned_emp = None
             # TODO: send mail to user
             return HttpResponse("Transaction saved")  # TODO: return a proper response
+        return HttpResponse("Not Valid")
 
 
 def admin_service(request, name):
@@ -274,10 +275,14 @@ def emp_taken_transactions(request):
     user = request.user
     user_profile = Profile.objects.get(user=user)
 
-    transactions = KIATransaction.objects.filter(assigned_emp=user_profile
+    being_done_transactions = KIATransaction.objects.filter(assigned_emp=user_profile
                                                  , state=KIATransaction.being_done)
+    finished_transactions = KIATransaction.objects.filter(assigned_emp=user_profile
+                                                 , state=KIATransaction.done)
 
-    return render(request, 'kia_services/emp_taken_transactions.html', {'transactions': transactions})
+    return render(request, 'kia_services/emp_taken_transactions.html'
+                  , {'being_done_transactions': being_done_transactions
+                      , 'done_transactions': finished_transactions})
 
 # TODO: adding view for employee finished transactions
 

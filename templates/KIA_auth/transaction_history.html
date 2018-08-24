@@ -12,33 +12,139 @@
         <a href="/add_credit" class="list-group-item list-group-item-action">اضافه کردن اعتبار</a>
         <a href="/withdraw_credit" class="list-group-item list-group-item-action">برداشت پول از اعتبار</a>
         <a href="/anonymous_transfer" class="list-group-item list-group-item-action">واریز مخفیانهٔ پول</a>
-        <a href="/transaction_history" class="list-group-item list-group-item-action active">تاریخچهٔ تراکنش‌ها</a>
+        <a href="/transactions" class="list-group-item list-group-item-action active">تاریخچهٔ تراکنش‌ها</a>
       </div>
     </div>
 
     <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
-      <table class="table table-striped table-hover">
-        <thead class="thead-dark">
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">تراکنش</th>
-          <th scope="col">قیمت</th>
-          <th scope="col">تاریخ</th>
-        </tr>
-        </thead>
-        <tbody>
+      <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+          <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-first" role="tab"
+             aria-controls="nav-home" aria-selected="true">ثبت شده</a>
+          <a class="nav-item nav-link" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab"
+             aria-controls="nav-home" aria-selected="true">جاری</a>
+          <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab"
+             aria-controls="nav-profile" aria-selected="false">تمام شده</a>
+        </div>
+      </nav>
+      <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-first" role="tabpanel" aria-labelledby="nav-home-tab">
+          {% if registered %}
+            <table class="table table-striped table-hover">
+              <thead class="thead-dark">
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">شمارهٔ تراکنش</th>
+                <th scope="col">نام خدمت</th>
+                <th scope="col">اطلاعات بیشتر</th>
+              </tr>
+              </thead>
+              <tbody>
 
-        {% for act in acts %}
-          <tr>
-            <th scope="row">{{ forloop.counter }}</th>
-            <td>{{ act.username }}</td>
-            <td>{{ act.type }}</td>
-            <td>{{ act.date }}</td>
-          </tr>
-        {% endfor %}
+              {% for transaction in registered %}
+                <tr>
+                  <th scope="row">{{ forloop.counter }}</th>
+                  <td>{{ transaction.id }}</td>
+                  <td>{{ transaction.service.label }}</td>
+                  <td><a href="{{ transaction.id }}">اطلاعات بیشتر</a></td>
+                </tr>
+              {% endfor %}
 
-        </tbody>
-      </table>
+              </tbody>
+            </table>
+
+          {% else %}
+            <h2>شما تراکنش ثبت شده‌ای ندارید :(</h2>
+          {% endif %}
+
+        </div>
+
+        <div class="tab-pane fade" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+          {% if being_done %}
+            <table class="table table-striped table-hover">
+              <thead class="thead-dark">
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">شمارهٔ تراکنش</th>
+                <th scope="col">نام خدمت</th>
+                <th scope="col">اطلاعات بیشتر</th>
+              </tr>
+              </thead>
+              <tbody>
+
+              {% for transaction in being_done %}
+                <tr>
+                  <th scope="row">{{ forloop.counter }}</th>
+                  <td>{{ transaction.id }}</td>
+                  <td>{{ transaction.service.label }}</td>
+                  <td><a href="{{ transaction.id }}">اطلاعات بیشتر</a></td>
+                </tr>
+              {% endfor %}
+
+              </tbody>
+            </table>
+
+          {% else %}
+            <h2>شما تراکنشی در حال انجام ندارید :(</h2>
+          {% endif %}
+
+        </div>
+
+        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+          {% if done %}
+            <table class="table table-striped table-hover">
+              <thead class="thead-dark">
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">شمارهٔ تراکنش</th>
+                <th scope="col">نام خدمت</th>
+                <th scope="col">اطلاعات بیشتر</th>
+              </tr>
+              </thead>
+              <tbody>
+
+              {% for transaction in done %}
+                <tr>
+                  <th scope="row">{{ forloop.counter }}</th>
+                  <td>{{ transaction.id }}</td>
+                  <td>{{ transaction.service.label }}</td>
+                  <td><a href="{{ transaction.id }}">اطلاعات بیشتر</a></td>
+                </tr>
+              {% endfor %}
+
+              </tbody>
+            </table>
+
+          {% else %}
+            <h2>شما هنوز تراکنشی را تمام نکرده‌اید :(</h2>
+          {% endif %}
+        </div>
+
+      </div>
+
+
+      {#      <table class="table table-striped table-hover">#}
+      {#        <thead class="thead-dark">#}
+      {#        <tr>#}
+      {#          <th scope="col">#</th>#}
+      {#          <th scope="col">تراکنش</th>#}
+      {#          <th scope="col">قیمت</th>#}
+      {#          <th scope="col">تاریخ</th>#}
+      {#        </tr>#}
+      {#        </thead>#}
+      {#        <tbody>#}
+      {##}
+      {#        {% for act in acts %}#}
+      {#          <tr>#}
+      {#            <th scope="row">{{ forloop.counter }}</th>#}
+      {#            <td>{{ act.username }}</td>#}
+      {#            <td>{{ act.type }}</td>#}
+      {#            <td>{{ act.date }}</td>#}
+      {#          </tr>#}
+      {#        {% endfor %}#}
+      {##}
+      {#        </tbody>#}
+      {#      </table>#}
     </div>
 
   </div>
