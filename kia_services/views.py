@@ -276,13 +276,14 @@ def emp_taken_transactions(request):
     user_profile = Profile.objects.get(user=user)
 
     being_done_transactions = KIATransaction.objects.filter(assigned_emp=user_profile
-                                                 , state=KIATransaction.being_done)
+                                                            , state=KIATransaction.being_done)
     finished_transactions = KIATransaction.objects.filter(assigned_emp=user_profile
-                                                 , state=KIATransaction.done)
+                                                          , state=KIATransaction.done)
 
     return render(request, 'kia_services/emp_taken_transactions.html'
                   , {'being_done_transactions': being_done_transactions
                       , 'done_transactions': finished_transactions})
+
 
 # TODO: adding view for employee finished transactions
 
@@ -296,14 +297,3 @@ def emp_panel(request):
 
     if request.method == "GET":
         return render(request, 'kia_services/emp_panel.html')
-
-
-
-
-
-
-
-
-
-
-

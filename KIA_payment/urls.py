@@ -55,6 +55,7 @@ urlpatterns = [
     path('logout/', auth_views.logout, {'template_name': 'KIA_auth/logout.html'}, name='logout'),
     path('signup/', KIA_auth_views.sign_up, name='signup'),
     # user panel
+    path('user_panel/', KIA_auth_views.user_panel, name='edit_profile'),
     path('edit_profile/', KIA_auth_views.edit_profile, name='edit_profile'),
     path('change_password/', KIA_auth_views.change_password, name='change_password'),
     path('add_credit/', KIA_auth_views.add_credit, name='add_credit'),

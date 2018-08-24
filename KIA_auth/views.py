@@ -121,6 +121,26 @@ def edit_profile(request):
         return render(request, not_authorized_template)
 
 
+def user_panel(request):
+    user = request.user
+    if user.is_authenticated:
+        user_profile = Profile.objects.get(user=user)
+
+        information = {
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'username': user.username,
+            'email': user.email,
+            'account_number': user_profile.account_number,
+            'phone_number': user_profile.phone_number,
+            'credit': user_profile.credit,
+        }
+
+        return render(request, 'KIA_auth/user_panel.html', {'information': information})
+    else:
+        return render(request, not_authorized_template)
+
+
 def change_password(request):
     user = request.user
     if user.is_authenticated:
