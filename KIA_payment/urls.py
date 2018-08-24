@@ -1,18 +1,3 @@
-"""KIA_payment URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/2.0/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import RedirectView
@@ -23,6 +8,7 @@ from django.contrib.auth import views as auth_views
 from KIA_auth import views as KIA_auth_views
 from KIA_general import views as KIA_gen_views
 from KIA_admin import views as KIA_admin_views
+from KIA_notification import views as KIA_notif_views
 
 urlpatterns = [
     path('', KIA_auth_views.redirect_to_home, name='home'),
@@ -38,11 +24,10 @@ urlpatterns = [
     path('purchase/', KIA_gen_views.purchase, name='purchase'),
     path('currency_rates/', KIA_gen_views.currency_rates, name='currency_rates'),
     path('FAQ/', KIA_gen_views.faq, name='faq'),
-    # admin
-    # panels
-
     path('add_feature/', test_app_views.add_feature, name='add_feature'),
     path('currency_exchange/', test_app_views.currency_exchange, name='currency_exchange'),
+    path('send_email/', KIA_notif_views.send_email_by_employee, name='send_email_by_employee'),
+
     # admin
     path('admin/panel', KIA_admin_views.panel, name='admin_panel'),
     path('admin/users_activities', KIA_admin_views.users_activities, name='users_activities'),
@@ -76,8 +61,6 @@ urlpatterns = [
     path('anonymous_transfer/', KIA_auth_views.anonymous_transfer, name='anonymous_transfer'),
     path('transaction_history/', KIA_auth_views.transaction_history, name='transaction_history'),
 
-    path('employee_login/', test_app_views.employee_login, name='employee_login'),
-    path('admin_login/', test_app_views.admin_login, name='admin_login'),
     path('admin/', admin.site.urls),
     # user
     path('user_profile/', test_app_views.user_profile, name='user_profile'),
@@ -94,9 +77,6 @@ urlpatterns = [
     path('all_transactions/1234', test_app_views.sample_transaction, name='sample_transaction'),
     # TODO converted to:
     path('emp/transactions/<int:index>/', kia_services_views.emp_transaction, name='emp_transaction'),
-    path('send_email/', test_app_views.send_email, name='send_email'),
-    # homepage
-    path('homepage/', test_app_views.homepage, name='homepage'),
     # kia_services
     path('services/<str:name>/', kia_services_views.services, name='services'),
     path('create_service/', kia_services_views.create_service, name='service_creation'),
