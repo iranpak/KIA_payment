@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
 from .forms import SignUpForm
+from .forms import EditProfileForm
 from django.contrib.auth import authenticate, login
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
@@ -87,11 +88,11 @@ def edit_profile(request):
                 'phone_number': user_profile.phone_number,
             }
 
-            form = SignUpForm()
+            form = EditProfileForm()
             return render(request, 'KIA_auth/edit_profile.html', {'form': form, 'information': information})
 
         elif request.method == 'POST':
-            form = SignUpForm(request.POST)
+            form = EditProfileForm(request.POST)
             form_data = form.data
             print(form_data)
             if form.is_valid():

@@ -29,3 +29,9 @@ class AdminCreateUserForm(UserCreationForm):
         fields = ('first_name', 'last_name', 'username', 'password1', 'password2', 'email', 'account_number',
                   'phone_number', 'role')
 
+
+class EditProfileForm(forms.Form):
+    first_name = forms.CharField(required=True)
+    last_name = forms.CharField(required=True)
+    account_number = forms.CharField(required=True)
+    phone_number = forms.CharField(max_length=11)
