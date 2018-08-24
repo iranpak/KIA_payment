@@ -34,7 +34,6 @@ urlpatterns = [
     path('not_authorized/', KIA_gen_views.not_authorized, name='not_authorized'),
     path('access_denied/', KIA_gen_views.access_denied, name='access_denied'),
     path('user_restricted/', KIA_gen_views.user_restricted, name='user_restricted'),
-    path('services/', KIA_gen_views.services, name='services'),
     path('service_info/', KIA_gen_views.service_info, name='service_info'),
     path('purchase/', KIA_gen_views.purchase, name='purchase'),
     path('currency_rates/', KIA_gen_views.currency_rates, name='currency_rates'),
