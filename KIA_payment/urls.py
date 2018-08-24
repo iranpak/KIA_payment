@@ -72,6 +72,7 @@ urlpatterns = [
     # employee
     path('all_transactions/', test_app_views.all_transactions, name='all_transactions'),
     # TODO converted to:
+    path('emp/panel/', kia_services_views.emp_panel, name='emp_panel'),
     path('emp/transactions/', kia_services_views.EmpTransactionListView.as_view(), name='emp_transactions'),
     path('all_transactions/1234', test_app_views.sample_transaction, name='sample_transaction'),
     # TODO converted to:

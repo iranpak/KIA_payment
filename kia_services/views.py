@@ -211,8 +211,6 @@ def settle_part_of_balance_to_account_number(request):
         return HttpResponse("not authorized")
 
 
-
-
 class EmpTransactionListView(ListView):
     model = KIATransaction
     queryset = KIATransaction.objects.filter(state=KIATransaction.registered)
@@ -230,3 +228,25 @@ def emp_transaction(request, index):
     if request.method == "GET":
         return render(request, 'kia_services/emp_transaction.html'
                       , {'transaction': transaction, 'data': decoded_data})
+
+
+def emp_panel(request):
+    if not is_user_emp(request):
+        return HttpResponse("Forbidden")
+
+    # transaction = get_object_or_404(KIATransaction, id=index)
+    # decoded_data = json.loads(transaction.data)
+
+    if request.method == "GET":
+        return render(request, 'kia_services/emp_panel.html')
+
+
+
+
+
+
+
+
+
+
+

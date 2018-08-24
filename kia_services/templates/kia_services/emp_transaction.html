@@ -1,26 +1,87 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Transaction</title>
-</head>
-<body>
-    <ul>
-        <li>نام خدمت: {{ transaction.service.name }}</li>
-        <li>نام کاربر: {{ transaction.user.username }}</li>
-        <li>وضعیت درخواست: {{ transaction.state }}</li>
-        <li>اطلاعات درخواست:
-            {% for key, values in data.items %}
-                <ul>
-                    <li>{{ key }} : {{ values }}</li>
-                </ul>
-            {% endfor %}
-        </li>
-    </ul>
-    <form action="" method="post" novalidate>
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#  <meta charset="UTF-8">#}
+{#  <title>Transaction</title>#}
+{#</head>#}
+{#<body>#}
+{#<ul>#}
+{#  <li>نام خدمت: {{ transaction.service.name }}</li>#}
+{#  <li>نام کاربر: {{ transaction.user.username }}</li>#}
+{#  <li>وضعیت درخواست: {{ transaction.state }}</li>#}
+{#  <li>اطلاعات درخواست:#}
+{#    {% for key, values in data.items %}#}
+{#      <ul>#}
+{#        <li>{{ key }} : {{ values }}</li>#}
+{#      </ul>#}
+{#    {% endfor %}#}
+{#  </li>#}
+{#</ul>#}
+{#<form action="" method="post" novalidate>#}
+{#  {% csrf_token %}#}
+{#  <input type="submit" name="cont" value="انجام خدمت">#}
+{#  <input type="submit" name="finish" value="پایان ساخت خدمت">#}
+{#</form>#}
+{#</body>#}
+{#</html>#}
+
+
+{% extends "master.html" %}
+
+{% block content %}
+
+  <div id="wrapper" class="row" style="padding-bottom:20px;">
+
+    <!-- Sidebar -->
+    <div id="sidebar-wrapper" class="col-3" align="center" style="padding-right: 50px;">
+      <div class="list-group">
+        <a href="/emp/panel" class="list-group-item list-group-item-action">پنل کارمند</a>
+        <a href="/emp/transactions" class="list-group-item list-group-item-action active">مشاهدهٔ تمام تراکنش‌ها</a>
+      </div>
+    </div>
+
+    <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
+      <div class="row" align="center">
+        <div class="col-2"></div>
+        <div class="col-2">نام خدمت</div>
+        <div class="col-6">{{ transaction.service.name }}</div>
+        <div class="col-2"></div>
+      </div>
+
+      <div class="row" align="center">
+        <div class="col-2"></div>
+        <div class="col-2">نام کاربر</div>
+        <div class="col-6">{{ transaction.user.username }}</div>
+        <div class="col-2"></div>
+      </div>
+
+      <div class="row" align="center">
+        <div class="col-2"></div>
+        <div class="col-2">وضعیت درخواست</div>
+        <div class="col-6">{{ transaction.state }}</div>
+        <div class="col-2"></div>
+      </div>
+
+      {% for key, value in date.items %}
+        <div class="row" align="center">
+          <div class="col-2"></div>
+          <div class="col-2">{{ key }}</div>
+          <div class="col-6">{{ value }}</div>
+          <div class="col-2"></div>
+        </div>
+      {% endfor %}
+
+      <form action="" method="post" novalidate>
         {% csrf_token %}
-        <input type="submit" name="cont" value="انجام خدمت">
-        <input type="submit" name="finish" value="پایان ساخت خدمت">
-    </form>
-</body>
-</html>
+        <input type="submit" name="cont" value="انجام خدمت" class="btn btn-primary">
+        <input type="submit" name="finish" value="پایان ساخت خدمت" class="btn btn-primary">
+        <button type="button" onclick="javascript:history.back()" class="btn btn-primary">
+          بازگشت
+        </button>
+      </form>
+
+    </div>
+
+  </div>
+
+{% endblock content %}
