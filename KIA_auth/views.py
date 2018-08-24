@@ -11,10 +11,8 @@ from django.contrib.auth import hashers
 from django.core.mail import send_mail
 
 
-# from django.contrib.auth.forms import S
-
-
-# Create your views here.
+access_denied_template = 'KIA_general/access_denied.html'
+not_authorized_template = 'KIA_general/not_authorized.html'
 
 
 def sign_up(request):
@@ -106,16 +104,15 @@ def edit_profile(request):
 
                 account_number = cleaned_data.get('account_number')
                 phone_number = cleaned_data.get('phone_number')
-                profile = Profile.objects.create(user=user, phone_number=phone_number, account_number=account_number)
-                profile.save()
+                user_profile = Profile.objects.get(user=user)
+                user_profile.phone_number = phone_number
+                user_profile.account_number = account_number
+                user_profile.save()
                 return redirect('edit_profile')
             else:
                 return HttpResponse(str(form.errors))
     else:
-        context = {}
-        template = loader.get_template('KIA_general/not_authorized.html')
-        return HttpResponse(template.render(context, request))
-        # return HttpResponse("not authorized")
+        return render(request, not_authorized_template)
 
 
 def change_password(request):
