@@ -63,7 +63,12 @@ def redirect_to_home(request):
             return HttpResponse(template.render(context, request))
             # return HttpResponse("You are restricted by admin")
         else:
-            return render(request, 'KIA_auth/home.html')
+            if user_profile.role == 'Admin':
+                return render(request, 'KIA_admin/admin_panel.html')
+            elif user_profile.role == 'Employee':
+                return render(request, 'kia_services/emp_panel.html')
+            return render(request, 'KIA_general/homepage.html')
+            # return render(request, 'KIA_auth/home.html')
     else:
         context = {}
         template = loader.get_template('KIA_general/not_authorized.html')
