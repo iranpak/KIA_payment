@@ -13,7 +13,7 @@ def send_email_by_employee(request):
     user = request.user
     if user.is_authenticated:
         user_profile = Profile.objects.get(user=user)
-        if user_profile.role == 'Admin':
+        if user_profile.role == 'Employee' or user_profile.role == 'Admin':
             if request.method == 'GET':
                 return render(request, 'KIA_notification/send_email_by_employee.html')
             elif request.method == 'POST':

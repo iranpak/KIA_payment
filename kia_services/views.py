@@ -19,7 +19,7 @@ def is_user_admin(request):
         user = request.user
         user_profile = Profile.objects.get(user=user)
         role = user_profile.role
-        if role == 'user':  # TODO: change to admin
+        if role == 'Admin':  # TODO: change to admin
             return True
         return False
     return False
@@ -30,7 +30,7 @@ def is_user_emp(request):
         user = request.user
         user_profile = Profile.objects.get(user=user)
         role = user_profile.role
-        if role == 'user':  # TODO: change to employee
+        if role == 'Employee':  # TODO: change to employee
             return True
         return False
     return False
@@ -91,8 +91,7 @@ def create_service(request):
         user = request.user
         user_profile = Profile.objects.get(user=user)
         role = user_profile.role
-        if role == 'user':  # TODO: change this to admin
-
+        if is_user_admin(request):  # TODO: change this to admin
             if request.method == 'GET':
                 form = KIAServiceCreationForm()
                 return render(request, 'kia_services/create_service.html', {'form': form})
