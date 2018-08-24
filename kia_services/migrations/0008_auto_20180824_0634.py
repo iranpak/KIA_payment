@@ -8,7 +8,6 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('KIA_auth', '0006_profile_is_restricted'),
-        ('kia_services', '0007_kiaservice_label'),
     ]
 
     operations = [

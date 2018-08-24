@@ -52,7 +52,7 @@
       <div class="row" align="center">
         <div class="col-2"></div>
         <div class="col-2">نام کاربر</div>
-        <div class="col-6">{{ transaction.user.username }}</div>
+        <div class="col-6">{{ transaction.user }}</div>
         <div class="col-2"></div>
       </div>
 
@@ -63,7 +63,14 @@
         <div class="col-2"></div>
       </div>
 
-      {% for key, value in date.items %}
+      <div class="row" align="center">
+        <div class="col-2"></div>
+        <div class="col-2">کارمند در حال کار</div>
+        <div class="col-6">{{ transaction.assigned_emp }}</div>
+        <div class="col-2"></div>
+      </div>
+
+      {% for key, value in data.items %}
         <div class="row" align="center">
           <div class="col-2"></div>
           <div class="col-2">{{ key }}</div>
