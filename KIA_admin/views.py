@@ -20,14 +20,12 @@ def restrict_user(request):
     if user.is_authenticated:
         user_profile = Profile.objects.get(user=user)
         if user_profile.role == 'Admin':
-            # TODO: show field for restricting user
-            user_profile.is_restricted = True
-            user_profile.save()
-            context = {}
-            template = loader.get_template('KIA_admin/restrict_user.html')
-            return HttpResponse(template.render(context, request))
-            # return HttpResponse("user restricted")
-
+            if request.method == 'GET':
+                return render(request, 'KIA_admin/restrict_user.html')
+            elif request.method == 'POST':
+                user_profile.is_restricted = True
+                user_profile.save()
+                redirect('admin_panel')
         else:
             return render(request, access_denied_template)
     else:
@@ -39,12 +37,12 @@ def remove_user_restriction(request):
     if user.is_authenticated:
         user_profile = Profile.objects.get(user=user)
         if user_profile.role == 'Admin':
-            # TODO: show field for restricting user
-            user_profile.is_restricted = False
-            user_profile.save()
-            context = {}
-            template = loader.get_template('KIA_admin/remove_restriction.html')
-            return HttpResponse(template.render(context, request))
+            if request.method == 'GET':
+                return render(request, 'KIA_admin/remove_restriction.html')
+            elif request.method == 'POST':
+                user_profile.is_restricted = False
+                user_profile.save()
+                return redirect('admin_panel')
         else:
             return render(request, access_denied_template)
     else:
@@ -103,19 +101,17 @@ def financial_account_details(request):
 
 def add_system_credit(request):
     user = request.user
-    template = 'KIA_admin/add_system_credit.html'
-
     if user.is_authenticated:
         user_profile = Profile.objects.get(user=user)
         if user_profile.role == 'Admin':
             if request.method == 'GET':
-                # TODO: show field for restricting user
-                return render(request, template)
+                return render(request, 'KIA_admin/add_system_credit.html')
             elif request.method == 'POST':
                 increasing_credit = request.POST.get("added_credit")
                 system_credit = SystemCredit.objects.get(owner='system')
                 system_credit.rial_credit += increasing_credit
                 system_credit.save()
+                return redirect('admin_panel')
         else:
             return render(request, access_denied_template)
     else:

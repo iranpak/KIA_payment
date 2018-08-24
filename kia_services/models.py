@@ -70,7 +70,7 @@ class KIATransaction(models.Model):
     # TODO: remove null=True from next field after passing login info in view
     user = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True)
     state = models.IntegerField(choices=STATE_CHOICES)
-    assigned_emp = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True)
+    # assigned_emp = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True)
     data = JSONField()
 
     def initialize(self, service_name):
