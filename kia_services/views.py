@@ -2,11 +2,16 @@ import json
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
+from kia_services.forms import KIAServiceForm
+from kia_services.models import KIAService, KIATransaction
+from KIA_auth.models import Profile
+from kia_services.forms import KIAServiceForm
 from django.views.generic.list import ListView, View
 from django.contrib.auth.models import User
 
 from kia_services.forms import KIAServiceForm, KIAServiceCreationForm, KIAServiceFieldCreationForm
 from kia_services.models import KIAService, KIATransaction
+from KIA_auth.models import Profile
 from KIA_auth.models import Profile
 
 
@@ -15,7 +20,7 @@ def is_user_admin(request):
         user = request.user
         user_profile = Profile.objects.get(user=user)
         role = user_profile.role
-        if role == 'user':  # TODO: change to admin
+        if role == 'Admin':  # TODO: change to admin
             return True
         return False
     return False
@@ -26,7 +31,7 @@ def is_user_emp(request):
         user = request.user
         user_profile = Profile.objects.get(user=user)
         role = user_profile.role
-        if role == 'user':  # TODO: change to employee
+        if role == 'Employee':  # TODO: change to employee
             return True
         return False
     return False
@@ -43,7 +48,8 @@ def services(request, name):
 
     if request.method == "GET":
         form = KIAServiceForm(service)
-        return render(request, 'kia_services/service.html', {'form': form, 'authenticated': authenticated})
+        return render(request, 'kia_services/service.html',
+                      {'form': form, 'authenticated': authenticated, 'label': service.label})
 
     elif request.method == "POST":
         form = KIAServiceForm(service, request.POST)
@@ -87,8 +93,7 @@ def create_service(request):
         user = request.user
         user_profile = Profile.objects.get(user=user)
         role = user_profile.role
-        if role == 'user':  # TODO: change this to admin
-
+        if is_user_admin(request):  # TODO: change this to admin
             if request.method == 'GET':
                 form = KIAServiceCreationForm()
                 return render(request, 'kia_services/create_service.html', {'form': form})
@@ -172,6 +177,41 @@ class AdminServiceListView(ListView):
     context_object_name = 'services'
 
 
+def increase_balance(request):
+    user = request.user
+    if user.is_authenticated:
+        if request.method == 'GET':
+            # TODO: show a field for increasing balance
+            pass
+        elif request.method == 'POST':
+            increasing_balance_amount = request.POST.get("increasing_balance_amount")
+            user_profile = Profile.objects.get(user=user)
+            user_profile.balance += increasing_balance_amount
+            user_profile.save()
+
+    else:
+        return HttpResponse("not authorized")
+
+
+def settle_part_of_balance_to_account_number(request):
+    user = request.user
+    if user.is_authenticated:
+        if request.method == 'GET':
+            # TODO: show a field for enter settling amount
+            pass
+        elif request.method == 'POST':
+            settling_amount = request.POST.get("settling_amount")
+            user_profile = Profile.objects.get(user=user)
+            if settling_amount > user_profile.balance:
+                # TODO: show message for lack of balance
+                pass
+            else:
+                user_profile.balance -= settling_amount
+
+    else:
+        return HttpResponse("not authorized")
+
+
 class EmpTransactionListView(ListView):
     model = KIATransaction
     queryset = KIATransaction.objects.filter(state=KIATransaction.registered)
@@ -240,3 +280,25 @@ def emp_taken_transactions(request):
     return render(request, 'kia_services/emp_taken_transactions.html', {'transactions': transactions})
 
 # TODO: adding view for employee finished transactions
+
+
+def emp_panel(request):
+    if not is_user_emp(request):
+        return HttpResponse("Forbidden")
+
+    # transaction = get_object_or_404(KIATransaction, id=index)
+    # decoded_data = json.loads(transaction.data)
+
+    if request.method == "GET":
+        return render(request, 'kia_services/emp_panel.html')
+
+
+
+
+
+
+
+
+
+
+

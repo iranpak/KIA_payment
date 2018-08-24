@@ -1,0 +1,62 @@
+{% extends "master.html" %}
+
+{% block content %}
+
+  <div id="wrapper" class="row" style="padding-bottom:20px;">
+
+    <!-- Sidebar -->
+    <div id="sidebar-wrapper" class="col-3" align="center" style="padding-right: 50px;">
+      <div class="list-group">
+        <a href="/emp/panel" class="list-group-item list-group-item-action active">پنل کارمند</a>
+        <a href="/emp/transactions" class="list-group-item list-group-item-action">مشاهدهٔ تمام تراکنش‌ها</a>
+        <a href="/send_email" class="list-group-item list-group-item-action">ارسال پیام برای کاربر</a>
+      </div>
+    </div>
+
+    <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
+      <form>
+        <div class="form-group row">
+          <h3 class="col-sm-2">پنل کارمند</h3>
+          <div class="col-sm-7">
+            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="">
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="staticEmail" class="col-sm-2 col-form-label">ایمیل</label>
+          <div class="col-sm-7">
+            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value={{ information.email }}>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="staticEmail" class="col-sm-2 col-form-label">شماره تماس</label>
+          <div class="col-sm-7">
+            <input type="text" readonly class="form-control-plaintext" id="staticEmail"
+                   value={{ information.phone_number }}>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="inputName" class="col-sm-2 col-form-label">نام</label>
+          <div class="col-sm-7">
+            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                   placeholder={{ information.first_name }}>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="inputName" class="col-sm-2 col-form-label">نام خانوادگی</label>
+          <div class="col-sm-7">
+            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                   placeholder={{ information.last_name }}>
+          </div>
+        </div>
+
+        <div style="padding-left: 150px">
+          <button type="submit" class="btn btn-primary">ثبت</button>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+
+{% endblock content %}

@@ -1,27 +1,31 @@
-<form action = /register/ method=post>{% csrf_token %}
+<form action = "/register" method="post">{% csrf_token %}
   <div class="col-md-42 mb-3">
-    <label for=f_name></label>
-    <input type=text name=firstName class=form-control id=f_name aria-describedby=emailHelp placeholder="نام" required>
+    <label for="first_name"></label>
+    <input type=text name="first_name" class=form-control id="first_name" aria-describedby=emailHelp placeholder="نام" required>
   </div>
   <div class="col-md-42 mb-3">
-    <label for=l_name></label>
-    <input type=text name=lastName class=form-control id=l_name placeholder="نام خانوداگی" required>
+    <label for="last_name"></label>
+    <input type=text name="last_name" class=form-control id="last_name" placeholder="نام خانوداگی" required>
   </div>
   <div class="col-md-42 mb-3">
-    <label for=pass></label>
-    <input type=password name=password class=form-control id=pass placeholder="رمز عبور" required>
+    <label for=username></label>
+    <input type="text" name="username" class=form-control id="username" placeholder="نام کاربری" required>
   </div>
   <div class="col-md-42 mb-3">
-    <label for=repass></label>
-    <input type=password name=repassword class=form-control id=repass placeholder="تکرار رمز عبور" required>
+    <label for="password"></label>
+    <input type=password name="password" class=form-control id="password" placeholder="رمز عبور" required>
   </div>
   <div class="col-md-42 mb-3">
-    <label for=email></label>
-    <input type=email name=email class=form-control id=email placeholder="آدرس ایمیل" required>
+    <label for="password_confirmation"></label>
+    <input type=password name="password_confirmation" class=form-control id="password_confirmation" placeholder="تکرار رمز عبور" required>
   </div>
   <div class="col-md-42 mb-3">
-    <label for=phone_number></label>
-    <input type=text name=phoneNumber class=form-control id=phone_number placeholder="شماره تلفن همراه" required>
+    <label for="email"></label>
+    <input type=email name="email" class=form-control id="email" placeholder="آدرس ایمیل" required>
+  </div>
+  <div class="col-md-42 mb-3">
+    <label for="phone_number"></label>
+    <input type=text name="phone_number" class=form-control id="phone_number" placeholder="شماره تلفن همراه" required>
   </div>
   
    <button type=submit class="btn btn-primary", name="registerButton", id="registerButton_id">ثبت‌نام</button>

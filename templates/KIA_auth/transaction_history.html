@@ -1,0 +1,46 @@
+{% extends "master.html" %}
+
+{% block content %}
+
+  <div id="wrapper" class="row" style="padding-bottom:20px;">
+
+    <!-- Sidebar -->
+    <div id="sidebar-wrapper" class="col-3" align="center" style="padding-right: 50px;">
+      <div class="list-group">
+        <a href="/edit_profile" class="list-group-item list-group-item-action">ویرایش پروفایل</a>
+        <a href="/change_password" class="list-group-item list-group-item-action">تغییر رمز عبور</a>
+        <a href="/add_credit" class="list-group-item list-group-item-action">اضافه کردن اعتبار</a>
+        <a href="/withdraw_credit" class="list-group-item list-group-item-action">برداشت پول از اعتبار</a>
+        <a href="/anonymous_transfer" class="list-group-item list-group-item-action">واریز مخفیانهٔ پول</a>
+        <a href="/transaction_history" class="list-group-item list-group-item-action active">تاریخچهٔ تراکنش‌ها</a>
+      </div>
+    </div>
+
+    <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
+      <table class="table table-striped table-hover">
+        <thead class="thead-dark">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">تراکنش</th>
+          <th scope="col">قیمت</th>
+          <th scope="col">تاریخ</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for act in acts %}
+          <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ act.username }}</td>
+            <td>{{ act.type }}</td>
+            <td>{{ act.date }}</td>
+          </tr>
+        {% endfor %}
+
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+{% endblock content %}
