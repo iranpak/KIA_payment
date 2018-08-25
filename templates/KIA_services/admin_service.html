@@ -1,0 +1,60 @@
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#  <meta charset="UTF-8">#}
+{#  <title>Title</title>#}
+{#</head>#}
+{#<body>#}
+{#<form action="" method="post" novalidate>#}
+{#  <table>#}
+{#    {{ form.as_table }}#}
+{#  </table>#}
+{#  {% csrf_token %}#}
+{#  <input type="submit" name="delete" value="حذف سرویس">#}
+{#  <input type="submit" name="augment" value="افزودن فیلد به سرویس">#}
+{#  <input type="submit" name="exclude" value="حذف فیلد از سرویس">#}
+{#</form>#}
+{#</body>#}
+{#</html>#}
+
+
+{% extends "master.html" %}
+
+{% block content %}
+
+  <div id="wrapper" class="row" style="padding-bottom:20px;">
+    <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
+        <form action="" method="post" novalidate>
+          {% csrf_token %}
+
+          <div class="form-group row">
+            <h3 class="col-sm-2">مشاهده و ویرایش سرویس {{ label }}</h3>
+            <div class="col-sm-7">
+              <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="">
+            </div>
+          </div>
+
+          {% for item in form %}
+            <div class="form-group row">
+              <div class="col-sm-4 col-form-label text-md-right">
+                {{ item.label_tag }}
+              </div>
+              <div class="col-md-6">
+                {{ item }}
+              </div>
+            </div>
+          {% endfor %}
+
+          <div style="padding-left: 150px">
+            <input type="submit" name="delete" value="حذف سرویس" class="btn btn-primary">
+            <input type="submit" name="augment" value="افزودن فیلد به سرویس" class="btn btn-primary">
+            <input type="submit" name="exclude" value="حذف فیلد از سرویس" class="btn btn-primary">
+          </div>
+
+        </form>
+
+    </div>
+
+  </div>
+
+{% endblock content %}
