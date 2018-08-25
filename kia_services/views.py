@@ -3,7 +3,7 @@ import json
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from kia_services.forms import KIAServiceForm
-from kia_services.models import KIAService, KIATransaction
+from kia_services.models import KIAService, KIATransaction, KIAServiceField
 from KIA_auth.models import Profile
 from kia_services.forms import KIAServiceForm
 from django.views.generic.list import ListView, View
@@ -37,6 +37,14 @@ def is_user_emp(request):
     return False
 
 
+def get_exchange_rates():
+    return {
+        1: 80000,
+        2: 90000,
+        3: 100000,
+    }
+
+
 def services(request, name):
     service = get_object_or_404(KIAService, name=name)
 
@@ -44,26 +52,52 @@ def services(request, name):
     user = None
     if request.user.is_authenticated:
         authenticated = True
-        user = request.user
+        user = Profile.objects.get(user=request.user)
 
     if request.method == "GET":
         form = KIAServiceForm(service)
         return render(request, 'kia_services/service.html',
-                      {'form': form, 'authenticated': authenticated, 'label': service.label})
+                      {'form': form, 'authenticated': authenticated,
+                       'service': service})
 
     elif request.method == "POST":
         form = KIAServiceForm(service, request.POST)
         if form.is_valid():
-            transaction = KIATransaction()
-            transaction.initialize(service)
-            user_profile = Profile.objects.get(user=user)
-            transaction.user = user_profile
-            transaction.data = form.get_json_data()
-            transaction.save()
-            transaction.assigned_emp = None
-            # TODO: send mail to user
-            return HttpResponse("Transaction saved")  # TODO: return a proper response
-        return HttpResponse("Not Valid")
+            error = None
+            if pay_from_user_credit(service, user, form.get_json_data()):
+                transaction = KIATransaction()
+                transaction.initialize(service)
+                user_profile = Profile.objects.get(user=user)
+                transaction.user = user_profile
+                transaction.data = form.get_json_data()
+                transaction.save()
+                transaction.assigned_emp = None
+                # TODO: send mail to user
+                return HttpResponse("Transaction saved")  # TODO: return a proper response
+            else:
+                error = 'اعتبار شما برای درخواست این خدمت کافی نیست'
+                form = KIAServiceForm(service)
+                return render(request, 'kia_services/service.html',
+                              {'form': form, 'authenticated': authenticated,
+                               'service': service, 'error': error})
+        return render(request, 'kia_services/service.html',
+                              {'form': form, 'authenticated': authenticated,
+                               'service': service})
+
+
+def pay_from_user_credit(service, user, json_data):
+    cost = None
+    if service.variable_price:
+        decoded_data = json.loads(json_data)
+        cost = get_exchange_rates()[service.currency] * decoded_data['price']
+    else:
+        cost = get_exchange_rates()[service.currency] * service.price
+
+    if user.credit >= cost:
+        user.credit -= cost
+        user.save()
+        return True
+    return False
 
 
 def admin_service(request, name):
@@ -91,20 +125,30 @@ def admin_service_fields(request, name):
 
 def create_service(request):
     if request.user.is_authenticated:
-        user = request.user
-        user_profile = Profile.objects.get(user=user)
-        role = user_profile.role
+        form = KIAServiceCreationForm()
+
         if is_user_admin(request):  # TODO: change this to admin
             if request.method == 'GET':
-                form = KIAServiceCreationForm()
                 return render(request, 'kia_services/create_service.html', {'form': form})
 
             elif request.method == "POST":
                 service_form = KIAServiceCreationForm(request.POST)
                 if service_form.is_valid():
                     new_service = service_form.save()
-                    new_service.save()
 
+                    if (not new_service.variable_price) and (new_service.price is None):
+                        error = "قیمت خدمت را وارد کنید"
+                        return render(request, 'kia_services/create_service.html',
+                                      {'form': form, 'error': error})
+                    if new_service.variable_price:
+                        price_field = KIAServiceField()
+                        price_field.service = new_service
+                        price_field.name = "price"
+                        price_field.label = "مبلغ پرداختی"
+                        price_field.type = KIAServiceField.cost_field
+                        price_field.optional = False
+                        price_field.args = None
+                    new_service.save()
                     url = new_service.name + "/"
 
                     return HttpResponseRedirect(url)
@@ -283,6 +327,7 @@ def emp_taken_transactions(request):
     return render(request, 'kia_services/emp_taken_transactions.html'
                   , {'being_done_transactions': being_done_transactions
                       , 'done_transactions': finished_transactions})
+
 
 
 # TODO: adding view for employee finished transactions

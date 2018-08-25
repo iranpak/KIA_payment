@@ -97,10 +97,13 @@ class KIAServiceForm(forms.Form):
 class KIAServiceCreationForm(forms.ModelForm):
     class Meta:
         model = KIAService
-        fields = ('name', 'label', 'details', 'image_url')
+        fields = ('name', 'label', 'currency', 'variable_price', 'price', 'details', 'image_url')
         labels = {
             'name': 'نام انگلیسی خدمت',
             'label': 'نام فارسی خدمت',
+            'currency': 'ارز',
+            'variable_price': 'قیمت متغیر',
+            'price': 'قیمت',
             'details': 'توضیحات خدمت',
             'image_url': 'آدرس عکس خدمت',
         }
