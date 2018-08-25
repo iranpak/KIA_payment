@@ -58,9 +58,7 @@ def redirect_to_home(request):
         else:
             return render(request, 'KIA_auth/home.html')
     else:
-        context = {}
-        template = loader.get_template('KIA_general/not_authorized.html')
-        return HttpResponse(template.render(context, request))
+        return redirect('login')
 
 
 def send_registration_email(email_address):
