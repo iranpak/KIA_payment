@@ -363,4 +363,5 @@ def emp_panel(request):
     user_profile = Profile.objects.get(user=user)
 
     return render(request, 'KIA_services/emp_panel.html', {'email': user_profile.user.email,
-                                                           'name': user_profile.user.first_name})
+                                                           'name': user_profile.user.first_name,
+                                                           'username': user_profile.user.username})
