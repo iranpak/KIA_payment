@@ -152,9 +152,10 @@ def create_service(request):
                         price_field.service = new_service
                         price_field.name = "price"
                         price_field.label = "مبلغ پرداختی"
-                        price_field.type = KIAServiceField.cost_field
-                        price_field.optional = False
+                        price_field.type = KIAServiceField.integer_field
+                        price_field.optional = True
                         price_field.args = None
+                        price_field.save()
                     new_service.save()
                     url = new_service.name + "/"
 

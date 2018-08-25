@@ -77,11 +77,11 @@ class KIATransaction(models.Model):
     failed = 4
     suspicious = 5
     STATE_CHOICES = (
-        (registered, "Registered"),
-        (being_done, "Being done"),
-        (done, "Done"),
-        (failed, "Failed"),
-        (suspicious, "Suspicious"),
+        (registered, "ثبت شده"),
+        (being_done, "در حال انجام"),
+        (done, "تمام شده"),
+        (failed, "رد شده"),
+        (suspicious, "مشکوک"),
     )
 
     # TODO: remove null=True from next field after passing login info in view
