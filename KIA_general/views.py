@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
+import requests
+import json
 
 # Create your views here.
 
@@ -64,20 +66,23 @@ def services(request):
          'info': 'سرویس کارکرد'},
     ]
     return render(request, 'KIA_general/services.html', {'ss': ss})
-    # context = {}
-    # template = loader.get_template('KIA_general/services.html')
-    # return HttpResponse(template.render(context, request))
 
 
 def currency_rates(request):
-    rates = [
-        {'name': 'Dollar',
-         'to_rial': '10000'},
-        {'name': 'Euro',
-         'to_rial': '12500'},
+    response = requests.get('http://core.arzws.com/api/core?Token=a6d2b63a-5abf-42c0-bdb7-08d609cedc20&what=exchange')
+    data = json.loads(response.text)
+    all_currency_list = data['currencyBoard']
 
-    ]
-    return render(request, 'KIA_general/currency_rates.html', {'rates': rates})
+    our_currency_list = []
+    for currency in all_currency_list:
+        if currency['name'] == 'دلار آمریکا تهران':
+            our_currency_list.append({'name': 'دلار آمریکا', 'to_rial': int(currency['maxVal'])})
+        if currency['name'] == 'یورو':
+            our_currency_list.append({'name': 'یورو', 'to_rial': int(currency['maxVal'])})
+        if currency['name'] == 'پوند انگلیس':
+            our_currency_list.append({'name': 'پوند انگلیس', 'to_rial': int(currency['maxVal'])})
+
+    return render(request, 'KIA_general/currency_rates.html', {'rates': our_currency_list})
 
 
 def service_info(request):

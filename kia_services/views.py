@@ -2,18 +2,11 @@ import json
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
-from kia_services.forms import KIAServiceForm
-from kia_services.models import KIAService, KIATransaction
-from KIA_auth.models import Profile
-from kia_services.forms import KIAServiceForm
 from django.views.generic.list import ListView, View
-from django.contrib.auth.models import User
-
 from kia_services.forms import KIAServiceForm, KIAServiceCreationForm, KIAServiceFieldCreationForm
 from kia_services.models import KIAService, KIATransaction
 from KIA_auth.models import Profile
-from KIA_auth.models import Profile
-
+import requests
 
 def is_user_admin(request):
     if request.user.is_authenticated:
@@ -292,6 +285,22 @@ def emp_panel(request):
     if request.method == "GET":
         return render(request, 'kia_services/emp_panel.html')
 
+
+def get_exchange_rates():
+    response = requests.get('http://core.arzws.com/api/core?Token=a6d2b63a-5abf-42c0-bdb7-08d609cedc20&what=exchange')
+    data = json.loads(response.text)
+    all_currency_list = data['currencyBoard']
+
+    our_currency_list = {}
+    for currency in all_currency_list:
+        if currency['name'] == 'دلار آمریکا تهران':
+            our_currency_list[1] = currency['maxVal']
+        if currency['name'] == 'یورو':
+            our_currency_list[2] = currency['maxVal']
+        if currency['name'] == 'پوند انگلیس':
+            our_currency_list[3] = currency['maxVal']
+
+    return our_currency_list
 
 
 

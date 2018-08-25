@@ -10,6 +10,9 @@ from django.contrib.auth.models import User
 from KIA_auth.models import Profile
 from django.contrib.auth import hashers
 from django.core.mail import send_mail
+import requests
+import json
+
 
 
 access_denied_template = 'KIA_general/access_denied.html'
@@ -51,11 +54,7 @@ def redirect_to_home(request):
     if user.is_authenticated:
         user_profile = Profile.objects.get(user=user)
         if user_profile.is_restricted:
-            # TODO: show message about his restricting
-            context = {}
-            template = loader.get_template('KIA_general/user_restricted.html')
-            return HttpResponse(template.render(context, request))
-            # return HttpResponse("You are restricted by admin")
+            return render(request, 'KIA_general/user_restricted.html')
         else:
             return render(request, 'KIA_auth/home.html')
     else:
