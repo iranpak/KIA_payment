@@ -6,7 +6,7 @@ from django.template import loader
 
 from django.db.models import Q
 
-from kia_services.models import KIATransaction
+from KIA_services.models import KIATransaction
 from .forms import SignUpForm
 from .forms import EditProfileForm
 from .forms import ChangePasswordForm
@@ -66,7 +66,7 @@ def redirect_to_home(request):
             if user_profile.role == 'Admin':
                 return render(request, 'KIA_admin/admin_panel.html')
             elif user_profile.role == 'Employee':
-                return render(request, 'kia_services/emp_panel.html')
+                return render(request, 'KIA_services/emp_panel.html')
             return render(request, 'KIA_general/homepage.html')
             # return render(request, 'KIA_auth/home.html')
     else:
@@ -293,7 +293,7 @@ def transaction(request, index):
     if t.user != user:
         return HttpResponse("Forbidden")
 
-    return render(request, 'kia_services/transaction.html'
+    return render(request, 'KIA_services/transaction.html'
                   , {'transaction': t, 'data': decoded_data})
 
 

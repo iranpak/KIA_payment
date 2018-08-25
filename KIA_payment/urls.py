@@ -3,7 +3,7 @@ from django.urls import path, include
 from django.views.generic import RedirectView
 
 from test_app import views as test_app_views
-from kia_services import views as kia_services_views
+from KIA_services import views as kia_services_views
 from django.contrib.auth import views as auth_views
 from KIA_auth import views as KIA_auth_views
 from KIA_general import views as KIA_gen_views
@@ -84,7 +84,7 @@ urlpatterns = [
     path('send_email/', test_app_views.send_email, name='send_email'),
     # homepage
     path('homepage/', test_app_views.homepage, name='homepage'),
-    # kia_services
+    # KIA_services
     path('services/<str:name>/', kia_services_views.services, name='services'),
     path('create_service/', kia_services_views.create_service, name='service_creation'),
     path('create_service/<str:name>/', kia_services_views.create_service_cont, name='create_service_cont'),
