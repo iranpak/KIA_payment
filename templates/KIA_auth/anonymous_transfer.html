@@ -17,7 +17,9 @@
     </div>
 
     <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
-      <form>
+      <form method="post">
+          {% csrf_token %}
+
         <div class="form-group row">
           <h3 class="col-sm-3">واریز مخفیانهٔ پول</h3>
           <div class="col-sm-6">
@@ -36,7 +38,7 @@
         <div class="form-group row">
           <label for="inputName" class="col-sm-2 col-form-label">شماره حساب مقصد</label>
           <div class="col-sm-7">
-            <input type="number" class="form-control" id="account_number" name="account_number"
+            <input type="text" class="form-control" id="account_number" name="account_number"
                    aria-describedby="emailHelp"
                    placeholder="0000000000000000">
           </div>
@@ -45,28 +47,28 @@
         <div class="form-group row">
           <label for="staticEmail" class="col-sm-2 col-form-label">اعتبار فعلی</label>
           <div class="col-sm-7">
-            <input type="text" readonly class="form-control-plaintext" id="old_credit" value={{ 10000 }}>
+            <input type="text" readonly class="form-control-plaintext" id="old_credit" value="{{ current_credit }} ریال">
           </div>
         </div>
 
         <div class="form-group row">
-          <label for="inputPassword" class="col-sm-2 col-form-label">اعتبار واریزی (تومان)</label>
+          <label for="inputPassword" class="col-sm-2 col-form-label">مبلغ واریزی (ریال)</label>
           <div class="col-sm-7">
             <input type="number" min="0" step="1000" class="form-control" id="transfer_credit" name="transfer_credit"
                    placeholder="0" dir="ltr"
-                   onchange="calcDiff(); checkNotNeg()">
+                   onchange="calcDiff();">
           </div>
         </div>
 
         <div class="form-group row">
           <label for="staticEmail" class="col-sm-2 col-form-label" id="test_label">اعتبار باقی مانده</label>
           <div class="col-sm-7">
-            <input type="text" readonly class="form-control-plaintext" id="final_credit" value={{ 10000 }}>
+            <input type="text" readonly class="form-control-plaintext" id="final_credit" value="{{ current_credit }} ریال">
           </div>
         </div>
 
         <div style="padding-left: 150px">
-          <button type="submit" class="btn btn-primary">ثبت</button>
+          <button type="submit" class="btn btn-primary" onclick="checkNotNeg()">ثبت</button>
         </div>
 
       </form>
@@ -77,15 +79,14 @@
   <script>
       function calcDiff() {
           var diff = parseInt(document.getElementById("old_credit").value) -
-              parseInt(document.getElementById("sub_credit").value);
+              parseInt(document.getElementById("transfer_credit").value);
           document.getElementById("final_credit").value = diff;
       }
 
       function checkNotNeg() {
-          if (parseInt(document.getElementById("sub_credit").value) >
+          if (parseInt(document.getElementById("transfer_credit").value) >
               parseInt(document.getElementById("old_credit").value)) {
-              document.getElementById("sub_credit").value = parseInt(document.getElementById("old_credit").value);
-              document.getElementById("final_credit").value = 0;
+              document.getElementById("transfer_credit").value = 0;
               alert("نمی‌توانید بیشتر از اعتبارتان واریز کنید!");
           }
       }

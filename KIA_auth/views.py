@@ -4,6 +4,7 @@ from django.template import loader
 from .forms import SignUpForm
 from .forms import EditProfileForm
 from .forms import ChangePasswordForm
+from .forms import AnonymousTransferForm
 from django.contrib.auth import login
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
@@ -15,13 +16,13 @@ import django
 
 access_denied_template = 'KIA_general/access_denied.html'
 not_authorized_template = 'KIA_general/not_authorized.html'
+form_error_template = 'KIA_auth/form_errors.html'
 
 
 def sign_up(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         form_data = form.data
-        print(form_data)
         if form.is_valid() and form_data['password1'] == form_data['password2']:
             cleaned_data = form.cleaned_data
 
@@ -29,10 +30,8 @@ def sign_up(request):
             for user in all_users:
                 if user.email == cleaned_data.get('email'):
                     errors = {'email': 'A user exists with this email'}
-                    print(errors)
-                    return render(request, 'KIA_auth/custom_signup_error.html', {'errors': errors})
+                    return render(request, form_error_template, {'errors': errors})
 
-            print(cleaned_data)
             username = cleaned_data.get('username')
             password = cleaned_data.get('password1')
             hashed_password = hashers.make_password(password)
@@ -49,7 +48,7 @@ def sign_up(request):
             login(request, user)
             return redirect('home')
         else:
-            return render(request, 'KIA_auth/signup_error.html', {'errors': form.errors})
+            return render(request, form_error_template, {'errors': form.errors})
     elif request.method == 'GET':
         form = SignUpForm()
         return render(request, 'KIA_auth/signup.html', {'form': form})
@@ -113,7 +112,7 @@ def edit_profile(request):
                 user_profile.save()
                 return redirect('edit_profile')
             else:
-                return HttpResponse(str(form.errors))
+                return render(request, form_error_template, {'errors': form.errors})
     else:
         return render(request, not_authorized_template)
 
@@ -142,12 +141,13 @@ def change_password(request):
                         login(request, user)
                         return redirect('home')
                     else:
-                        return HttpResponse("Old password is wrong")
+                        errors = {'old password': 'The old password is wrong'}
+                        return render(request, form_error_template, {'errors': errors})
                 else:
-                    return HttpResponse("Passwords doesn't match")
+                    errors = {'new password': "Passwords doesn't match"}
+                    return render(request, form_error_template, {'errors': errors})
             else:
-                print(str(form.errors))
-                return HttpResponse(str(form.errors))
+                return render(request, form_error_template, {'errors': form.errors})
     else:
         return render(request, not_authorized_template)
 
@@ -193,31 +193,44 @@ def anonymous_transfer(request):
         user_profile = Profile.objects.get(user=user)
 
         if request.method == 'GET':
-            return render(request, 'KIA_auth/anonymous_transfer.html')
+            current_credit = user_profile.credit
+            return render(request, 'KIA_auth/anonymous_transfer.html', {'current_credit':  current_credit})
 
         elif request.method == 'POST':
-            form = SignUpForm(request.POST)
-            form_data = form.data
-            print(form_data)
-            if form.is_valid() and form_data['password1'] == form_data['password2']:
+            form = AnonymousTransferForm(request.POST)
+            if form.is_valid():
+                print("hiiiiiii")
                 cleaned_data = form.cleaned_data
-                print(cleaned_data)
-                username = cleaned_data.get('username')
-                password = cleaned_data.get('password1')
-                hashed_password = hashers.make_password(password)
-                user = User.objects.get(user=username)
-                user.first_name = cleaned_data.get('first_name')
-                user.last_name = cleaned_data.get('last_name')
-                user.password = hashed_password
-                user.email = cleaned_data.get('email')
-                user.save()
-                account_number = cleaned_data.get('account_number')
-                phone_number = cleaned_data.get('phone_number')
-                profile = Profile.objects.create(user=user, phone_number=phone_number, account_number=account_number)
-                profile.save()
-                return redirect('home')
+                target_email = cleaned_data.get("email")
+                target_account_number = cleaned_data.get("account_number")
+                transferring_amount = cleaned_data.get("transfer_credit")
+
+                all_users = User.objects.all()
+                account_number_exists = False
+                for sys_user in all_users:
+                    if sys_user.username == 'iran':
+                        continue
+                    print(sys_user)
+                    sys_user_profile = Profile.objects.get(user=sys_user)
+                    if sys_user_profile.account_number == target_account_number:
+                        if sys_user.email == target_email:
+                            user_profile.credit -= transferring_amount
+                            user_profile.save()
+                            # TODO: send message for receiver
+                        else:
+                            pass
+                            # TODO: show warning to user for being sure of this operation
+                        account_number_exists = True
+                        break
+
+                if not account_number_exists:
+                    pass
+                    # TODO: create account for target user
             else:
-                return HttpResponse(str(form.errors))
+                return render(request, form_error_template, {'errors': form.errors})
+
+            return redirect('anonymous_transfer')
+
     else:
         return render(request, not_authorized_template)
 
