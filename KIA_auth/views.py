@@ -4,15 +4,13 @@ from django.template import loader
 from .forms import SignUpForm
 from .forms import EditProfileForm
 from .forms import ChangePasswordForm
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import login
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from KIA_auth.models import Profile
 from django.contrib.auth import hashers
 from django.core.mail import send_mail
-import requests
-import json
-
+import django
 
 
 access_denied_template = 'KIA_general/access_denied.html'
@@ -26,6 +24,14 @@ def sign_up(request):
         print(form_data)
         if form.is_valid() and form_data['password1'] == form_data['password2']:
             cleaned_data = form.cleaned_data
+
+            all_users = User.objects.all()
+            for user in all_users:
+                if user.email == cleaned_data.get('email'):
+                    errors = {'email': 'A user exists with this email'}
+                    print(errors)
+                    return render(request, 'KIA_auth/custom_signup_error.html', {'errors': errors})
+
             print(cleaned_data)
             username = cleaned_data.get('username')
             password = cleaned_data.get('password1')
@@ -182,22 +188,12 @@ def withdraw_credit(request):
 
 
 def anonymous_transfer(request):
-    if request.user.is_authenticated:
+    user = request.user
+    if user.is_authenticated:
+        user_profile = Profile.objects.get(user=user)
+
         if request.method == 'GET':
-            user = request.user
-            user_profile = Profile.objects.get(user=user)
-
-            information = {
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-                'username': user.username,
-                'email': user.email,
-                'account_number': user_profile.account_number,
-                'phone_number': user_profile.phone_number,
-            }
-
-            form = SignUpForm()
-            return render(request, 'KIA_auth/anonymous_transfer.html', {'form': form, 'information': information})
+            return render(request, 'KIA_auth/anonymous_transfer.html')
 
         elif request.method == 'POST':
             form = SignUpForm(request.POST)
@@ -223,10 +219,7 @@ def anonymous_transfer(request):
             else:
                 return HttpResponse(str(form.errors))
     else:
-        context = {}
-        template = loader.get_template('KIA_general/not_authorized.html')
-        return HttpResponse(template.render(context, request))
-        # return HttpResponse("not authorized")
+        return render(request, not_authorized_template)
 
 
 def transaction_history(request):

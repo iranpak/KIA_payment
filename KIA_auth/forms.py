@@ -41,3 +41,6 @@ class ChangePasswordForm(forms.Form):
     old_password = forms.CharField(required=True)
     new_password = forms.CharField(required=True)
     new_password_confirmation = forms.CharField(required=True)
+
+
+# class AnonymousTransferForm(forms.Form):
