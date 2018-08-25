@@ -15,12 +15,16 @@ from KIA_auth.models import Profile
 from KIA_auth.models import Profile
 
 
+access_denied_template = 'KIA_general/access_denied.html'
+not_authorized_template = 'KIA_general/not_authorized.html'
+
+
 def is_user_admin(request):
     if request.user.is_authenticated:
         user = request.user
         user_profile = Profile.objects.get(user=user)
         role = user_profile.role
-        if role == 'user':  # TODO: change to admin
+        if role == 'Admin':
             return True
         return False
     return False
@@ -31,7 +35,7 @@ def is_user_emp(request):
         user = request.user
         user_profile = Profile.objects.get(user=user)
         role = user_profile.role
-        if role == 'user':  # TODO: change to employee
+        if role == 'Employee':
             return True
         return False
     return False
@@ -101,8 +105,11 @@ def pay_from_user_credit(service, user, json_data):
 
 
 def admin_service(request, name):
+    user = request.user
+    if not user.is_authenticated:
+        return render(request, not_authorized_template)
     if not is_user_admin(request):
-        return HttpResponse("Not Authorized as admin")
+        return render(request, access_denied_template)
 
     service = get_object_or_404(KIAService, name=name)
 
@@ -127,7 +134,7 @@ def create_service(request):
     if request.user.is_authenticated:
         form = KIAServiceCreationForm()
 
-        if is_user_admin(request):  # TODO: change this to admin
+        if is_user_admin(request):
             if request.method == 'GET':
                 return render(request, 'KIA_services/create_service.html', {'form': form})
 
@@ -157,9 +164,9 @@ def create_service(request):
                     return HttpResponse(service_form.errors)
         # TODO: return proper responses
         else:
-            return HttpResponse("Not Authorized as admin")
+            return render(request, access_denied_template)
     else:
-        return HttpResponse("Login first")
+        return render(request, not_authorized_template)
 
 
 def create_service_cont(request, name):
@@ -169,7 +176,7 @@ def create_service_cont(request, name):
         user = request.user
         user_profile = Profile.objects.get(user=user)
         role = user_profile.role
-        if role == 'user':  # TODO: change this to admin
+        if is_user_admin(request):  # TODO: change this to admin
 
             if request.method == 'GET':
                 form = KIAServiceFieldCreationForm()
@@ -194,10 +201,10 @@ def create_service_cont(request, name):
                     return HttpResponse(field_form.errors)
 
         # TODO: return proper responses
+            else:
+                return render(request, access_denied_template)
         else:
-            return HttpResponse("Not Authorized as admin")
-    else:
-        return HttpResponse("Login first")
+            return render(request, not_authorized_template)
 
 
 class ServiceListView(ListView):
@@ -209,10 +216,13 @@ class ServiceListView(ListView):
 
 class AdminServiceListDispatchView(View):
     def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return render(request, not_authorized_template)
+
         if is_user_admin(request):
             return AdminServiceListView.as_view()(request, *args, *kwargs)
         else:
-            return HttpResponse("Not Authorized as admin")
+            return render(request, access_denied_template)
 
 
 class AdminServiceListView(ListView):
@@ -235,7 +245,7 @@ def increase_balance(request):
             user_profile.save()
 
     else:
-        return HttpResponse("not authorized")
+        return render(request, not_authorized_template)
 
 
 def settle_part_of_balance_to_account_number(request):
@@ -254,7 +264,17 @@ def settle_part_of_balance_to_account_number(request):
                 user_profile.balance -= settling_amount
 
     else:
-        return HttpResponse("not authorized")
+        return render(request, not_authorized_template)
+
+
+class EmpTransactionListDispatchView(View):
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return render(request, not_authorized_template)
+        if is_user_emp(request):
+            return EmpTransactionListView.as_view()(request, *args, *kwargs)
+        else:
+            return render(request, access_denied_template)
 
 
 class EmpTransactionListView(ListView):
@@ -265,8 +285,10 @@ class EmpTransactionListView(ListView):
 
 
 def emp_transaction(request, index):
+    if not request.user.is_authenticated:
+        return render(request, not_authorized_template)
     if not is_user_emp(request):
-        return HttpResponse("Forbidden")
+        return render(request, access_denied_template)
 
     transaction = get_object_or_404(KIATransaction, id=index)
     decoded_data = json.loads(transaction.data)
@@ -313,8 +335,10 @@ def emp_transaction(request, index):
 
 
 def emp_taken_transactions(request):
+    if not request.user.is_authenticated:
+        return render(request, not_authorized_template)
     if not is_user_emp(request):
-        return HttpResponse("Forbidden")
+        return render(request, access_denied_template)
 
     user = request.user
     user_profile = Profile.objects.get(user=user)
@@ -329,16 +353,14 @@ def emp_taken_transactions(request):
                       , 'done_transactions': finished_transactions})
 
 
-
-# TODO: adding view for employee finished transactions
-
-
 def emp_panel(request):
+    if not request.user.is_authenticated:
+        return render(request, not_authorized_template)
     if not is_user_emp(request):
-        return HttpResponse("Forbidden")
+        return render(request, access_denied_template)
 
-    # transaction = get_object_or_404(KIATransaction, id=index)
-    # decoded_data = json.loads(transaction.data)
+    user = request.user
+    user_profile = Profile.objects.get(user=user)
 
-    if request.method == "GET":
-        return render(request, 'KIA_services/emp_panel.html')
+    return render(request, 'KIA_services/emp_panel.html', {'email': user_profile.user.email,
+                                                           'name': user_profile.user.first_name})

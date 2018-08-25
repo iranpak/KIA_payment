@@ -1,3 +1,4 @@
+
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import RedirectView
@@ -39,7 +40,7 @@ urlpatterns = [
     path('admin/add_system_credit', KIA_admin_views.add_system_credit, name='add_system_credit'),
     path('admin/restrict_user', KIA_admin_views.restrict_user, name='restrict_user'),
     path('admin/remove_user_restriction', KIA_admin_views.remove_user_restriction, name='remove_user_restriction'),
-    path('admin/add_transaction/', KIA_admin_views.add_transaction, name='add_transaction'),
+    # path('admin/add_transaction/', KIA_admin_views.add_transaction, name='add_transaction'),
     path('admin/add_user', KIA_admin_views.add_user, name='add_user'),
     path('admin/show_system_transactions', KIA_admin_views.show_system_transactions, name='show_system_transactions'),
 
@@ -76,7 +77,7 @@ urlpatterns = [
     path('all_transactions/', test_app_views.all_transactions, name='all_transactions'),
     # TODO converted to:
     path('emp/panel/', kia_services_views.emp_panel, name='emp_panel'),
-    path('emp/transactions/', kia_services_views.EmpTransactionListView.as_view(), name='emp_transactions'),
+    path('emp/transactions/', kia_services_views.EmpTransactionListDispatchView.as_view(), name='emp_transactions'),
     path('all_transactions/1234', test_app_views.sample_transaction, name='sample_transaction'),
     # TODO converted to:
     path('emp/transactions/<int:index>/', kia_services_views.emp_transaction, name='emp_transaction'),

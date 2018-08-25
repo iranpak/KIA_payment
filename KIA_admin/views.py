@@ -11,15 +11,38 @@ from django.core.mail import send_mail
 from KIA_auth.forms import AdminCreateUserForm
 from django.shortcuts import redirect
 
+
 access_denied_template = 'KIA_general/access_denied.html'
 not_authorized_template = 'KIA_general/not_authorized.html'
+
+
+def is_user_admin(request):
+    if request.user.is_authenticated:
+        user = request.user
+        user_profile = Profile.objects.get(user=user)
+        role = user_profile.role
+        if role == 'Admin':
+            return True
+        return False
+    return False
+
+
+def is_user_emp(request):
+    if request.user.is_authenticated:
+        user = request.user
+        user_profile = Profile.objects.get(user=user)
+        role = user_profile.role
+        if role == 'Employee':
+            return True
+        return False
+    return False
 
 
 def restrict_user(request):
     user = request.user
     if user.is_authenticated:
         user_profile = Profile.objects.get(user=user)
-        if user_profile.role == 'Admin':
+        if is_user_admin(request):
             if request.method == 'GET':
                 return render(request, 'KIA_admin/restrict_user.html')
             elif request.method == 'POST':
@@ -36,7 +59,7 @@ def remove_user_restriction(request):
     user = request.user
     if user.is_authenticated:
         user_profile = Profile.objects.get(user=user)
-        if user_profile.role == 'Admin':
+        if is_user_admin(request):
             if request.method == 'GET':
                 return render(request, 'KIA_admin/remove_restriction.html')
             elif request.method == 'POST':
@@ -50,39 +73,51 @@ def remove_user_restriction(request):
 
 
 def panel(request):
-    context = {}
-    template = loader.get_template('KIA_admin/admin_panel.html')
-    return HttpResponse(template.render(context, request))
+    user = request.user
+    if user.is_authenticated:
+        user_profile = Profile.objects.get(user=user)
+        if is_user_admin(request):
+            return render(request, 'KIA_admin/admin_panel.html')  # TODO panel info
+        else:
+            return render(request, access_denied_template)
+    else:
+        return render(request, not_authorized_template)
 
 
 def activities(request):
-    context = {}
-    template = loader.get_template('KIA_admin/activities.html')
-    return HttpResponse(template.render(context, request))
+    user = request.user
+    if user.is_authenticated:
+        user_profile = Profile.objects.get(user=user)
+        if is_user_admin(request):
+            return render(request, 'KIA_admin/activities.html')  # TODO panel info
+        else:
+            return render(request, access_denied_template)
+    else:
+        return render(request, not_authorized_template)
 
 
-def users_activities(request):
-    acts = [
-        {'username': 'hello',
-         'type': 'purchase',
-         'date': '29.9.2018'},
-        {'username': 'hi',
-         'type': 'charge',
-         'date': '10.11.2010'},
-        {'username': 'lol',
-         'type': 'steal',
-         'date': '25.2.2018'},
-        {'username': 'user',
-         'type': 'charge',
-         'date': '5.3.2018'},
-    ]
-    return render(request, 'KIA_admin/users_activities.html', {'acts': acts})
-
-
-def employees_activities(request):
-    context = {}
-    template = loader.get_template('KIA_admin/employees_activities.html')
-    return HttpResponse(template.render(context, request))
+# def users_activities(request):
+#     acts = [
+#         {'username': 'hello',
+#          'type': 'purchase',
+#          'date': '29.9.2018'},
+#         {'username': 'hi',
+#          'type': 'charge',
+#          'date': '10.11.2010'},
+#         {'username': 'lol',
+#          'type': 'steal',
+#          'date': '25.2.2018'},
+#         {'username': 'user',
+#          'type': 'charge',
+#          'date': '5.3.2018'},
+#     ]
+#     return render(request, 'KIA_admin/users_activities.html', {'acts': acts})
+#
+#
+# def employees_activities(request):
+#     context = {}
+#     template = loader.get_template('KIA_admin/employees_activities.html')
+#     return HttpResponse(template.render(context, request))
 
 
 def my_history(request):
@@ -90,7 +125,7 @@ def my_history(request):
     user = request.user
     if user.is_authenticated:
         user_profile = Profile.objects.get(user=user)
-        if user_profile.role == 'Admin':
+        if is_user_admin(request):
             actions = HistoryOfAdminActivities.objects.all()
             return render(request, template, {'actions': actions})
         else:
@@ -100,16 +135,22 @@ def my_history(request):
 
 
 def financial_account_details(request):
-    context = {}
-    template = loader.get_template('KIA_admin/financial_account_details.html')
-    return HttpResponse(template.render(context, request))
+    user = request.user
+    if user.is_authenticated:
+        user_profile = Profile.objects.get(user=user)
+        if is_user_admin(request):
+            return render(request, 'KIA_admin/financial_account_details.html')  # TODO panel info
+        else:
+            return render(request, access_denied_template)
+    else:
+        return render(request, not_authorized_template)
 
 
 def add_system_credit(request):
     user = request.user
     if user.is_authenticated:
         user_profile = Profile.objects.get(user=user)
-        if user_profile.role == 'Admin':
+        if is_user_admin(request):
             if request.method == 'GET':
                 return render(request, 'KIA_admin/add_system_credit.html')
             elif request.method == 'POST':
@@ -124,17 +165,17 @@ def add_system_credit(request):
         return render(request, not_authorized_template)
 
 
-def add_transaction(request):
-    context = {}
-    template = loader.get_template('KIA_admin/add_transaction.html')
-    return HttpResponse(template.render(context, request))
+# def add_transaction(request):
+#     context = {}
+#     template = loader.get_template('KIA_admin/add_transaction.html')
+#     return HttpResponse(template.render(context, request))
 
 
 def add_user(request):
     user = request.user
     if user.is_authenticated:
         user_profile = Profile.objects.get(user=user)
-        if user_profile.role == 'Admin':
+        if is_user_admin(request):
             if request.method == 'GET':
                 form = AdminCreateUserForm()
                 return render(request, 'KIA_admin/add_user.html', {'form': form})
@@ -181,7 +222,7 @@ def show_system_transactions(request):
     user = request.user
     if user.is_authenticated:
         user_profile = Profile.objects.get(user=user)
-        if user_profile.role == 'Admin':
+        if is_user_admin(request):
             transactions = SystemTransactions.objects.all()
             return render(request, template, {'transactions': transactions})
         else:
