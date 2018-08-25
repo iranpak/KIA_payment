@@ -276,9 +276,12 @@ def transaction_history(request):
                                                                 state=KIATransaction.suspicious)))
 
     finished_transactions = KIATransaction.objects.filter(user=user, state=KIATransaction.done)
+    failed_transactions = KIATransaction.objects.filter(user=user, state=KIATransaction.failed)
+
     return render(request, 'KIA_auth/transaction_history.html', {'registered': registered_transactions,
                                                                  'being_done': being_done_transactions,
-                                                                 'done': finished_transactions})
+                                                                 'done': finished_transactions,
+                                                                 'failed': failed_transactions})
 
 
 def transaction(request, index):

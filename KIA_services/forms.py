@@ -95,6 +95,8 @@ class KIAServiceForm(forms.Form):
 
 
 class KIAServiceCreationForm(forms.ModelForm):
+    price = forms.IntegerField(label='قیمت', required=False)
+
     class Meta:
         model = KIAService
         fields = ('name', 'label', 'currency', 'variable_price', 'price', 'details', 'image_url')

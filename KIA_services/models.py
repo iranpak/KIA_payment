@@ -88,11 +88,17 @@ class KIATransaction(models.Model):
     service = models.ForeignKey(KIAService, on_delete=models.SET_NULL, null=True)
     user = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, related_name='user_transactions')
     state = models.IntegerField(choices=STATE_CHOICES)
+    register_time = models.DateTimeField(null=True)
+    cost_in_rial = models.IntegerField(null=True)
     assigned_emp = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, related_name='emp_transactions')
     data = JSONField()
 
     def initialize(self, service):
         self.state = self.registered
         self.service = service
+
+    def return_money(self):
+        self.user.credit += self.cost_in_rial
+
 
 

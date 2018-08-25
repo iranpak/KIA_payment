@@ -1,3 +1,4 @@
+import datetime
 import json
 
 from django.http import HttpResponse, HttpResponseRedirect
@@ -13,7 +14,6 @@ from KIA_services.forms import KIAServiceForm, KIAServiceCreationForm, KIAServic
 from KIA_services.models import KIAService, KIATransaction
 from KIA_auth.models import Profile
 from KIA_auth.models import Profile
-
 
 access_denied_template = 'KIA_general/access_denied.html'
 not_authorized_template = 'KIA_general/not_authorized.html'
@@ -68,11 +68,12 @@ def services(request, name):
         form = KIAServiceForm(service, request.POST)
         if form.is_valid():
             error = None
-            if pay_from_user_credit(service, user, form.get_json_data()):
-                transaction = KIATransaction()
+            transaction = KIATransaction()
+            if pay_from_user_credit(service, transaction, user, form.get_json_data()):
                 transaction.initialize(service)
                 user_profile = Profile.objects.get(user=user)
                 transaction.user = user_profile
+                transaction.register_time = datetime.datetime.now()
                 transaction.data = form.get_json_data()
                 transaction.save()
                 transaction.assigned_emp = None
@@ -86,10 +87,10 @@ def services(request, name):
                                'service': service, 'error': error})
         return render(request, 'KIA_services/service.html',
                       {'form': form, 'authenticated': authenticated,
-                               'service': service})
+                       'service': service})
 
 
-def pay_from_user_credit(service, user, json_data):
+def pay_from_user_credit(service, transaction, user, json_data):
     cost = None
     if service.variable_price:
         decoded_data = json.loads(json_data)
@@ -99,6 +100,7 @@ def pay_from_user_credit(service, user, json_data):
 
     if user.credit >= cost:
         user.credit -= cost
+        transaction.cost_in_rial = cost
         user.save()
         return True
     return False
@@ -201,7 +203,7 @@ def create_service_cont(request, name):
                     # TODO: return a proper response
                     return HttpResponse(field_form.errors)
 
-        # TODO: return proper responses
+            # TODO: return proper responses
             else:
                 return render(request, access_denied_template)
         else:
@@ -329,6 +331,16 @@ def emp_transaction(request, index):
             else:
                 return HttpResponse("A problem happened")
 
+        elif 'fail' in request.POST:
+
+            if transaction.assigned_emp == user_profile:
+                transaction.state = transaction.failed
+                transaction.return_money()
+                transaction.save()
+                # TODO: send mail to user
+            else:
+                return HttpResponse("A problem happened")
+
         else:
             return HttpResponse(request.POST)
 
@@ -349,9 +361,13 @@ def emp_taken_transactions(request):
     finished_transactions = KIATransaction.objects.filter(assigned_emp=user_profile
                                                           , state=KIATransaction.done)
 
+    failed_transactions = KIATransaction.objects.filter(assigned_emp=user_profile,
+                                                        state=KIATransaction.failed)
+
     return render(request, 'KIA_services/emp_taken_transactions.html'
                   , {'being_done_transactions': being_done_transactions
-                      , 'done_transactions': finished_transactions})
+                      , 'done_transactions': finished_transactions
+                      , 'failed_transactions': failed_transactions})
 
 
 def emp_panel(request):
