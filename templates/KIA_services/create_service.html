@@ -14,7 +14,13 @@
 {#</form>#}
 {#</body>#}
 {#</html>#}
-
+<head>
+  <style>
+    #id_name {
+      direction: ltr;
+    }
+  </style>
+</head>
 {% extends "master.html" %}
 
 {% block content %}
@@ -25,8 +31,8 @@
     <div id="sidebar-wrapper" class="col-3" align="center" style="padding-right: 50px;">
       <div class="list-group">
         <a href="/admin/panel" class="list-group-item list-group-item-action">پنل مدیر</a>
-{#        <a href="/admin/users_activities" class="list-group-item list-group-item-action">فعالیت کاربران</a>#}
-{#        <a href="/admin/employees_activities" class="list-group-item list-group-item-action">فعالیت کارمندان</a>#}
+        {#        <a href="/admin/users_activities" class="list-group-item list-group-item-action">فعالیت کاربران</a>#}
+        {#        <a href="/admin/employees_activities" class="list-group-item list-group-item-action">فعالیت کارمندان</a>#}
         <a href="/admin/activities" class="list-group-item list-group-item-action">فعالیت‌ها</a>
         <a href="/admin/my_history" class="list-group-item list-group-item-action">سابقهٔ من</a>
         <a href="/admin/financial_account_details" class="list-group-item list-group-item-action">جزئیات حساب مالی</a>
@@ -37,6 +43,7 @@
         {#        <a href="/admin/add_transaction" class="list-group-item list-group-item-action active">اضافه کردن تراکنش</a>#}
         <a href="/create_service" class="list-group-item list-group-item-action active">اضافه کردن تراکنش</a>
         <a href="/admin/services" class="list-group-item list-group-item-action">مشاهده و بررسی سرویس‌ها</a>
+        <a href="/admin/add_user" class="list-group-item list-group-item-action">اضافه کردن کاربر</a>
       </div>
     </div>
 
@@ -79,4 +86,22 @@
 
   </div>
 
+  <script>
+      window.onload = function () {
+          let checkbox = document.getElementById("id_variable_price");
+          let input = document.getElementById("id_price");
+          let oldVar = 0;
+          checkbox.onchange = function () {
+              if (checkbox.checked) {
+                  input.disabled = true;
+                  oldVar = input.value;
+                  input.value = 0;
+              }
+              else {
+                  document.getElementById("id_price").disabled = false;
+                  input.value = oldVar;
+              }
+          };
+      }
+  </script>
 {% endblock content %}
