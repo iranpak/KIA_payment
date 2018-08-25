@@ -10,7 +10,7 @@ from django.contrib.auth import hashers
 from django.core.mail import send_mail
 from KIA_auth.forms import AdminCreateUserForm
 from django.shortcuts import redirect
-
+from KIA_services.models import KIAService, KIATransaction, KIAServiceField
 
 access_denied_template = 'KIA_general/access_denied.html'
 not_authorized_template = 'KIA_general/not_authorized.html'
@@ -73,15 +73,17 @@ def remove_user_restriction(request):
 
 
 def panel(request):
-    user = request.user
-    if user.is_authenticated:
-        user_profile = Profile.objects.get(user=user)
-        if is_user_admin(request):
-            return render(request, 'KIA_admin/admin_panel.html')  # TODO panel info
-        else:
-            return render(request, access_denied_template)
-    else:
+    if not request.user.is_authenticated:
         return render(request, not_authorized_template)
+    if not is_user_admin(request):
+        return render(request, access_denied_template)
+
+    user = request.user
+    user_profile = Profile.objects.get(user=user)
+
+    return render(request, 'KIA_admin/admin_panel.html', {'email': user_profile.user.email,
+                                                          'name': user_profile.user.first_name,
+                                                          'username': user_profile.user.username})
 
 
 def activities(request):
@@ -89,7 +91,17 @@ def activities(request):
     if user.is_authenticated:
         user_profile = Profile.objects.get(user=user)
         if is_user_admin(request):
-            return render(request, 'KIA_admin/activities.html')  # TODO panel info
+            registered_transactions = KIATransaction.objects.filter(state=KIATransaction.registered)
+            being_done_transactions = KIATransaction.objects.filter(state=KIATransaction.being_done)
+            suspicious_transactions = KIATransaction.objects.filter(state=KIATransaction.suspicious)
+            finished_transactions = KIATransaction.objects.filter(state=KIATransaction.done)
+
+            return render(request, 'KIA_admin/activities.html'
+                          , {'registered': registered_transactions,
+                             'suspicious': suspicious_transactions,
+                             'being_done': being_done_transactions,
+                             'done': finished_transactions})
+            # return render(request, 'KIA_admin/activities.html')  # TODO panel info
         else:
             return render(request, access_denied_template)
     else:
@@ -211,7 +223,9 @@ def add_user(request):
 
 def send_registration_email(email_address, username, password, role):
     subject = 'ثبت‌نام در سامانه KIA_payment'
-    message_body = ('برای شما در سامانه KIA_payment یک حساب کاربری ساخته شده است. برای فعالسازی حساب خود روی لینک زیر کلیک کنید.\n www.sample_link.com\n نقش شما: %s \n نام کاربری: %s \n رمز عبور: %s \n' %(role, username, password))
+    message_body = (
+            'برای شما در سامانه KIA_payment یک حساب کاربری ساخته شده است. برای فعالسازی حساب خود روی لینک زیر کلیک کنید.\n www.sample_link.com\n نقش شما: %s \n نام کاربری: %s \n رمز عبور: %s \n' % (
+        role, username, password))
     sender_address = 'kiapayment2018@gmail.com'
     receiver_addresses = [email_address]
     send_mail(subject, message_body, sender_address, receiver_addresses)
