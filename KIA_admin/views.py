@@ -95,12 +95,14 @@ def activities(request):
             being_done_transactions = KIATransaction.objects.filter(state=KIATransaction.being_done)
             suspicious_transactions = KIATransaction.objects.filter(state=KIATransaction.suspicious)
             finished_transactions = KIATransaction.objects.filter(state=KIATransaction.done)
+            failed_transactions = KIATransaction.objects.filter(state=KIATransaction.failed)
 
             return render(request, 'KIA_admin/activities.html'
                           , {'registered': registered_transactions,
                              'suspicious': suspicious_transactions,
                              'being_done': being_done_transactions,
-                             'done': finished_transactions})
+                             'done': finished_transactions,
+                             'failed': failed_transactions,})
             # return render(request, 'KIA_admin/activities.html')  # TODO panel info
         else:
             return render(request, access_denied_template)

@@ -1,4 +1,3 @@
-
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import RedirectView
@@ -34,6 +33,7 @@ urlpatterns = [
     # path('admin/users_activities', KIA_admin_views.users_activities, name='users_activities'),
     # path('admin/employees_activities', KIA_admin_views.employees_activities, name='employees_activities'),
     path('admin/activities', KIA_admin_views.activities, name='activities'),
+    path('admin/transactions/<int:index>/', kia_services_views.admin_transaction, name='admin_transaction'),
     path('admin/my_history', KIA_admin_views.my_history, name='my_history'),
     path('admin/financial_account_details', KIA_admin_views.financial_account_details,
          name='financial_account_details'),

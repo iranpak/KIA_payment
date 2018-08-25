@@ -71,6 +71,20 @@
         <div class="col-2"></div>
       </div>
 
+      <div class="row" align="center">
+        <div class="col-2"></div>
+        <div class="col-2">زمان ثبت</div>
+        <div class="col-6">{{ transaction.register_time }}</div>
+        <div class="col-2"></div>
+      </div>
+
+      <div class="row" align="center">
+        <div class="col-2"></div>
+        <div class="col-2">قیمت ریالی</div>
+        <div class="col-6">{{ transaction.cost_in_rial }}</div>
+        <div class="col-2"></div>
+      </div>
+
       {% for key, value in data.items %}
         <div class="row" align="center">
           <div class="col-2"></div>

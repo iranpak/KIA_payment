@@ -46,27 +46,27 @@ def faq(request):
     return HttpResponse(template.render(context, request))
 
 
-def services(request):
-    ss = [
-        {'name': 'خفن',
-         'info': 'سرویس عادی'},
-        {'name': 'ایزی',
-         'info': 'سرویس نرمال'},
-        {'name': 'شاخ',
-         'info': 'سرویس عجیب'},
-        {'name': 'عالی',
-         'info': 'سرویس خوب'},
-        {'name': 'معمولی',
-         'info': 'سرویس بد'},
-        {'name': 'ساده',
-         'info': 'سرویس پیچیده'},
-        {'name': 'ایول',
-         'info': 'سرویس کارکرد'},
-    ]
-    return render(request, 'KIA_general/services.html', {'ss': ss})
-    # context = {}
-    # template = loader.get_template('KIA_general/services.html')
-    # return HttpResponse(template.render(context, request))
+# def services(request):
+#     ss = [
+#         {'name': 'خفن',
+#          'info': 'سرویس عادی'},
+#         {'name': 'ایزی',
+#          'info': 'سرویس نرمال'},
+#         {'name': 'شاخ',
+#          'info': 'سرویس عجیب'},
+#         {'name': 'عالی',
+#          'info': 'سرویس خوب'},
+#         {'name': 'معمولی',
+#          'info': 'سرویس بد'},
+#         {'name': 'ساده',
+#          'info': 'سرویس پیچیده'},
+#         {'name': 'ایول',
+#          'info': 'سرویس کارکرد'},
+#     ]
+#     return render(request, 'KIA_general/services.html', {'ss': ss})
+#     # context = {}
+#     # template = loader.get_template('KIA_general/services.html')
+#     # return HttpResponse(template.render(context, request))
 
 
 def currency_rates(request):

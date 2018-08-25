@@ -34,13 +34,19 @@
 
     <div id="sidebar-wrapper" class="col-3" align="center" style="padding-right: 50px;">
       <div class="list-group">
-        <a href="/user_panel" class="list-group-item list-group-item-action">پنل کاربری</a>
-        <a href="/edit_profile" class="list-group-item list-group-item-action">ویرایش پروفایل</a>
-        <a href="/change_password" class="list-group-item list-group-item-action">تغییر رمز عبور</a>
-        <a href="/add_credit" class="list-group-item list-group-item-action">اضافه کردن اعتبار</a>
-        <a href="/withdraw_credit" class="list-group-item list-group-item-action">برداشت پول از اعتبار</a>
-        <a href="/anonymous_transfer" class="list-group-item list-group-item-action">واریز مخفیانهٔ پول</a>
-        <a href="/transactions" class="list-group-item list-group-item-action active">تاریخچهٔ تراکنش‌ها</a>
+        <a href="/admin/panel" class="list-group-item list-group-item-action">پنل مدیر</a>
+        {#        <a href="/admin/users_activities" class="list-group-item list-group-item-action active">فعالیت کاربران</a>#}
+        {#        <a href="/admin/employees_activities" class="list-group-item list-group-item-action">فعالیت کارمندان</a>#}
+        <a href="/admin/activities" class="list-group-item list-group-item-action active">فعالیت‌ها</a>
+        <a href="/admin/my_history" class="list-group-item list-group-item-action">سابقهٔ من</a>
+        <a href="/admin/financial_account_details" class="list-group-item list-group-item-action">جزئیات حساب مالی</a>
+
+        <a href="/admin/restrict_user" class="list-group-item list-group-item-action">محدود کردن کاربر</a>
+        <a href="/admin/remove_user_restriction" class="list-group-item list-group-item-action">رفع محدودیت</a>
+        <a href="/admin/add_system_credit" class="list-group-item list-group-item-action ">اضافه کردن اعتبار</a>
+        <a href="/create_service" class="list-group-item list-group-item-action">اضافه کردن تراکنش</a>
+        <a href="/admin/services" class="list-group-item list-group-item-action">مشاهده و بررسی سرویس‌ها</a>
+        <a href="/admin/add_user" class="list-group-item list-group-item-action">اضافه کردن کاربر</a>
       </div>
     </div>
 
@@ -63,6 +69,13 @@
         <div class="col-2"></div>
         <div class="col-2">وضعیت درخواست</div>
         <div class="col-6">{{ transaction.get_state_display }}</div>
+        <div class="col-2"></div>
+      </div>
+
+      <div class="row" align="center">
+        <div class="col-2"></div>
+        <div class="col-2">کارمند در حال کار</div>
+        <div class="col-6">{{ transaction.assigned_emp }}</div>
         <div class="col-2"></div>
       </div>
 
@@ -91,6 +104,18 @@
 
       <form action="" method="post" novalidate>
         {% csrf_token %}
+        {% if transaction.state == transaction.suspicious %}
+
+          <input type="submit" name="fail" value="رد درخواست" class="btn btn-primary">
+          <input type="submit" name="return" value="رفع مشکوکی!" class="btn btn-primary">
+          {##}
+          {#        {% elif transaction.state == transaction.being_done %}#}
+          {#          {% if transaction.assigned_emp == user %}#}
+          {#            <input type="submit" name="finish" value="اتمام درخواست" class="btn btn-primary">#}
+          {#            <input type="submit" name="report" value="گزارش مورد مشکوک" class="btn btn-primary">#}
+          {#            <input type="submit" name="fail" value="رد کردن درخواست" class="btn btn-primary">#}
+          {#          {% endif %}#}
+        {% endif %}
         <button type="button" onclick="javascript:history.back()" class="btn btn-primary">
           بازگشت
         </button>

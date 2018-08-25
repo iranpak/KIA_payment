@@ -26,6 +26,8 @@
              aria-controls="nav-home" aria-selected="true">جاری</a>
           <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab"
              aria-controls="nav-profile" aria-selected="false">تمام شده</a>
+          <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-fail" role="tab"
+             aria-controls="nav-profile" aria-selected="false">رد شده</a>
         </div>
       </nav>
       <div class="tab-content" id="nav-tabContent">
@@ -37,6 +39,8 @@
                 <th scope="col">#</th>
                 <th scope="col">شمارهٔ تراکنش</th>
                 <th scope="col">نام خدمت</th>
+                <th scope="col">زمان ثبت</th>
+                <th scope="col">هزینهٔ ریالی</th>
                 <th scope="col">اطلاعات بیشتر</th>
               </tr>
               </thead>
@@ -47,6 +51,8 @@
                   <th scope="row">{{ forloop.counter }}</th>
                   <td>{{ transaction.id }}</td>
                   <td>{{ transaction.service.label }}</td>
+                  <td>{{ transaction.register_time }}</td>
+                  <td>{{ transaction.cost_in_rial }}</td>
                   <td><a href="{{ transaction.id }}">اطلاعات بیشتر</a></td>
                 </tr>
               {% endfor %}
@@ -68,6 +74,8 @@
                 <th scope="col">#</th>
                 <th scope="col">شمارهٔ تراکنش</th>
                 <th scope="col">نام خدمت</th>
+                <th scope="col">زمان ثبت</th>
+                <th scope="col">هزینهٔ ریالی</th>
                 <th scope="col">اطلاعات بیشتر</th>
               </tr>
               </thead>
@@ -78,6 +86,8 @@
                   <th scope="row">{{ forloop.counter }}</th>
                   <td>{{ transaction.id }}</td>
                   <td>{{ transaction.service.label }}</td>
+                  <td>{{ transaction.register_time }}</td>
+                  <td>{{ transaction.cost_in_rial }}</td>
                   <td><a href="{{ transaction.id }}">اطلاعات بیشتر</a></td>
                 </tr>
               {% endfor %}
@@ -99,6 +109,8 @@
                 <th scope="col">#</th>
                 <th scope="col">شمارهٔ تراکنش</th>
                 <th scope="col">نام خدمت</th>
+                <th scope="col">زمان ثبت</th>
+                <th scope="col">هزینهٔ ریالی</th>
                 <th scope="col">اطلاعات بیشتر</th>
               </tr>
               </thead>
@@ -109,6 +121,8 @@
                   <th scope="row">{{ forloop.counter }}</th>
                   <td>{{ transaction.id }}</td>
                   <td>{{ transaction.service.label }}</td>
+                  <td>{{ transaction.register_time }}</td>
+                  <td>{{ transaction.cost_in_rial }}</td>
                   <td><a href="{{ transaction.id }}">اطلاعات بیشتر</a></td>
                 </tr>
               {% endfor %}
@@ -119,6 +133,41 @@
           {% else %}
             <h2>شما هنوز تراکنشی را تمام نکرده‌اید :(</h2>
           {% endif %}
+        </div>
+
+        <div class="tab-pane fade" id="nav-fail" role="tabpanel" aria-labelledby="nav-home-tab">
+          {% if failed %}
+            <table class="table table-striped table-hover">
+              <thead class="thead-dark">
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">شمارهٔ تراکنش</th>
+                <th scope="col">نام خدمت</th>
+                <th scope="col">زمان ثبت</th>
+                <th scope="col">هزینهٔ ریالی</th>
+                <th scope="col">اطلاعات بیشتر</th>
+              </tr>
+              </thead>
+              <tbody>
+
+              {% for transaction in failed %}
+                <tr>
+                  <th scope="row">{{ forloop.counter }}</th>
+                  <td>{{ transaction.id }}</td>
+                  <td>{{ transaction.service.label }}</td>
+                  <td>{{ transaction.register_time }}</td>
+                  <td>{{ transaction.cost_in_rial }}</td>
+                  <td><a href="{{ transaction.id }}">اطلاعات بیشتر</a></td>
+                </tr>
+              {% endfor %}
+
+              </tbody>
+            </table>
+
+          {% else %}
+            <h2>شما تراکنش ردشده‌ای ندارید :)</h2>
+          {% endif %}
+
         </div>
 
       </div>

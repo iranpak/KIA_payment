@@ -361,13 +361,46 @@ def emp_taken_transactions(request):
     finished_transactions = KIATransaction.objects.filter(assigned_emp=user_profile
                                                           , state=KIATransaction.done)
 
+    suspicious_transactions = KIATransaction.objects.filter(assigned_emp=user_profile,
+                                                        state=KIATransaction.suspicious)
+
     failed_transactions = KIATransaction.objects.filter(assigned_emp=user_profile,
                                                         state=KIATransaction.failed)
 
     return render(request, 'KIA_services/emp_taken_transactions.html'
                   , {'being_done_transactions': being_done_transactions
                       , 'done_transactions': finished_transactions
+                      , 'suspicious_transactions': suspicious_transactions
                       , 'failed_transactions': failed_transactions})
+
+
+def admin_transaction(request, index):
+    if not request.user.is_authenticated:
+        return render(request, not_authorized_template)
+    if not is_user_admin(request):
+        return render(request, access_denied_template)
+
+    transaction = get_object_or_404(KIATransaction, id=index)
+    decoded_data = json.loads(transaction.data)
+
+    if request.method == "GET":
+        return render(request, 'KIA_services/admin_transaction.html'
+                      , {'transaction': transaction, 'data': decoded_data})
+
+    # TODO: decorate problem happened s
+    elif request.method == 'POST':
+        if "fail" in request.POST:
+            transaction.state = transaction.failed
+            transaction.save()
+
+        elif 'return' in request.POST:
+                transaction.state = transaction.being_done
+                transaction.save()
+
+        else:
+            return HttpResponse("A problem happened")
+
+        return HttpResponse("Successful")
 
 
 def emp_panel(request):
