@@ -13,6 +13,7 @@ from django.shortcuts import redirect
 
 access_denied_template = 'KIA_general/access_denied.html'
 not_authorized_template = 'KIA_general/not_authorized.html'
+form_error_template = 'KIA_auth/form_errors.html'
 
 
 def restrict_user(request):
@@ -23,9 +24,20 @@ def restrict_user(request):
             if request.method == 'GET':
                 return render(request, 'KIA_admin/restrict_user.html')
             elif request.method == 'POST':
-                user_profile.is_restricted = True
-                user_profile.save()
-                redirect('admin_panel')
+                restricting_username = request.POST.get("res_username")
+                restricting_message = request.POST.get("restrict_message")
+                try:
+                    restricting_user = User.objects.get(username=restricting_username)
+                    restricting_user_profile = Profile.objects.get(user=restricting_user)
+                    restricting_user_profile.is_restricted = True
+                    restricting_user_profile.save()
+                    description = 'شما دسترسی کاربر %s را مسدود کردید.' % restricting_user
+                    history_record = HistoryOfAdminActivities.objects.create(type='User restriction', description=description, message=restricting_message)
+                    return redirect('admin_panel')
+
+                except Exception as e:
+                    errors = {'username': 'There is no user with this username'}
+                    return render(request, form_error_template, {'errors': errors})
         else:
             return render(request, access_denied_template)
     else:

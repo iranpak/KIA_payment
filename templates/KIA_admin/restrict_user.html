@@ -23,6 +23,8 @@
 
     <div id="page-content" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
       <form method="post">
+          {% csrf_token %}
+
         <div class="form-group row">
           <h3 class="col-sm-2">محدود کردن کاربر</h3>
           <div class="col-sm-7">
