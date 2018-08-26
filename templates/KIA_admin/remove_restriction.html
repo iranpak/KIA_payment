@@ -22,6 +22,19 @@
     </div>
 
     <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
+        {% if errors %}
+                <div id="custom_errors" style="background: #ffcccc;">
+                    <div class="inner">
+                        <ul>
+                            {% for key, value in errors.items %}
+                                <p>خطاهای زیر پیش آمده:</p>
+                                <li>{{ key }}: {{ value }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+            {% endif %}
       <form  method="post">
           {% csrf_token %}
 

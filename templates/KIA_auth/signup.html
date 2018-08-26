@@ -5,7 +5,7 @@
     <div id="page-content-wrapper" align="center">
         {% if form.errors %}
             <!-- Error messaging -->
-            <div id="errors" style="background: #ffcccc;">
+            <div id="form_errors" style="background: #ffcccc;">
                 <div class="inner">
                     <p>خطاهای زیر پیش آمده:</p>
                     {{ form.non_field_errors }}
@@ -20,7 +20,7 @@
         {% endif %}
         {% if errors %}
             {% if errors %}
-                <div id="errors" style="background: #ffcccc;">
+                <div id="custom_errors" style="background: #ffcccc;">
                     <div class="inner">
                         <ul>
                             {% for key, value in errors.items %}

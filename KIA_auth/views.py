@@ -1,11 +1,6 @@
-import json
-
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.http import HttpResponse
-from django.template import loader
-
 from django.db.models import Q
-
 from KIA_services.models import KIATransaction
 from .forms import SignUpForm
 from .forms import EditProfileForm
@@ -17,12 +12,10 @@ from django.contrib.auth.models import User
 from KIA_auth.models import Profile
 from django.contrib.auth import hashers
 from django.core.mail import send_mail
-import django
-
+import string, random
 
 access_denied_template = 'KIA_general/access_denied.html'
 not_authorized_template = 'KIA_general/not_authorized.html'
-form_error_template = 'KIA_auth/form_errors.html'
 
 
 def sign_up(request):
@@ -37,11 +30,11 @@ def sign_up(request):
         if form.is_valid():
             cleaned_data = form.cleaned_data
 
-            all_users = User.objects.all()
-            for user in all_users:
-                if user.email == cleaned_data.get('email'):
-                    errors = {'email': 'A user exists with this email'}
-                    return render(request, 'KIA_auth/signup.html', {'errors': errors})
+            # all_users = User.objects.all()
+            # for user in all_users:
+            #     if user.email == cleaned_data.get('email'):
+            #         errors = {'email': 'A user already exists with this email'}
+            #         return render(request, 'KIA_auth/signup.html', {'errors': errors, 'form': form})
 
             username = cleaned_data.get('username')
             password = cleaned_data.get('password1')
@@ -74,14 +67,13 @@ def redirect_to_home(request):
             elif user_profile.role == 'Employee':
                 return render(request, 'KIA_services/emp_panel.html')
             return render(request, 'KIA_general/homepage.html')
-            # return render(request, 'KIA_auth/home.html')
     else:
         return redirect('login')
 
 
 def send_registration_email(email_address):
     subject = 'ثبت‌نام در سامانه KIA_payment'
-    message_body = 'شما در سامانه KIA_payment ثبت‌نام کرده‌اید. برای فعالسازی حساب خود روی لینک زیر کلیک کنید.\n www.sample_link.com'
+    message_body = 'ثبت‌نام شما در سامانه کیاپرداخت با موفقیت انجام شد.'
     sender_address = 'kiapayment2018@gmail.com'
     receiver_addresses = [email_address]
     send_mail(subject, message_body, sender_address, receiver_addresses)
@@ -179,9 +171,9 @@ def change_password(request):
                         return render(request, 'KIA_auth/change_password.html', {'errors': errors, 'form': form})
                 else:
                     errors = {'new password': "Passwords doesn't match"}
-                    return render(request, form_error_template, {'errors': errors})
+                    return render(request, 'KIA_auth/change_password.html', {'errors': errors})
             else:
-                return render(request, 'KIA_auth/change_password.html', {'errors': form.errors, 'form': form})
+                return render(request, 'KIA_auth/change_password.html', {'form': form})
     else:
         return render(request, not_authorized_template)
 
@@ -198,7 +190,7 @@ def add_credit(request):
                 increasing_credit = int(request.POST.get("added_credit"))
                 user_profile.credit += increasing_credit
                 user_profile.save()
-                return redirect('home')
+                return redirect('add_credit')
     else:
         return render(request, not_authorized_template)
 
@@ -225,15 +217,14 @@ def anonymous_transfer(request):
     user = request.user
     if user.is_authenticated:
         user_profile = Profile.objects.get(user=user)
+        current_credit = user_profile.credit
 
         if request.method == 'GET':
-            current_credit = user_profile.credit
             return render(request, 'KIA_auth/anonymous_transfer.html', {'current_credit':  current_credit})
 
         elif request.method == 'POST':
             form = AnonymousTransferForm(request.POST)
             if form.is_valid():
-                print("hiiiiiii")
                 cleaned_data = form.cleaned_data
                 target_email = cleaned_data.get("email")
                 target_account_number = cleaned_data.get("account_number")
@@ -244,29 +235,62 @@ def anonymous_transfer(request):
                 for sys_user in all_users:
                     if sys_user.username == 'iran':
                         continue
-                    print(sys_user)
                     sys_user_profile = Profile.objects.get(user=sys_user)
+                    print(sys_user_profile.account_number)
+                    print(sys_user.email)
                     if sys_user_profile.account_number == target_account_number:
                         if sys_user.email == target_email:
                             user_profile.credit -= transferring_amount
+                            sys_user_profile.credit += transferring_amount
                             user_profile.save()
-                            # TODO: send message for receiver
-                        else:
-                            pass
-                            # TODO: show warning to user for being sure of this operation
-                        account_number_exists = True
-                        break
+                            sys_user_profile.save()
+                            send_anonymous_transfer_email(target_email, transferring_amount)
+                            return redirect('anonymous_transfer')
 
                 if not account_number_exists:
-                    pass
-                    # TODO: create account for target user
+                    sys_username = random_string_generator(10)
+                    sys_password = random_string_generator(16)
+                    hashed_password = hashers.make_password(sys_password)
+                    sys_user = User.objects.create(username=sys_username, password=hashed_password, email=target_email)
+                    sys_user.first_name = 'our user'
+                    sys_user.last_name = 'our user'
+                    sys_user.save()
+                    sys_user_profile = Profile.objects.create(user=sys_user, account_number=target_account_number)
+                    sys_user_profile.phone_number = '00000000000'
+                    print(transferring_amount)
+                    user_profile.credit -= transferring_amount
+                    sys_user_profile.credit += transferring_amount
+                    user_profile.save()
+                    sys_user_profile.save()
+                    send_anonymous_transfer_create_account_email(target_email, transferring_amount, sys_username, sys_password)
+                    return redirect('anonymous_transfer')
+
             else:
-                return render(request, form_error_template, {'errors': form.errors})
+                return render(request, 'KIA_auth/anonymous_transfer.html', {'form': form, 'current_credit':  current_credit})
 
             return redirect('anonymous_transfer')
 
     else:
         return render(request, not_authorized_template)
+
+
+def send_anonymous_transfer_email(email_address, transferring_amount):
+    subject = 'پرداخت ناشناس از سامانه KIA_payment'
+    message_body = 'در سامانه کیاپرداخت مبلغ %s ریال توسط یکی از کاربران بصورت ناشناس  به کیف پولتان واریز شده است.' %transferring_amount
+    sender_address = 'kiapayment2018@gmail.com'
+    receiver_addresses = [email_address]
+    send_mail(subject, message_body, sender_address, receiver_addresses)
+
+
+def send_anonymous_transfer_create_account_email(email_address, transferring_amount, username, password):
+    subject = 'پرداخت ناشناس از سامانه KIA_payment'
+    message_body = 'برای شما در سامانه کیاپرداخت یک حساب کاربری ساخته شده است و مبلغ %s ریال توسط یکی از کاربران بصورت ناشناس  به کیف پولتان واریز شده است.' % transferring_amount
+    message_body += '\n'
+    message_body += 'username: %s \n' % username
+    message_body += 'password: %s \n' % password
+    sender_address = 'kiapayment2018@gmail.com'
+    receiver_addresses = [email_address]
+    send_mail(subject, message_body, sender_address, receiver_addresses)
 
 
 def transaction_history(request):
@@ -297,6 +321,8 @@ def transaction(request, index):
         return HttpResponse("Login first")
 
 
+def random_string_generator(size=6, chars=string.ascii_lowercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
 
 
 

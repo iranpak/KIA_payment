@@ -43,7 +43,9 @@ INSTALLED_APPS = [
     'KIA_auth',
     'KIA_admin',
     'KIA_notification',
-    'KIA_general'
+    'KIA_general',
+    'tinymce',
+    'background_task',
 ]
 
 MIDDLEWARE = [
