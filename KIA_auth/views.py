@@ -22,7 +22,6 @@ import django
 
 access_denied_template = 'KIA_general/access_denied.html'
 not_authorized_template = 'KIA_general/not_authorized.html'
-form_error_template = 'KIA_auth/form_errors.html'
 
 
 def sign_up(request):
@@ -179,9 +178,9 @@ def change_password(request):
                         return render(request, 'KIA_auth/change_password.html', {'errors': errors, 'form': form})
                 else:
                     errors = {'new password': "Passwords doesn't match"}
-                    return render(request, form_error_template, {'errors': errors})
+                    return render(request, 'KIA_auth/change_password.html', {'errors': errors})
             else:
-                return render(request, 'KIA_auth/change_password.html', {'errors': form.errors, 'form': form})
+                return render(request, 'KIA_auth/change_password.html', {'form': form})
     else:
         return render(request, not_authorized_template)
 
@@ -261,7 +260,7 @@ def anonymous_transfer(request):
                     pass
                     # TODO: create account for target user
             else:
-                return render(request, form_error_template, {'errors': form.errors})
+                return render(request, 'KIA_auth/anonymous_transfer.html', {'form': form})
 
             return redirect('anonymous_transfer')
 

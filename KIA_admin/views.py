@@ -13,7 +13,6 @@ from KIA_services.models import KIAService, KIATransaction, KIAServiceField
 
 access_denied_template = 'KIA_general/access_denied.html'
 not_authorized_template = 'KIA_general/not_authorized.html'
-form_error_template = 'KIA_auth/form_errors.html'
 
 
 def is_user_admin(request):

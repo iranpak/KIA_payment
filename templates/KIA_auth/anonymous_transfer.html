@@ -2,95 +2,129 @@
 
 {% block content %}
 
-  <div id="wrapper" class="row" style="padding-bottom:20px;">
+    <div id="wrapper" class="row" style="padding-bottom:20px;">
 
-    <!-- Sidebar -->
-    <div id="sidebar-wrapper" class="col-3" align="center" style="padding-right: 50px;">
-      <div class="list-group">
-        <a href="/user_panel" class="list-group-item list-group-item-action">پنل کاربری</a>
-        <a href="/edit_profile" class="list-group-item list-group-item-action">ویرایش پروفایل</a>
-        <a href="/change_password" class="list-group-item list-group-item-action">تغییر رمز عبور</a>
-        <a href="/add_credit" class="list-group-item list-group-item-action ">اضافه کردن اعتبار</a>
-        <a href="/withdraw_credit" class="list-group-item list-group-item-action ">برداشت پول از اعتبار</a>
-        <a href="/anonymous_transfer" class="list-group-item list-group-item-action active">واریز مخفیانهٔ پول</a>
-        <a href="/transactions" class="list-group-item list-group-item-action">تاریخچهٔ تراکنش‌ها</a>
-      </div>
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper" class="col-3" align="center" style="padding-right: 50px;">
+            <div class="list-group">
+                <a href="/user_panel" class="list-group-item list-group-item-action">پنل کاربری</a>
+                <a href="/edit_profile" class="list-group-item list-group-item-action">ویرایش پروفایل</a>
+                <a href="/change_password" class="list-group-item list-group-item-action">تغییر رمز عبور</a>
+                <a href="/add_credit" class="list-group-item list-group-item-action ">اضافه کردن اعتبار</a>
+                <a href="/withdraw_credit" class="list-group-item list-group-item-action ">برداشت پول از اعتبار</a>
+                <a href="/anonymous_transfer" class="list-group-item list-group-item-action active">واریز مخفیانهٔ
+                    پول</a>
+                <a href="/transactions" class="list-group-item list-group-item-action">تاریخچهٔ تراکنش‌ها</a>
+            </div>
+        </div>
+
+        <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
+
+            {% if form.errors %}
+                <!-- Error messaging -->
+                <div id="errors" class="alert-danger">
+                    <div class="inner">
+                        <p>خطاهای زیر پیش آمده:</p>
+                        {{ form.non_field_errors }}
+                        <ul>
+                            {% for field in form %}
+                                {% if field.errors %}
+                                    <li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+            {% if errors %}
+                <div id="errors" class="alert-danger">
+                    <div class="inner">
+                        <ul>
+                            {% for key, value in errors.items %}
+                                <p>خطاهای زیر پیش آمده:</p>
+                                <li>{{ key }}: {{ value }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="form-group row">
+                    <h3 class="col-sm-3">واریز مخفیانهٔ پول</h3>
+                    <div class="col-sm-6">
+                        <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="inputName" class="col-sm-2 col-form-label">ایمیل مقصد</label>
+                    <div class="col-sm-7">
+                        <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp"
+                               placeholder="example@something.com">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="inputName" class="col-sm-2 col-form-label">شماره حساب مقصد</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="account_number" name="account_number"
+                               aria-describedby="emailHelp"
+                               placeholder="0000000000000000">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="staticEmail" class="col-sm-2 col-form-label">اعتبار فعلی</label>
+                    <div class="col-sm-7">
+                        <input type="text" readonly class="form-control-plaintext" id="old_credit"
+                               value="{{ current_credit }} ریال">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="inputPassword" class="col-sm-2 col-form-label">مبلغ واریزی (ریال)</label>
+                    <div class="col-sm-7">
+                        <input type="number" min="0" step="1000" class="form-control" id="transfer_credit"
+                               name="transfer_credit"
+                               placeholder="0" dir="ltr"
+                               onchange="calcDiff();">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="staticEmail" class="col-sm-2 col-form-label" id="test_label">اعتبار باقی مانده</label>
+                    <div class="col-sm-7">
+                        <input type="text" readonly class="form-control-plaintext" id="final_credit"
+                               value="{{ current_credit }} ریال">
+                    </div>
+                </div>
+
+                <div style="padding-left: 150px">
+                    <button type="submit" class="btn btn-primary" onclick="checkNotNeg()">ثبت</button>
+                </div>
+
+            </form>
+        </div>
+
     </div>
 
-    <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
-      <form method="post">
-          {% csrf_token %}
+    <script>
+        function calcDiff() {
+            var diff = parseInt(document.getElementById("old_credit").value) -
+                parseInt(document.getElementById("transfer_credit").value);
+            document.getElementById("final_credit").value = diff;
+        }
 
-        <div class="form-group row">
-          <h3 class="col-sm-3">واریز مخفیانهٔ پول</h3>
-          <div class="col-sm-6">
-            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="">
-          </div>
-        </div>
-
-        <div class="form-group row">
-          <label for="inputName" class="col-sm-2 col-form-label">ایمیل مقصد</label>
-          <div class="col-sm-7">
-            <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp"
-                   placeholder="example@something.com">
-          </div>
-        </div>
-
-        <div class="form-group row">
-          <label for="inputName" class="col-sm-2 col-form-label">شماره حساب مقصد</label>
-          <div class="col-sm-7">
-            <input type="text" class="form-control" id="account_number" name="account_number"
-                   aria-describedby="emailHelp"
-                   placeholder="0000000000000000">
-          </div>
-        </div>
-
-        <div class="form-group row">
-          <label for="staticEmail" class="col-sm-2 col-form-label">اعتبار فعلی</label>
-          <div class="col-sm-7">
-            <input type="text" readonly class="form-control-plaintext" id="old_credit" value="{{ current_credit }} ریال">
-          </div>
-        </div>
-
-        <div class="form-group row">
-          <label for="inputPassword" class="col-sm-2 col-form-label">مبلغ واریزی (ریال)</label>
-          <div class="col-sm-7">
-            <input type="number" min="0" step="1000" class="form-control" id="transfer_credit" name="transfer_credit"
-                   placeholder="0" dir="ltr"
-                   onchange="calcDiff();">
-          </div>
-        </div>
-
-        <div class="form-group row">
-          <label for="staticEmail" class="col-sm-2 col-form-label" id="test_label">اعتبار باقی مانده</label>
-          <div class="col-sm-7">
-            <input type="text" readonly class="form-control-plaintext" id="final_credit" value="{{ current_credit }} ریال">
-          </div>
-        </div>
-
-        <div style="padding-left: 150px">
-          <button type="submit" class="btn btn-primary" onclick="checkNotNeg()">ثبت</button>
-        </div>
-
-      </form>
-    </div>
-
-  </div>
-
-  <script>
-      function calcDiff() {
-          var diff = parseInt(document.getElementById("old_credit").value) -
-              parseInt(document.getElementById("transfer_credit").value);
-          document.getElementById("final_credit").value = diff;
-      }
-
-      function checkNotNeg() {
-          if (parseInt(document.getElementById("transfer_credit").value) >
-              parseInt(document.getElementById("old_credit").value)) {
-              document.getElementById("transfer_credit").value = 0;
-              alert("نمی‌توانید بیشتر از اعتبارتان واریز کنید!");
-          }
-      }
-  </script>
+        function checkNotNeg() {
+            if (parseInt(document.getElementById("transfer_credit").value) >
+                parseInt(document.getElementById("old_credit").value)) {
+                document.getElementById("transfer_credit").value = 0;
+                alert("نمی‌توانید بیشتر از اعتبارتان واریز کنید!");
+            }
+        }
+    </script>
 
 {% endblock content %}
