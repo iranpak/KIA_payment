@@ -1,5 +1,6 @@
 from enum import Enum
 
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from jsonfield import JSONField
 
@@ -22,12 +23,12 @@ class KIAService(models.Model):
     label = models.CharField(max_length=100, null=True)
     currency = models.IntegerField(choices=CURRENCY_CHOICES, default=dollar)
     variable_price = models.BooleanField(default=False)
-    # TODO: disable price field if variable cash in ui
     price = models.IntegerField(null=True)
+    commission = models.IntegerField(default=0
+                                     , validators=[MaxValueValidator(100), MinValueValidator(0)])
     # TODO: let user insert html for details
     details = models.TextField()
     image_url = models.URLField(null=True)
-    # TODO: add commission field
 
     def __str__(self):
         return self.name
@@ -84,12 +85,14 @@ class KIATransaction(models.Model):
         (suspicious, "مشکوک"),
     )
 
-    # TODO: remove null=True from next field after passing login info in view
     service = models.ForeignKey(KIAService, on_delete=models.SET_NULL, null=True)
     user = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, related_name='user_transactions')
     state = models.IntegerField(choices=STATE_CHOICES)
+    # TODO: remove null=True from below
     register_time = models.DateTimeField(null=True)
+    cost_in_currency = models.IntegerField(null=True)
     cost_in_rial = models.IntegerField(null=True)
+
     assigned_emp = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, related_name='emp_transactions')
     data = JSONField()
 

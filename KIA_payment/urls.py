@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.views.generic import RedirectView
 
 from test_app import views as test_app_views
@@ -51,6 +51,9 @@ urlpatterns = [
     path('admin/services/', kia_services_views.AdminServiceListDispatchView.as_view(), name='admin_service_list'),
     path('admin/services/<str:name>', kia_services_views.admin_service, name='admin_service'),
     path('admin/services/<str:name>/fields', kia_services_views.admin_service_fields, name='admin_service_fields'),
+    path('admin/services/<str:name>/delete/success'
+         , kia_services_views.admin_service_delete_success
+         , name='admin_service_delete_success'),
     # auth
     path('login/', auth_views.login, {'template_name': 'KIA_auth/login.html'}, name='login'),
     path('logout/', auth_views.logout, {'template_name': 'KIA_auth/logout.html'}, name='logout'),
@@ -87,7 +90,11 @@ urlpatterns = [
     path('homepage/', test_app_views.homepage, name='homepage'),
     # KIA_services
     path('services/<str:name>/', kia_services_views.services, name='services'),
+    path('services/<str:name>/success', kia_services_views.services_success, name='services_success'),
     path('create_service/', kia_services_views.create_service, name='service_creation'),
     path('create_service/<str:name>/', kia_services_views.create_service_cont, name='create_service_cont'),
-    path('services/', kia_services_views.ServiceListView.as_view(), name='service_list')
+    path('create_service/<str:name>/success', kia_services_views.create_service_success, name='create_service_success'),
+    path('services/', kia_services_views.ServiceListView.as_view(), name='service_list'),
+    # tinymce
+    re_path(r'^tinymce/', include('tinymce.urls'))
 ]
