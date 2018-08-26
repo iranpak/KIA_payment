@@ -26,7 +26,10 @@
         <thead class="thead-dark">
         <tr>
           <th scope="col">#</th>
+          <th scope="col">نوع</th>
+          <th scope="col">تاریخ</th>
           <th scope="col">توضیحات</th>
+          <th scope="col">پیام</th>
         </tr>
         </thead>
         <tbody>
@@ -34,7 +37,10 @@
         {% for action in actions %}
           <tr>
             <th scope="row">{{ forloop.counter }}</th>
+            <th scope="row">{{ action.type }}</th>
+            <th scope="row">{{ action.date }}</th>
             <td>{{ action.description}}</td>
+            <td>{{ action.message}}</td>
           </tr>
         {% endfor %}
 

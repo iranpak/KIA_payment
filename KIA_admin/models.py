@@ -15,7 +15,7 @@ class SystemCredit(models.Model):
 class HistoryOfAdminActivities(models.Model):
     type = models.CharField(max_length=32, default='Add user')
     description = models.CharField(max_length=256)
-    message = models.CharField(max_length=512, null=True)
+    message = models.CharField(max_length=512, default='')
     date = jmodels.jDateTimeField(default=jdatetime.datetime.now)
 
 
