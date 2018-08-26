@@ -190,7 +190,7 @@ def add_credit(request):
                 increasing_credit = int(request.POST.get("added_credit"))
                 user_profile.credit += increasing_credit
                 user_profile.save()
-                return redirect('home')
+                return redirect('add_credit')
     else:
         return render(request, not_authorized_template)
 
@@ -217,9 +217,9 @@ def anonymous_transfer(request):
     user = request.user
     if user.is_authenticated:
         user_profile = Profile.objects.get(user=user)
+        current_credit = user_profile.credit
 
         if request.method == 'GET':
-            current_credit = user_profile.credit
             return render(request, 'KIA_auth/anonymous_transfer.html', {'current_credit':  current_credit})
 
         elif request.method == 'POST':
@@ -236,8 +236,9 @@ def anonymous_transfer(request):
                     if sys_user.username == 'iran':
                         continue
                     sys_user_profile = Profile.objects.get(user=sys_user)
+                    print(sys_user_profile.account_number)
+                    print(sys_user.email)
                     if sys_user_profile.account_number == target_account_number:
-
                         if sys_user.email == target_email:
                             user_profile.credit -= transferring_amount
                             sys_user_profile.credit += transferring_amount
@@ -245,9 +246,6 @@ def anonymous_transfer(request):
                             sys_user_profile.save()
                             send_anonymous_transfer_email(target_email, transferring_amount)
                             return redirect('anonymous_transfer')
-
-                        account_number_exists = True
-                        break
 
                 if not account_number_exists:
                     sys_username = random_string_generator(10)
@@ -257,9 +255,8 @@ def anonymous_transfer(request):
                     sys_user.first_name = 'our user'
                     sys_user.last_name = 'our user'
                     sys_user.save()
-                    sys_user_profile = Profile.objects.create(user=sys_user)
-                    sys_user_profile.account_number = '00000000000'
-                    sys_user_profile.phone_number = target_account_number
+                    sys_user_profile = Profile.objects.create(user=sys_user, account_number=target_account_number)
+                    sys_user_profile.phone_number = '00000000000'
                     print(transferring_amount)
                     user_profile.credit -= transferring_amount
                     sys_user_profile.credit += transferring_amount
@@ -269,7 +266,7 @@ def anonymous_transfer(request):
                     return redirect('anonymous_transfer')
 
             else:
-                return render(request, 'KIA_auth/anonymous_transfer.html', {'form': form})
+                return render(request, 'KIA_auth/anonymous_transfer.html', {'form': form, 'current_credit':  current_credit})
 
             return redirect('anonymous_transfer')
 
