@@ -94,7 +94,7 @@ def remove_user_restriction(request):
 
                     except Exception as e:
                         errors = {'username': 'There is no user with this username'}
-                        return render(request, form_error_template, {'errors': errors})
+                        return render(request, 'KIA_admin/remove_restriction.html', {'errors': errors})
                 else:
                     return redirect('remove_user_restriction')
 
