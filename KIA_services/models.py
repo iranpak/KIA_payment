@@ -9,20 +9,35 @@ from KIA_auth.models import Profile
 
 
 class KIAService(models.Model):
+    dollar = 1
+    euro = 2
+    pound = 3
+    CURRENCY_CHOICES = (
+        (dollar, "دلار"),
+        (euro, "یورو"),
+        (pound, "پوند"),
+    )
+
     name = models.CharField(max_length=100)
     label = models.CharField(max_length=100, null=True)
+    currency = models.IntegerField(choices=CURRENCY_CHOICES, default=dollar)
+    variable_price = models.BooleanField(default=False)
+    # TODO: disable price field if variable cash in ui
+    price = models.IntegerField(null=True)
     # TODO: let user insert html for details
     details = models.TextField()
     image_url = models.URLField(null=True)
+    # TODO: add commission field
 
     def __str__(self):
         return self.name
 
 
 class KIAServiceField(models.Model):
-    boolean_field = 1
+    # boolean_field = 1
     char_field = 2
     choice_field = 3
+    # cost_field = 4
     date_field = 5
     date_time_field = 6
     decimal_field = 7
@@ -31,9 +46,10 @@ class KIAServiceField(models.Model):
     integer_field = 13
     multiple_choice_field = 14
     TYPE_CHOICES = (
-        (boolean_field, "فیلد صحیح و غلط"),
+        # (boolean_field, "فیلد صحیح و غلط"),
         (char_field, "فیلد متنی"),
         (choice_field, "فیلد انتخاب یک گزینه"),
+        # (cost_field, "مبلغ ارزی"),
         (date_field, "فیلد تاریخ"),
         (date_time_field, "فیلد تاریخ و زمان"),
         (decimal_field, "فیلد عدد اعشاری"),
@@ -48,7 +64,7 @@ class KIAServiceField(models.Model):
     label = models.CharField(max_length=100)
     type = models.IntegerField(choices=TYPE_CHOICES)
     optional = models.BooleanField(default=False)
-    args = JSONField()
+    args = JSONField(null=True)
 
     def __str__(self):
         return format("%s: %s" % (self.service.name, self.name))
@@ -61,22 +77,28 @@ class KIATransaction(models.Model):
     failed = 4
     suspicious = 5
     STATE_CHOICES = (
-        (registered, "Registered"),
-        (being_done, "Being done"),
-        (done, "Done"),
-        (failed, "Failed"),
-        (suspicious, "Suspicious"),
+        (registered, "ثبت شده"),
+        (being_done, "در حال انجام"),
+        (done, "تمام شده"),
+        (failed, "رد شده"),
+        (suspicious, "مشکوک"),
     )
 
-    service = models.ForeignKey(KIAService, on_delete=models.SET_NULL, null=True)
     # TODO: remove null=True from next field after passing login info in view
+    service = models.ForeignKey(KIAService, on_delete=models.SET_NULL, null=True)
     user = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, related_name='user_transactions')
     state = models.IntegerField(choices=STATE_CHOICES)
+    register_time = models.DateTimeField(null=True)
+    cost_in_rial = models.IntegerField(null=True)
     assigned_emp = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, related_name='emp_transactions')
     data = JSONField()
 
     def initialize(self, service):
         self.state = self.registered
         self.service = service
+
+    def return_money(self):
+        self.user.credit += self.cost_in_rial
+
 
 

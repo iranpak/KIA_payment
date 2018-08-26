@@ -2,8 +2,8 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.template import loader
 
-from kia_services.forms import KIAServiceForm
-from kia_services.models import KIAService
+from KIA_services.forms import KIAServiceForm
+from KIA_services.models import KIAService
 
 
 def register(request):

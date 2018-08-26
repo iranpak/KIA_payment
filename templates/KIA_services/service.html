@@ -27,11 +27,31 @@
   <div id="wrapper" class="row" style="padding-bottom:20px;">
     <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
       {% if authenticated %}
-        <form action="" method="post" novalidate>
+        {% if form.errors %}
+          <div class="alert alert-danger" dir="rtl">
+            <strong>خطا!</strong>
+            {% for a, b in form.errors.items %}
+              {{ a }} {{ b }}
+            {% endfor %}
+          </div>
+        {% endif %}
+        {% if form.errors %}
+          <p style="color: red;">
+            همه‌ی ورودی‌های اجباری را وارد کرده و به فرمت ورودی‌ها دقت کنید.
+          </p>
+        {% endif %}
+
+        {% if error %}
+          <p style="color: red;">
+            {{ error }}
+          </p>
+        {% endif %}
+
+        <form action="" method="post">
           {% csrf_token %}
 
           <div class="form-group row">
-            <h3 class="col-sm-2">خرید سرویس {{ label }}</h3>
+            <h3 class="col-sm-2">خرید سرویس {{ service.label }}</h3>
             <div class="col-sm-7">
               <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="">
             </div>
@@ -40,6 +60,36 @@
           {#          <table>#}
           {#            {{ form.as_table }}#}
           {#          </table>#}
+
+          <div class="form-group row">
+            <div class="col-sm-4 col-form-label text-md-right">
+              توضیحات
+            </div>
+            <div class="col-md-6">
+              {{ service.details }}
+            </div>
+          </div>
+
+
+          <div class="form-group row">
+            <div class="col-sm-4 col-form-label text-md-right">
+              نوع ارز
+            </div>
+            <div class="col-md-6">
+              {{ service.get_currency_display }}
+            </div>
+          </div>
+
+          {% if not service.variable_price %}
+            <div class="form-group row">
+              <div class="col-sm-4 col-form-label text-md-right">
+                هزینه خدمت
+              </div>
+              <div class="col-md-6">
+                {{ service.price }}
+              </div>
+            </div>
+          {% endif %}
 
           {% for item in form %}
             {#            {{ item.label_tag }}{{ item }}#}
@@ -55,7 +105,7 @@
 
           <div style="padding-left: 150px">
             <input type="submit" value="تایید" class="btn btn-primary">
-{#            <button type="submit" class="btn btn-primary">خرید</button>#}
+            {#            <button type="submit" class="btn btn-primary">خرید</button>#}
           </div>
 
         </form>

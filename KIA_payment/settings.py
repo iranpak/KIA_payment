@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'kia_services',
+    'KIA_services',
     'KIA_auth',
     'KIA_admin',
     'KIA_notification',
@@ -61,7 +61,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'templates'),
                  os.path.join(BASE_DIR, 'test_app/templates'),
-                 os.path.join(BASE_DIR, 'kia_services/templates')]
+                 os.path.join(BASE_DIR, 'KIA_services/templates')]
         ,
         'APP_DIRS': True,
         'OPTIONS': {

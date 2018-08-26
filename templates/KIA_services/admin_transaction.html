@@ -1,0 +1,128 @@
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#  <meta charset="UTF-8">#}
+{#  <title>Transaction</title>#}
+{#</head>#}
+{#<body>#}
+{#<ul>#}
+{#  <li>نام خدمت: {{ transaction.service.name }}</li>#}
+{#  <li>نام کاربر: {{ transaction.user.username }}</li>#}
+{#  <li>وضعیت درخواست: {{ transaction.state }}</li>#}
+{#  <li>اطلاعات درخواست:#}
+{#    {% for key, values in data.items %}#}
+{#      <ul>#}
+{#        <li>{{ key }} : {{ values }}</li>#}
+{#      </ul>#}
+{#    {% endfor %}#}
+{#  </li>#}
+{#</ul>#}
+{#<form action="" method="post" novalidate>#}
+{#  {% csrf_token %}#}
+{#  <input type="submit" name="cont" value="انجام خدمت">#}
+{#  <input type="submit" name="finish" value="پایان ساخت خدمت">#}
+{#</form>#}
+{#</body>#}
+{#</html>#}
+
+
+{% extends "master.html" %}
+
+{% block content %}
+
+  <div id="wrapper" class="row" style="padding-bottom:20px;">
+
+    <div id="sidebar-wrapper" class="col-3" align="center" style="padding-right: 50px;">
+      <div class="list-group">
+        <a href="/admin/panel" class="list-group-item list-group-item-action">پنل مدیر</a>
+        {#        <a href="/admin/users_activities" class="list-group-item list-group-item-action active">فعالیت کاربران</a>#}
+        {#        <a href="/admin/employees_activities" class="list-group-item list-group-item-action">فعالیت کارمندان</a>#}
+        <a href="/admin/activities" class="list-group-item list-group-item-action active">فعالیت‌ها</a>
+        <a href="/admin/my_history" class="list-group-item list-group-item-action">سابقهٔ من</a>
+        <a href="/admin/financial_account_details" class="list-group-item list-group-item-action">جزئیات حساب مالی</a>
+
+        <a href="/admin/restrict_user" class="list-group-item list-group-item-action">محدود کردن کاربر</a>
+        <a href="/admin/remove_user_restriction" class="list-group-item list-group-item-action">رفع محدودیت</a>
+        <a href="/admin/add_system_credit" class="list-group-item list-group-item-action ">اضافه کردن اعتبار</a>
+        <a href="/create_service" class="list-group-item list-group-item-action">اضافه کردن تراکنش</a>
+        <a href="/admin/services" class="list-group-item list-group-item-action">مشاهده و بررسی سرویس‌ها</a>
+        <a href="/admin/add_user" class="list-group-item list-group-item-action">اضافه کردن کاربر</a>
+      </div>
+    </div>
+
+    <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
+      <div class="row" align="center">
+        <div class="col-2"></div>
+        <div class="col-2">نام خدمت</div>
+        <div class="col-6">{{ transaction.service.name }}</div>
+        <div class="col-2"></div>
+      </div>
+
+      <div class="row" align="center">
+        <div class="col-2"></div>
+        <div class="col-2">نام کاربر</div>
+        <div class="col-6">{{ transaction.user }}</div>
+        <div class="col-2"></div>
+      </div>
+
+      <div class="row" align="center">
+        <div class="col-2"></div>
+        <div class="col-2">وضعیت درخواست</div>
+        <div class="col-6">{{ transaction.get_state_display }}</div>
+        <div class="col-2"></div>
+      </div>
+
+      <div class="row" align="center">
+        <div class="col-2"></div>
+        <div class="col-2">کارمند در حال کار</div>
+        <div class="col-6">{{ transaction.assigned_emp }}</div>
+        <div class="col-2"></div>
+      </div>
+
+      <div class="row" align="center">
+        <div class="col-2"></div>
+        <div class="col-2">زمان ثبت</div>
+        <div class="col-6">{{ transaction.register_time }}</div>
+        <div class="col-2"></div>
+      </div>
+
+      <div class="row" align="center">
+        <div class="col-2"></div>
+        <div class="col-2">قیمت ریالی</div>
+        <div class="col-6">{{ transaction.cost_in_rial }}</div>
+        <div class="col-2"></div>
+      </div>
+
+      {% for key, value in data.items %}
+        <div class="row" align="center">
+          <div class="col-2"></div>
+          <div class="col-2">{{ key }}</div>
+          <div class="col-6">{{ value }}</div>
+          <div class="col-2"></div>
+        </div>
+      {% endfor %}
+
+      <form action="" method="post" novalidate>
+        {% csrf_token %}
+        {% if transaction.state == transaction.suspicious %}
+
+          <input type="submit" name="fail" value="رد درخواست" class="btn btn-primary">
+          <input type="submit" name="return" value="رفع مشکوکی!" class="btn btn-primary">
+          {##}
+          {#        {% elif transaction.state == transaction.being_done %}#}
+          {#          {% if transaction.assigned_emp == user %}#}
+          {#            <input type="submit" name="finish" value="اتمام درخواست" class="btn btn-primary">#}
+          {#            <input type="submit" name="report" value="گزارش مورد مشکوک" class="btn btn-primary">#}
+          {#            <input type="submit" name="fail" value="رد کردن درخواست" class="btn btn-primary">#}
+          {#          {% endif %}#}
+        {% endif %}
+        <button type="button" onclick="javascript:history.back()" class="btn btn-primary">
+          بازگشت
+        </button>
+      </form>
+
+    </div>
+
+  </div>
+
+{% endblock content %}

@@ -3,7 +3,7 @@ from django.urls import path, include
 from django.views.generic import RedirectView
 
 from test_app import views as test_app_views
-from kia_services import views as kia_services_views
+from KIA_services import views as kia_services_views
 from django.contrib.auth import views as auth_views
 from KIA_auth import views as KIA_auth_views
 from KIA_general import views as KIA_gen_views
@@ -30,15 +30,17 @@ urlpatterns = [
 
     # admin
     path('admin/panel', KIA_admin_views.panel, name='admin_panel'),
-    path('admin/users_activities', KIA_admin_views.users_activities, name='users_activities'),
-    path('admin/employees_activities', KIA_admin_views.employees_activities, name='employees_activities'),
+    # path('admin/users_activities', KIA_admin_views.users_activities, name='users_activities'),
+    # path('admin/employees_activities', KIA_admin_views.employees_activities, name='employees_activities'),
+    path('admin/activities', KIA_admin_views.activities, name='activities'),
+    path('admin/transactions/<int:index>/', kia_services_views.admin_transaction, name='admin_transaction'),
     path('admin/my_history', KIA_admin_views.my_history, name='my_history'),
     path('admin/financial_account_details', KIA_admin_views.financial_account_details,
          name='financial_account_details'),
     path('admin/add_system_credit', KIA_admin_views.add_system_credit, name='add_system_credit'),
     path('admin/restrict_user', KIA_admin_views.restrict_user, name='restrict_user'),
     path('admin/remove_user_restriction', KIA_admin_views.remove_user_restriction, name='remove_user_restriction'),
-    path('admin/add_transaction/', KIA_admin_views.add_transaction, name='add_transaction'),
+    # path('admin/add_transaction/', KIA_admin_views.add_transaction, name='add_transaction'),
     path('admin/add_user', KIA_admin_views.add_user, name='add_user'),
     path('admin/show_system_transactions', KIA_admin_views.show_system_transactions, name='show_system_transactions'),
 
@@ -54,12 +56,14 @@ urlpatterns = [
     path('logout/', auth_views.logout, {'template_name': 'KIA_auth/logout.html'}, name='logout'),
     path('signup/', KIA_auth_views.sign_up, name='signup'),
     # user panel
+    path('user_panel/', KIA_auth_views.user_panel, name='edit_profile'),
     path('edit_profile/', KIA_auth_views.edit_profile, name='edit_profile'),
     path('change_password/', KIA_auth_views.change_password, name='change_password'),
     path('add_credit/', KIA_auth_views.add_credit, name='add_credit'),
     path('withdraw_credit/', KIA_auth_views.withdraw_credit, name='withdraw_credit'),
     path('anonymous_transfer/', KIA_auth_views.anonymous_transfer, name='anonymous_transfer'),
-    path('transaction_history/', KIA_auth_views.transaction_history, name='transaction_history'),
+    path('transactions/', KIA_auth_views.transaction_history, name='transaction_history'),
+    path('transactions/<int:index>/', KIA_auth_views.transaction, name='transaction_history'),
 
     path('admin/', admin.site.urls),
     # user
@@ -73,7 +77,7 @@ urlpatterns = [
     path('all_transactions/', test_app_views.all_transactions, name='all_transactions'),
     # TODO converted to:
     path('emp/panel/', kia_services_views.emp_panel, name='emp_panel'),
-    path('emp/transactions/', kia_services_views.EmpTransactionListView.as_view(), name='emp_transactions'),
+    path('emp/transactions/', kia_services_views.EmpTransactionListDispatchView.as_view(), name='emp_transactions'),
     path('all_transactions/1234', test_app_views.sample_transaction, name='sample_transaction'),
     # TODO converted to:
     path('emp/transactions/<int:index>/', kia_services_views.emp_transaction, name='emp_transaction'),
@@ -81,7 +85,7 @@ urlpatterns = [
     path('send_email/', test_app_views.send_email, name='send_email'),
     # homepage
     path('homepage/', test_app_views.homepage, name='homepage'),
-    # kia_services
+    # KIA_services
     path('services/<str:name>/', kia_services_views.services, name='services'),
     path('create_service/', kia_services_views.create_service, name='service_creation'),
     path('create_service/<str:name>/', kia_services_views.create_service_cont, name='create_service_cont'),

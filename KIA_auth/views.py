@@ -1,6 +1,12 @@
-from django.shortcuts import render
+import json
+
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.template import loader
+
+from django.db.models import Q
+
+from KIA_services.models import KIATransaction
 from .forms import SignUpForm
 from .forms import EditProfileForm
 from .forms import ChangePasswordForm
@@ -61,7 +67,12 @@ def redirect_to_home(request):
         if user_profile.is_restricted:
             return render(request, 'KIA_general/user_restricted.html')
         else:
-            return render(request, 'KIA_auth/home.html')
+            if user_profile.role == 'Admin':
+                return render(request, 'KIA_admin/admin_panel.html')
+            elif user_profile.role == 'Employee':
+                return render(request, 'KIA_services/emp_panel.html')
+            return render(request, 'KIA_general/homepage.html')
+            # return render(request, 'KIA_auth/home.html')
     else:
         return redirect('login')
 
@@ -113,6 +124,26 @@ def edit_profile(request):
                 return redirect('edit_profile')
             else:
                 return render(request, form_error_template, {'errors': form.errors})
+    else:
+        return render(request, not_authorized_template)
+
+
+def user_panel(request):
+    user = request.user
+    if user.is_authenticated:
+        user_profile = Profile.objects.get(user=user)
+
+        information = {
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'username': user.username,
+            'email': user.email,
+            'account_number': user_profile.account_number,
+            'phone_number': user_profile.phone_number,
+            'credit': user_profile.credit,
+        }
+
+        return render(request, 'KIA_auth/user_panel.html', {'information': information})
     else:
         return render(request, not_authorized_template)
 
@@ -236,33 +267,40 @@ def anonymous_transfer(request):
 
 
 def transaction_history(request):
-    acts = [
-        {'type': 'TOEFL',
-         'amount': '10000',
-         'date': '29.9.2018'},
-        {'type': 'University',
-         'amount': '4624',
-         'date': '29.9.2018'},
-        {'type': 'TOEFL',
-         'amount': '435',
-         'date': '29.9.2018'},
-        {'type': 'TOEFL',
-         'amount': '234646',
-         'date': '29.9.2018'},
-        {'type': 'GRE',
-         'amount': '13423',
-         'date': '29.9.2018'},
-    ]
-    return render(request, 'KIA_auth/transaction_history.html', {'acts': acts})
+    user = None
+    if request.user.is_authenticated:
+        user = Profile.objects.get(user=request.user)
+    else:
+        return HttpResponse("Login first")
+
+    registered_transactions = KIATransaction.objects.filter(user=user, state=KIATransaction.registered)
+    being_done_transactions = KIATransaction.objects.filter(Q(user=user) &
+                                                            (Q(state=KIATransaction.being_done) | Q(
+                                                                state=KIATransaction.suspicious)))
+
+    finished_transactions = KIATransaction.objects.filter(user=user, state=KIATransaction.done)
+    failed_transactions = KIATransaction.objects.filter(user=user, state=KIATransaction.failed)
+
+    return render(request, 'KIA_auth/transaction_history.html', {'registered': registered_transactions,
+                                                                 'being_done': being_done_transactions,
+                                                                 'done': finished_transactions,
+                                                                 'failed': failed_transactions})
 
 
+def transaction(request, index):
+    if request.user.is_authenticated:
+        user = Profile.objects.get(user=request.user)
+    else:
+        return HttpResponse("Login first")
 
+    t = get_object_or_404(KIATransaction, id=index)
+    decoded_data = json.loads(t.data)
 
+    if t.user != user:
+        return HttpResponse("Forbidden")
 
-
-
-
-
+    return render(request, 'KIA_services/transaction.html'
+                  , {'transaction': t, 'data': decoded_data})
 
 
 

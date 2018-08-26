@@ -21,7 +21,6 @@
 {#</html>#}
 
 
-
 {% extends "master.html" %}
 
 {% block content %}
@@ -53,7 +52,10 @@
         <div class="card h-100">
           <h4 class="card-header">{{ service.name }}</h4>
           <div class="card-body">
-            <p class="card-text">{{ service.details }}</p>
+{#            <div class="img-wrap" style="width: 50px; height: 40px;">#}
+              <img src="{{ service.image_url }}" alt="بدون تصویر" style="max-height: 200px; width: 100%;">
+{#            </div>#}
+            <p class="card-text">{{ service.label }}</p>
           </div>
           <div class="card-footer">
             <a href="{{ service.name }}" class="btn btn-primary">خرید</a>

@@ -2,7 +2,7 @@ import json
 
 from django import forms
 
-from kia_services.models import KIAServiceField, KIAService
+from KIA_services.models import KIAServiceField, KIAService
 
 
 def get_form_field(service_field):
@@ -12,11 +12,11 @@ def get_form_field(service_field):
         else:
             return forms.CharField(max_length=100, label=service_field.label, required=True)
 
-    elif service_field.type == KIAServiceField.boolean_field:
-        if service_field.optional:
-            forms.CharField(label=service_field.label, required=False)
-        else:
-            return forms.CharField(label=service_field.label, required=True)
+    # elif service_field.type == KIAServiceField.boolean_field:
+    #     if service_field.optional:
+    #         forms.CharField(label=service_field.label, required=False)
+    #     else:
+    #         return forms.CharField(label=service_field.label, required=True)
 
     elif service_field.type == KIAServiceField.choice_field:
         args = service_field.args
@@ -66,10 +66,11 @@ def get_form_field(service_field):
             return forms.IntegerField(label=service_field.label, required=True)
 
     elif service_field.type == KIAServiceField.multiple_choice_field:
-        args = json.loads(service_field.args)
+        # args = json.loads(service_field.args)
+        args = service_field.args
         choices = []
         for choice in args:
-            choices.append((choice[0], choice[1]))
+            choices.append((choice, args[choice]))
 
         if service_field.optional:
             return forms.MultipleChoiceField(label=service_field.label, choices=choices, required=False)
@@ -95,12 +96,17 @@ class KIAServiceForm(forms.Form):
 
 
 class KIAServiceCreationForm(forms.ModelForm):
+    price = forms.IntegerField(label='قیمت', required=False)
+
     class Meta:
         model = KIAService
-        fields = ('name', 'label', 'details', 'image_url')
+        fields = ('name', 'label', 'currency', 'variable_price', 'price', 'details', 'image_url')
         labels = {
             'name': 'نام انگلیسی خدمت',
             'label': 'نام فارسی خدمت',
+            'currency': 'ارز',
+            'variable_price': 'قیمت متغیر',
+            'price': 'قیمت',
             'details': 'توضیحات خدمت',
             'image_url': 'آدرس عکس خدمت',
         }
