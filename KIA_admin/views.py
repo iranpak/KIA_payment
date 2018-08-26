@@ -214,11 +214,11 @@ def add_user(request):
                 if form.is_valid() and form_data['password1'] == form_data['password2']:
                     cleaned_data = form.cleaned_data
 
-                    all_users = User.objects.all()
-                    for user in all_users:
-                        if user.email == cleaned_data.get('email'):
-                            errors = {'email': 'A user already exists with this email'}
-                            return render(request, 'KIA_admin/add_user.html', {'errors': errors, 'form': form})
+                    # all_users = User.objects.all()
+                    # for user in all_users:
+                    #     if user.email == cleaned_data.get('email'):
+                    #         errors = {'email': 'A user already exists with this email'}
+                    #         return render(request, 'KIA_admin/add_user.html', {'errors': errors, 'form': form})
 
                     print(cleaned_data)
                     username = cleaned_data.get('username')
@@ -250,9 +250,10 @@ def add_user(request):
 
 def send_registration_email(email_address, username, password, role):
     subject = 'ثبت‌نام در سامانه KIA_payment'
-    message_body = (
-            'برای شما در سامانه KIA_payment یک حساب کاربری ساخته شده است. برای فعالسازی حساب خود روی لینک زیر کلیک کنید.\n www.sample_link.com\n نقش شما: %s \n نام کاربری: %s \n رمز عبور: %s \n' % (
-    role, username, password))
+    message_body = 'برای شما در سامانه کیاپرداخت یک حساب کاربری به عنوان %s ساخته شده است.' % role
+    message_body += '\n'
+    message_body += 'username: %s \n' % username
+    message_body += 'password: %s \n' % password
     sender_address = 'kiapayment2018@gmail.com'
     receiver_addresses = [email_address]
     send_mail(subject, message_body, sender_address, receiver_addresses)
