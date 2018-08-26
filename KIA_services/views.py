@@ -4,6 +4,8 @@ import requests
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
+
+from KIA_admin.models import SystemCredit
 from KIA_services.forms import KIAServiceForm
 from KIA_services.models import KIAService, KIATransaction, KIAServiceField
 from KIA_auth.models import Profile
@@ -112,6 +114,9 @@ def pay_from_user_credit(service, transaction, user, json_data):
     if user.credit >= cost:
         user.credit -= cost
         transaction.cost_in_rial = cost
+        sc = SystemCredit.objects.get(owner="system")
+        sc.rial_credit += cost
+        sc.save()
         user.save()
         return True
     return False
@@ -351,11 +356,43 @@ def emp_transaction(request, index):
         elif 'finish' in request.POST:
 
             if transaction.assigned_emp == user_profile:
-                transaction.state = transaction.done
-                transaction.save()
-                # TODO: check system credit
-                return HttpResponseRedirect("finish/success")
-                # TODO: send mail to user
+                credit = transaction.cost_in_currency
+                flag = True
+
+                currency = transaction.service.currency
+                sc = SystemCredit.objects.get(owner="system")
+
+                if currency == KIAService.dollar:
+                    if credit > sc.dollar_credit:
+                        flag = False
+                    else:
+                        sc.dollar_credit = sc.dollar_credit - credit
+                        sc.save()
+                elif currency == KIAService.euro:
+                    if credit > sc.euro_credit:
+                        flag = False
+                    else:
+                        sc.euro_credit = sc.euro_credit - credit
+                        sc.save()
+                elif currency == KIAService.pound:
+                    if credit > sc.pound_credit:
+                        flag = False
+                    else:
+                        sc.pound_credit = sc.pound_credit - credit
+                        sc.save()
+
+                if flag:
+                    transaction.state = transaction.done
+                    transaction.save()
+                    return HttpResponseRedirect("finish/success")
+                    # TODO: send mail to user
+                else:
+                    error = "موجودی ارزی سامانه برای تکمیل این عملیات کافی نیست."
+                    return render(request, 'KIA_services/emp_transaction.html'
+                                  , {'transaction': transaction,
+                                     'data': decoded_data,
+                                     'user': user_profile,
+                                     'error': error})
             else:
                 return HttpResponse("A problem happened")
 
@@ -447,7 +484,7 @@ def emp_taken_transactions(request):
                                                           , state=KIATransaction.done)
 
     suspicious_transactions = KIATransaction.objects.filter(assigned_emp=user_profile,
-                                                        state=KIATransaction.suspicious)
+                                                            state=KIATransaction.suspicious)
 
     failed_transactions = KIATransaction.objects.filter(assigned_emp=user_profile,
                                                         state=KIATransaction.failed)
@@ -479,8 +516,8 @@ def admin_transaction(request, index):
             transaction.save()
 
         elif 'return' in request.POST:
-                transaction.state = transaction.being_done
-                transaction.save()
+            transaction.state = transaction.being_done
+            transaction.save()
 
         else:
             return HttpResponse("A problem happened")
@@ -503,17 +540,26 @@ def emp_panel(request):
 
 
 def get_exchange_rates():
-    response = requests.get('http://core.arzws.com/api/core?Token=a6d2b63a-5abf-42c0-bdb7-08d609cedc20&what=exchange')
-    data = json.loads(response.text)
-    all_currency_list = data['currencyBoard']
+    try:
+        response = requests.get(
+            'http://core.arzws.com/api/core?Token=a6d2b63a-5abf-42c0-bdb7-08d609cedc20&what=exchange')
+        data = json.loads(response.text)
+        all_currency_list = data['currencyBoard']
 
-    our_currency_list = {}
-    for currency in all_currency_list:
-        if currency['name'] == 'دلار آمریکا تهران':
-            our_currency_list[1] = currency['maxVal']
-        if currency['name'] == 'یورو':
-            our_currency_list[2] = currency['maxVal']
-        if currency['name'] == 'پوند انگلیس':
-            our_currency_list[3] = currency['maxVal']
+        our_currency_list = {}
+        for currency in all_currency_list:
+            if currency['name'] == 'دلار آمریکا تهران':
+                our_currency_list[1] = currency['maxVal']
+            if currency['name'] == 'یورو':
+                our_currency_list[2] = currency['maxVal']
+            if currency['name'] == 'پوند انگلیس':
+
+                our_currency_list[3] = currency['maxVal']
+    except:
+        our_currency_list = {
+            1: 105000,
+            2: 130000,
+            3: 135000,
+        }
 
     return our_currency_list
