@@ -292,6 +292,7 @@ def send_anonymous_transfer_create_account_email(email_address, transferring_amo
     receiver_addresses = [email_address]
     send_mail(subject, message_body, sender_address, receiver_addresses)
 
+
 def transaction_history(request):
     user = None
     if request.user.is_authenticated:
