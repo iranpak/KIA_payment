@@ -22,7 +22,9 @@
     </div>
 
     <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
-      <form>
+      <form  method="post">
+          {% csrf_token %}
+
         <div class="form-group row">
           <h3 class="col-sm-2">رفع محدودیت کاربر</h3>
           <div class="col-sm-7">

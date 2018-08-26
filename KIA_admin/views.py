@@ -25,19 +25,25 @@ def restrict_user(request):
                 return render(request, 'KIA_admin/restrict_user.html')
             elif request.method == 'POST':
                 restricting_username = request.POST.get("res_username")
-                restricting_message = request.POST.get("restrict_message")
-                try:
-                    restricting_user = User.objects.get(username=restricting_username)
-                    restricting_user_profile = Profile.objects.get(user=restricting_user)
-                    restricting_user_profile.is_restricted = True
-                    restricting_user_profile.save()
-                    description = 'شما دسترسی کاربر %s را مسدود کردید.' % restricting_user
-                    history_record = HistoryOfAdminActivities.objects.create(type='User restriction', description=description, message=restricting_message)
-                    return redirect('admin_panel')
+                if restricting_username:
+                    restricting_message = request.POST.get("restrict_message")
+                    try:
+                        restricting_user = User.objects.get(username=restricting_username)
+                        restricting_user_profile = Profile.objects.get(user=restricting_user)
+                        restricting_user_profile.is_restricted = True
+                        restricting_user_profile.save()
+                        description = 'شما دسترسی کاربر %s را مسدود کردید.' % restricting_user
+                        HistoryOfAdminActivities.objects.create(type='User restriction', description=description, message=restricting_message)
+                        from django.utils import timezone
+                        print(timezone.get_current_timezone())
+                        return redirect('restrict_user')
 
-                except Exception as e:
-                    errors = {'username': 'There is no user with this username'}
-                    return render(request, form_error_template, {'errors': errors})
+                    except Exception as e:
+                        print(e)
+                        errors = {'username': 'There is no user with this username'}
+                        return render(request, form_error_template, {'errors': errors})
+                else:
+                    return redirect('restrict_user')
         else:
             return render(request, access_denied_template)
     else:
@@ -52,9 +58,24 @@ def remove_user_restriction(request):
             if request.method == 'GET':
                 return render(request, 'KIA_admin/remove_restriction.html')
             elif request.method == 'POST':
-                user_profile.is_restricted = False
-                user_profile.save()
-                return redirect('admin_panel')
+                restricting_username = request.POST.get("res_username")
+                if restricting_username:
+                    try:
+                        restricting_user = User.objects.get(username=restricting_username)
+                        restricting_user_profile = Profile.objects.get(user=restricting_user)
+                        restricting_user_profile.is_restricted = False
+                        restricting_user_profile.save()
+                        description = 'شما دسترسی کاربر %s را باز کردید.' % restricting_user
+                        HistoryOfAdminActivities.objects.create(type='User restriction',
+                                                                                 description=description)
+                        return redirect('remove_user_restriction')
+
+                    except Exception as e:
+                        errors = {'username': 'There is no user with this username'}
+                        return render(request, form_error_template, {'errors': errors})
+                else:
+                    return redirect('remove_user_restriction')
+
         else:
             return render(request, access_denied_template)
     else:
