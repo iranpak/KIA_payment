@@ -1,5 +1,6 @@
 import datetime
 import json
+import requests
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
@@ -39,14 +40,6 @@ def is_user_emp(request):
             return True
         return False
     return False
-
-
-def get_exchange_rates():
-    return {
-        1: 80000,
-        2: 90000,
-        3: 100000,
-    }
 
 
 def services(request, name):
@@ -415,3 +408,20 @@ def emp_panel(request):
     return render(request, 'KIA_services/emp_panel.html', {'email': user_profile.user.email,
                                                            'name': user_profile.user.first_name,
                                                            'username': user_profile.user.username})
+
+
+def get_exchange_rates():
+    response = requests.get('http://core.arzws.com/api/core?Token=a6d2b63a-5abf-42c0-bdb7-08d609cedc20&what=exchange')
+    data = json.loads(response.text)
+    all_currency_list = data['currencyBoard']
+
+    our_currency_list = {}
+    for currency in all_currency_list:
+        if currency['name'] == 'دلار آمریکا تهران':
+            our_currency_list[1] = currency['maxVal']
+        if currency['name'] == 'یورو':
+            our_currency_list[2] = currency['maxVal']
+        if currency['name'] == 'پوند انگلیس':
+            our_currency_list[3] = currency['maxVal']
+
+    return our_currency_list

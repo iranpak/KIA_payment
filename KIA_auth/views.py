@@ -26,17 +26,22 @@ form_error_template = 'KIA_auth/form_errors.html'
 
 
 def sign_up(request):
-    if request.method == 'POST':
+
+    if request.method == 'GET':
+        form = SignUpForm()
+        return render(request, 'KIA_auth/signup.html', {'form': form})
+
+    elif request.method == 'POST':
         form = SignUpForm(request.POST)
         form_data = form.data
-        if form.is_valid() and form_data['password1'] == form_data['password2']:
+        if form.is_valid():
             cleaned_data = form.cleaned_data
 
             all_users = User.objects.all()
             for user in all_users:
                 if user.email == cleaned_data.get('email'):
                     errors = {'email': 'A user exists with this email'}
-                    return render(request, form_error_template, {'errors': errors})
+                    return render(request, 'KIA_auth/signup.html', {'errors': errors})
 
             username = cleaned_data.get('username')
             password = cleaned_data.get('password1')
@@ -54,10 +59,7 @@ def sign_up(request):
             login(request, user)
             return redirect('home')
         else:
-            return render(request, form_error_template, {'errors': form.errors})
-    elif request.method == 'GET':
-        form = SignUpForm()
-        return render(request, 'KIA_auth/signup.html', {'form': form})
+            return render(request, 'KIA_auth/signup.html', {'form': form})
 
 
 def redirect_to_home(request):
@@ -88,17 +90,17 @@ def send_registration_email(email_address):
 def edit_profile(request):
     user = request.user
     if user.is_authenticated:
-        if request.method == 'GET':
-            user_profile = Profile.objects.get(user=user)
+        user_profile = Profile.objects.get(user=user)
 
-            information = {
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-                'username': user.username,
-                'email': user.email,
-                'account_number': user_profile.account_number,
-                'phone_number': user_profile.phone_number,
-            }
+        information = {
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'username': user.username,
+            'email': user.email,
+            'account_number': user_profile.account_number,
+            'phone_number': user_profile.phone_number,
+        }
+        if request.method == 'GET':
 
             return render(request, 'KIA_auth/edit_profile.html', {'information': information})
 
@@ -123,7 +125,8 @@ def edit_profile(request):
                 user_profile.save()
                 return redirect('edit_profile')
             else:
-                return render(request, form_error_template, {'errors': form.errors})
+                return render(request, 'KIA_auth/edit_profile.html', {'information': information, 'form': form})
+
     else:
         return render(request, not_authorized_template)
 
@@ -173,12 +176,12 @@ def change_password(request):
                         return redirect('home')
                     else:
                         errors = {'old password': 'The old password is wrong'}
-                        return render(request, form_error_template, {'errors': errors})
+                        return render(request, 'KIA_auth/change_password.html', {'errors': errors, 'form': form})
                 else:
                     errors = {'new password': "Passwords doesn't match"}
                     return render(request, form_error_template, {'errors': errors})
             else:
-                return render(request, form_error_template, {'errors': form.errors})
+                return render(request, 'KIA_auth/change_password.html', {'errors': form.errors, 'form': form})
     else:
         return render(request, not_authorized_template)
 
@@ -293,14 +296,9 @@ def transaction(request, index):
     else:
         return HttpResponse("Login first")
 
-    t = get_object_or_404(KIATransaction, id=index)
-    decoded_data = json.loads(t.data)
 
-    if t.user != user:
-        return HttpResponse("Forbidden")
 
-    return render(request, 'KIA_services/transaction.html'
-                  , {'transaction': t, 'data': decoded_data})
+
 
 
 

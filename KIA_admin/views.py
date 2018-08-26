@@ -5,7 +5,6 @@ from KIA_auth.models import Profile
 from .models import SystemCredit
 from .models import HistoryOfAdminActivities
 from .models import SystemTransactions
-from django.template import loader
 from django.contrib.auth import hashers
 from django.core.mail import send_mail
 from KIA_auth.forms import AdminCreateUserForm
@@ -64,7 +63,7 @@ def restrict_user(request):
                     except Exception as e:
                         print(e)
                         errors = {'username': 'There is no user with this username'}
-                        return render(request, form_error_template, {'errors': errors})
+                        return render(request, 'KIA_admin/restrict_user.html', {'errors': errors})
                 else:
                     return redirect('restrict_user')
         else:
@@ -255,11 +254,12 @@ def add_user(request):
                         user.save()
                         account_number = cleaned_data.get('account_number')
                         phone_number = cleaned_data.get('phone_number')
-                        role = cleaned_data.get('role')
+                        role = request.POST.get("role")
+                        print(role)
                         profile = Profile.objects.create(user=user, phone_number=phone_number,
                                                          account_number=account_number, role=role)
                         profile.save()
-                        send_registration_email(user.email, username, password, role)
+                        send_registration_email(user.email, username, password, role=role)
                         return redirect('admin_panel')
         else:
             return render(request, access_denied_template)

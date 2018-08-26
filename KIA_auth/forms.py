@@ -19,7 +19,7 @@ class SignUpForm(UserCreationForm):
 class AdminCreateUserForm(UserCreationForm):
     first_name = forms.CharField()
     last_name = forms.CharField()
-    role = forms.CharField()
+    # role = forms.CharField()
     email = forms.EmailField()
     account_number = forms.CharField()
     phone_number = forms.CharField(max_length=11)
@@ -27,7 +27,7 @@ class AdminCreateUserForm(UserCreationForm):
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'username', 'password1', 'password2', 'email', 'account_number',
-                  'phone_number', 'role')
+                  'phone_number')
 
 
 class EditProfileForm(forms.Form):
