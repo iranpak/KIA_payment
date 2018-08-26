@@ -36,7 +36,7 @@
         </thead>
         <tbody>
 
-        {% for action in actions %}
+        {% for action in actions reversed %}
           <tr>
             <th scope="row">{{ forloop.counter }}</th>
             <th scope="row">{{ action.type }}</th>

@@ -39,8 +39,8 @@ def sign_up(request):
             all_users = User.objects.all()
             for user in all_users:
                 if user.email == cleaned_data.get('email'):
-                    errors = {'email': 'A user exists with this email'}
-                    return render(request, 'KIA_auth/signup.html', {'errors': errors})
+                    errors = {'email': 'A user already exists with this email'}
+                    return render(request, 'KIA_auth/signup.html', {'errors': errors, 'form': form})
 
             username = cleaned_data.get('username')
             password = cleaned_data.get('password1')

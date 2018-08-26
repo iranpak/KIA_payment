@@ -24,6 +24,35 @@
         </div>
 
         <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
+            {% if errors %}
+                <div id="form_errors" class="alert-danger">
+                    <div class="inner">
+                    <p>خطاهای زیر پیش آمده:</p>
+                        <ul>
+                            {% for key, value in errors.items %}
+                                <li>{{ key }}: {{ value }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+            {% if form.errors %}
+                <!-- Error messaging -->
+                <div id="custom_errors" class="alert-danger">
+                    <div class="inner">
+                        <p>خطاهای زیر پیش آمده:</p>
+                        {{ form.non_field_errors }}
+                        <ul>
+                            {% for field in form %}
+                                {% if field.errors %}
+                                    <li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+
+
             <form method="post">
                 {% csrf_token %}
                 {% for field in form %}

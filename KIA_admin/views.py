@@ -54,7 +54,8 @@ def restrict_user(request):
                         restricting_user_profile.is_restricted = True
                         restricting_user_profile.save()
                         description = 'شما دسترسی کاربر %s را مسدود کردید.' % restricting_user
-                        HistoryOfAdminActivities.objects.create(type='User restriction', description=description, message=restricting_message)
+                        HistoryOfAdminActivities.objects.create(type='User restriction', description=description,
+                                                                message=restricting_message)
                         from django.utils import timezone
                         print(timezone.get_current_timezone())
                         return redirect('restrict_user')
@@ -88,7 +89,7 @@ def remove_user_restriction(request):
                         restricting_user_profile.save()
                         description = 'شما دسترسی کاربر %s را باز کردید.' % restricting_user
                         HistoryOfAdminActivities.objects.create(type='User restriction',
-                                                                                 description=description)
+                                                                description=description)
                         return redirect('remove_user_restriction')
 
                     except Exception as e:
@@ -133,36 +134,12 @@ def activities(request):
                              'suspicious': suspicious_transactions,
                              'being_done': being_done_transactions,
                              'done': finished_transactions,
-                             'failed': failed_transactions,})
+                             'failed': failed_transactions, })
             # return render(request, 'KIA_admin/activities.html')  # TODO panel info
         else:
             return render(request, access_denied_template)
     else:
         return render(request, not_authorized_template)
-
-
-# def users_activities(request):
-#     acts = [
-#         {'username': 'hello',
-#          'type': 'purchase',
-#          'date': '29.9.2018'},
-#         {'username': 'hi',
-#          'type': 'charge',
-#          'date': '10.11.2010'},
-#         {'username': 'lol',
-#          'type': 'steal',
-#          'date': '25.2.2018'},
-#         {'username': 'user',
-#          'type': 'charge',
-#          'date': '5.3.2018'},
-#     ]
-#     return render(request, 'KIA_admin/users_activities.html', {'acts': acts})
-#
-#
-# def employees_activities(request):
-#     context = {}
-#     template = loader.get_template('KIA_admin/employees_activities.html')
-#     return HttpResponse(template.render(context, request))
 
 
 def my_history(request):
@@ -200,7 +177,8 @@ def add_system_credit(request):
             if request.method == 'GET':
                 current_rial_credit = system_credit.rial_credit
                 current_dollar_credit = system_credit.dollar_credit
-                return render(request, 'KIA_admin/add_system_credit.html', {'current_rial_credit': current_rial_credit, 'current_dollar_credit': current_dollar_credit})
+                return render(request, 'KIA_admin/add_system_credit.html', {'current_rial_credit': current_rial_credit,
+                                                                            'current_dollar_credit': current_dollar_credit})
             elif request.method == 'POST':
                 increasing_credit = int(request.POST.get("added_credit"))
                 selected_credit = request.POST.get("selected_credit")
@@ -221,12 +199,6 @@ def add_system_credit(request):
         return render(request, not_authorized_template)
 
 
-# def add_transaction(request):
-#     context = {}
-#     template = loader.get_template('KIA_admin/add_transaction.html')
-#     return HttpResponse(template.render(context, request))
-
-
 def add_user(request):
     user = request.user
     if user.is_authenticated:
@@ -236,30 +208,40 @@ def add_user(request):
                 form = AdminCreateUserForm()
                 return render(request, 'KIA_admin/add_user.html', {'form': form})
             elif request.method == 'POST':
-                if request.method == 'POST':
-                    form = AdminCreateUserForm(request.POST)
-                    form_data = form.data
-                    print(form_data)
-                    if form.is_valid() and form_data['password1'] == form_data['password2']:
-                        cleaned_data = form.cleaned_data
-                        print(cleaned_data)
-                        username = cleaned_data.get('username')
-                        password = cleaned_data.get('password1')
-                        hashed_password = hashers.make_password(password)
-                        user = User.objects.create(username=username, password=hashed_password)
-                        user.first_name = cleaned_data.get('first_name')
-                        user.last_name = cleaned_data.get('last_name')
-                        user.email = cleaned_data.get('email')
-                        user.save()
-                        account_number = cleaned_data.get('account_number')
-                        phone_number = cleaned_data.get('phone_number')
-                        role = request.POST.get("role")
-                        print(role)
-                        profile = Profile.objects.create(user=user, phone_number=phone_number,
-                                                         account_number=account_number, role=role)
-                        profile.save()
-                        send_registration_email(user.email, username, password, role=role)
-                        return redirect('admin_panel')
+                form = AdminCreateUserForm(request.POST)
+                form_data = form.data
+                print(form_data)
+                if form.is_valid() and form_data['password1'] == form_data['password2']:
+                    cleaned_data = form.cleaned_data
+
+                    all_users = User.objects.all()
+                    for user in all_users:
+                        if user.email == cleaned_data.get('email'):
+                            errors = {'email': 'A user already exists with this email'}
+                            return render(request, 'KIA_admin/add_user.html', {'errors': errors, 'form': form})
+
+                    print(cleaned_data)
+                    username = cleaned_data.get('username')
+                    password = cleaned_data.get('password1')
+                    hashed_password = hashers.make_password(password)
+                    user = User.objects.create(username=username, password=hashed_password)
+                    user.first_name = cleaned_data.get('first_name')
+                    user.last_name = cleaned_data.get('last_name')
+                    user.email = cleaned_data.get('email')
+                    user.save()
+                    account_number = cleaned_data.get('account_number')
+                    phone_number = cleaned_data.get('phone_number')
+                    role = request.POST.get("role")
+                    print(role)
+                    profile = Profile.objects.create(user=user, phone_number=phone_number,
+                                                     account_number=account_number, role=role)
+                    profile.save()
+                    description = 'ایجاد کاربر با نام  کاربری %s' % username
+                    HistoryOfAdminActivities.objects.create(type='Create user', description=description)
+                    send_registration_email(user.email, username, password, role)
+                    return redirect('admin_panel')
+                else:
+                    return render(request, 'KIA_admin/add_user.html', {'form': form})
         else:
             return render(request, access_denied_template)
     else:
@@ -268,7 +250,9 @@ def add_user(request):
 
 def send_registration_email(email_address, username, password, role):
     subject = 'ثبت‌نام در سامانه KIA_payment'
-    message_body = ('برای شما در سامانه KIA_payment یک حساب کاربری ساخته شده است. برای فعالسازی حساب خود روی لینک زیر کلیک کنید.\n www.sample_link.com\n نقش شما: %s \n نام کاربری: %s \n رمز عبور: %s \n' %(role, username, password))
+    message_body = (
+            'برای شما در سامانه KIA_payment یک حساب کاربری ساخته شده است. برای فعالسازی حساب خود روی لینک زیر کلیک کنید.\n www.sample_link.com\n نقش شما: %s \n نام کاربری: %s \n رمز عبور: %s \n' % (
+    role, username, password))
     sender_address = 'kiapayment2018@gmail.com'
     receiver_addresses = [email_address]
     send_mail(subject, message_body, sender_address, receiver_addresses)
