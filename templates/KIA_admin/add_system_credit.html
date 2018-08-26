@@ -2,102 +2,99 @@
 
 {% block content %}
 
-    <div id="wrapper" class="row" style="padding-bottom:20px;">
+  <div id="wrapper" class="row" style="padding-bottom:20px;">
 
-        <!-- Sidebar -->
-        <div id="sidebar-wrapper" class="col-3" align="center" style="padding-right: 50px;">
-            <div class="list-group">
-                <a href="/admin/panel" class="list-group-item list-group-item-action">پنل مدیر</a>
-                <a href="/admin/users_activities" class="list-group-item list-group-item-action">فعالیت کاربران</a>
-                <a href="/admin/employees_activities" class="list-group-item list-group-item-action">فعالیت کارمندان</a>
-                <a href="/admin/my_history" class="list-group-item list-group-item-action">سابقهٔ من</a>
-                <a href="/admin/financial_account_details" class="list-group-item list-group-item-action">جزئیات حساب
-                    مالی</a>
-
-                <a href="/admin/restrict_user" class="list-group-item list-group-item-action">محدود کردن کاربر</a>
-                <a href="/admin/remove_user_restriction" class="list-group-item list-group-item-action">رفع محدودیت</a>
-                <a href="/admin/add_system_credit" class="list-group-item list-group-item-action active">اضافه کردن
-                    اعتبار</a>
-                <a href="/create_service" class="list-group-item list-group-item-action">اضافه کردن تراکنش</a>
-                <a href="/admin/services" class="list-group-item list-group-item-action">مشاهده و بررسی سرویس‌ها</a>
-            </div>
-        </div>
-
-        <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
-            <form method="post">
-                {% csrf_token %}
-
-                <div class="form-group row">
-                    <h3 class="col-sm-3">افزایش اعتبار ریالی</h3>
-                    <div class="col-sm-6">
-                        <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="">
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label for="staticEmail" class="col-sm-2 col-form-label">اعتبار ریالی فعلی</label>
-                    <div class="col-sm-7">
-                        <input type="text" readonly class="form-control-plaintext" id="old_credit"
-                               value="{{ current_rial_credit }} ریال">
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label for="staticEmail" class="col-sm-2 col-form-label">اعتبار ارزی فعلی</label>
-                    <div class="col-sm-7">
-                        <input type="text" readonly class="form-control-plaintext" id="old_credit"
-                               value="{{ current_dollar_credit }} دلار">
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label for="inputPassword" class="col-sm-2 col-form-label">انتخاب کیف پول</label>
-                    <div class="col-sm-7">
-                        <select class="form-control" name="selected_credit">
-                            <option value="rial_credit">ریالی</option>
-                            <option value="dollar_credit">ارزی</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label for="inputPassword" class="col-sm-2 col-form-label">اعتبار اضافه</label>
-                    <div class="col-sm-7">
-                        <input type="number" min="0" step="1000" class="form-control" id="added_credit"
-                               name="added_credit"
-                               placeholder="0" dir="ltr"
-                               >
-                    </div>
-                </div>
-
-{#                <div class="form-group row">#}
-{#                    <label for="staticEmail" class="col-sm-2 col-form-label" id="test_label">اعتبار حاصل</label>#}
-{#                    <div class="col-sm-7">#}
-{#                        <input type="text" readonly class="form-control-plaintext" id="final_credit"#}
-{#                               value="{{ current_rial_credit }} ریال">#}
-{#                    </div>#}
-{#                </div>#}
-
-                <div style="padding-left: 150px">
-                    <button type="submit" class="btn btn-primary">ثبت</button>
-                </div>
-
-            </form>
-        </div>
-
+    <!-- Sidebar -->
+    <div id="sidebar-wrapper" class="col-3" align="center" style="padding-right: 50px;">
+      <div class="list-group">
+        <a href="/admin/panel" class="list-group-item list-group-item-action">پنل مدیر</a>
+        <a href="/admin/activities" class="list-group-item list-group-item-action">فعالیت‌ها</a>
+        <a href="/admin/my_history" class="list-group-item list-group-item-action">سابقهٔ من</a>
+        <a href="/admin/restrict_user" class="list-group-item list-group-item-action">محدود کردن کاربر</a>
+        <a href="/admin/remove_user_restriction" class="list-group-item list-group-item-action">رفع محدودیت</a>
+        <a href="/admin/add_system_credit" class="list-group-item list-group-item-action active">اضافه کردن
+          اعتبار</a>
+        <a href="/create_service" class="list-group-item list-group-item-action">اضافه کردن تراکنش</a>
+        <a href="/admin/services" class="list-group-item list-group-item-action">مشاهده و بررسی سرویس‌ها</a>
+        <a href="/admin/add_user" class="list-group-item list-group-item-action">اضافه کردن کاربر</a>
+      </div>
     </div>
 
-    <script>
-        function calcSum() {
-            var sum = parseInt(document.getElementById("old_credit").value) +
-                parseInt(document.getElementById("added_credit").value);
-            document.getElementById("final_credit").value = sum;
-        }
+    <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
+      <form method="post">
+        {% csrf_token %}
 
-        function msgTest() {
-            if (parseInt(document.getElementById("added_credit").value) > 10000)
-                alert("دمت گرم چه قدر اعتبار خریدی");
-        }
-    </script>
+        <div class="form-group row">
+          <h3 class="col-sm-3">افزایش اعتبار ریالی</h3>
+          <div class="col-sm-6">
+            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="">
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="staticEmail" class="col-sm-2 col-form-label">اعتبار ریالی فعلی</label>
+          <div class="col-sm-7">
+            <input type="text" readonly class="form-control-plaintext" id="old_credit"
+                   value="{{ current_rial_credit }} ریال">
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="staticEmail" class="col-sm-2 col-form-label">اعتبار ارزی فعلی</label>
+          <div class="col-sm-7">
+            <input type="text" readonly class="form-control-plaintext" id="old_credit"
+                   value="{{ current_dollar_credit }} دلار">
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="inputPassword" class="col-sm-2 col-form-label">انتخاب کیف پول</label>
+          <div class="col-sm-7">
+            <select class="form-control" name="selected_credit">
+              <option value="rial_credit">ریالی</option>
+              <option value="dollar_credit">ارزی</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="inputPassword" class="col-sm-2 col-form-label">اعتبار اضافه</label>
+          <div class="col-sm-7">
+            <input type="number" min="0" step="1000" class="form-control" id="added_credit"
+                   name="added_credit"
+                   placeholder="0" dir="ltr"
+            >
+          </div>
+        </div>
+
+        {#                <div class="form-group row">#}
+        {#                    <label for="staticEmail" class="col-sm-2 col-form-label" id="test_label">اعتبار حاصل</label>#}
+        {#                    <div class="col-sm-7">#}
+        {#                        <input type="text" readonly class="form-control-plaintext" id="final_credit"#}
+        {#                               value="{{ current_rial_credit }} ریال">#}
+        {#                    </div>#}
+        {#                </div>#}
+
+        <div style="padding-left: 150px">
+          <button type="submit" class="btn btn-primary">ثبت</button>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+
+  <script>
+      function calcSum() {
+          var sum = parseInt(document.getElementById("old_credit").value) +
+              parseInt(document.getElementById("added_credit").value);
+          document.getElementById("final_credit").value = sum;
+      }
+
+      function msgTest() {
+          if (parseInt(document.getElementById("added_credit").value) > 10000)
+              alert("دمت گرم چه قدر اعتبار خریدی");
+      }
+  </script>
 
 {% endblock content %}

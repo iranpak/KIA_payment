@@ -23,38 +23,58 @@
 {% block content %}
 
   <div id="wrapper" class="row" style="padding-bottom:20px;">
-    <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
-        <form action="" method="post" novalidate>
-          {% csrf_token %}
-
-          <div class="form-group row">
-            <h3 class="col-sm-2">مشاهده و ویرایش سرویس {{ label }}</h3>
-            <div class="col-sm-7">
-              <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="">
-            </div>
-          </div>
-
-          {% for item in form %}
-            <div class="form-group row">
-              <div class="col-sm-4 col-form-label text-md-right">
-                {{ item.label_tag }}
-              </div>
-              <div class="col-md-6">
-                {{ item }}
-              </div>
-            </div>
-          {% endfor %}
-
-          <div style="padding-left: 150px">
-            <input type="submit" name="delete" value="حذف سرویس" class="btn btn-primary">
-            <input type="submit" name="augment" value="افزودن فیلد به سرویس" class="btn btn-primary">
-            <input type="submit" name="exclude" value="حذف فیلد از سرویس" class="btn btn-primary">
-          </div>
-
-        </form>
-
+    <div id="sidebar-wrapper" class="col-3" align="center" style="padding-right: 50px;">
+      <div class="list-group">
+        <a href="/admin/panel" class="list-group-item list-group-item-action">پنل مدیر</a>
+        {#        <a href="/admin/users_activities" class="list-group-item list-group-item-action">فعالیت کاربران</a>#}
+        {#        <a href="/admin/employees_activities" class="list-group-item list-group-item-action">فعالیت کارمندان</a>#}
+        <a href="/admin/activities" class="list-group-item list-group-item-action">فعالیت‌ها</a>
+        <a href="/admin/my_history" class="list-group-item list-group-item-action">سابقهٔ من</a>
+        <a href="/admin/restrict_user" class="list-group-item list-group-item-action">محدود کردن کاربر</a>
+        <a href="/admin/remove_user_restriction" class="list-group-item list-group-item-action">رفع محدودیت</a>
+        <a href="/admin/add_system_credit" class="list-group-item list-group-item-action">اضافه کردن اعتبار</a>
+        <a href="/create_service" class="list-group-item list-group-item-action">اضافه کردن تراکنش</a>
+        <a href="/admin/services" class="list-group-item list-group-item-action active">مشاهده و بررسی سرویس‌ها</a>
+        <a href="/admin/add_user" class="list-group-item list-group-item-action">اضافه کردن کاربر</a>
+      </div>
     </div>
 
+
+    <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
+      <form action="" method="post" novalidate>
+        {% csrf_token %}
+
+        <div class="form-group row">
+          <h3 class="col-sm-2">مشاهده و ویرایش سرویس {{ label }}</h3>
+          <div class="col-sm-7">
+            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="">
+          </div>
+        </div>
+
+        {% for item in form %}
+          <div class="form-group row">
+            <div class="col-sm-4 col-form-label text-md-right">
+              {{ item.label_tag }}
+            </div>
+            <div class="col-md-6">
+              {{ item }}
+            </div>
+          </div>
+        {% endfor %}
+
+        <div style="padding-left: 150px">
+          <input type="submit" name="delete" value="حذف سرویس" class="btn btn-primary">
+          <input type="submit" name="augment" value="افزودن فیلد به سرویس" class="btn btn-primary">
+          <button type="button" onclick="javascript:history.back()" class="btn btn-primary">
+            بازگشت
+          </button>
+          {#            <input type="submit" name="exclude" value="حذف فیلد از سرویس" class="btn btn-primary">#}
+        </div>
+
+      </form>
+
+    </div>
   </div>
+
 
 {% endblock content %}

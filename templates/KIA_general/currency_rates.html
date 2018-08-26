@@ -32,13 +32,15 @@
           </thead>
           <tbody>
 
-          {% for rate in rates %}
-            <tr>
-              <th scope="row">{{ forloop.counter }}</th>
-              <td>{{ rate.name }}</td>
-              <td>{{ rate.to_rial }}</td>
-            </tr>
-          {% endfor %}
+          {% if rates %}
+            {% for rate in rates %}
+              <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ rate.name }}</td>
+                <td>{{ rate.to_rial }}</td>
+              </tr>
+            {% endfor %}
+          {% endif %}
 
           </tbody>
         </table>

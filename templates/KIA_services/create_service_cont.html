@@ -44,14 +44,13 @@
         {#        <a href="/admin/employees_activities" class="list-group-item list-group-item-action">فعالیت کارمندان</a>#}
         <a href="/admin/activities" class="list-group-item list-group-item-action">فعالیت‌ها</a>
         <a href="/admin/my_history" class="list-group-item list-group-item-action">سابقهٔ من</a>
-        <a href="/admin/financial_account_details" class="list-group-item list-group-item-action">جزئیات حساب مالی</a>
-
         <a href="/admin/restrict_user" class="list-group-item list-group-item-action">محدود کردن کاربر</a>
         <a href="/admin/remove_user_restriction" class="list-group-item list-group-item-action">رفع محدودیت</a>
         <a href="/admin/add_system_credit" class="list-group-item list-group-item-action">اضافه کردن اعتبار</a>
         {#        <a href="/admin/add_transaction" class="list-group-item list-group-item-action active">اضافه کردن تراکنش</a>#}
-        <a href="/create_service" class="list-group-item list-group-item-action active">اضافه کردن تراکنش</a>
-        <a href="/admin/services" class="list-group-item list-group-item-action">مشاهده و بررسی سرویس‌ها</a>
+        <a href="/create_service" id="create" class="list-group-item list-group-item-action">اضافه کردن تراکنش</a>
+        <a href="/admin/services" id="edit" class="list-group-item list-group-item-action">مشاهده و بررسی سرویس‌ها</a>
+        <a href="/admin/add_user" class="list-group-item list-group-item-action">اضافه کردن کاربر</a>
       </div>
     </div>
 
@@ -78,7 +77,7 @@
         {% endfor %}
 
 
-        <div style="padding-left: 150px">
+        <div id="buttons" style="padding-left: 150px">
           <input type="submit" name="cont" class="btn btn-primary" value="ادامه ساخت خدمت">
           <input type="submit" name="finish" class="btn btn-primary" value="پایان ساخت خدمت">
         </div>
@@ -89,6 +88,16 @@
   </div>
 
   <script>
-      document.getElementById("id_args").value = "{\n\"val\": \"\"\n}"
+      document.getElementById("id_args").value = "{\n\"val\": \"\"\n}";
+      if (document.referrer.includes('create'))
+          document.getElementById('create').classList.add('active');
+      else {
+          document.getElementById('edit').classList.add('active');
+          document.getElementById('buttons').value += "<button type=\"button\" onclick=\"javascript:history.back()\" class=\"btn btn-primary\">\n" +
+              "            بازگشت\n" +
+              "          </button>";
+      }
+
+    document.title = document.referrer;
   </script>
 {% endblock content %}

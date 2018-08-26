@@ -12,8 +12,6 @@
 {#        <a href="/admin/employees_activities" class="list-group-item list-group-item-action">فعالیت کارمندان</a>#}
         <a href="/admin/activities" class="list-group-item list-group-item-action">فعالیت‌ها</a>
         <a href="/admin/my_history" class="list-group-item list-group-item-action active">سابقهٔ من</a>
-        <a href="/admin/financial_account_details" class="list-group-item list-group-item-action">جزئیات حساب مالی</a>
-
         <a href="/admin/restrict_user" class="list-group-item list-group-item-action">محدود کردن کاربر</a>
         <a href="/admin/remove_user_restriction" class="list-group-item list-group-item-action">رفع محدودیت</a>
         <a href="/admin/add_system_credit" class="list-group-item list-group-item-action ">اضافه کردن اعتبار</a>
@@ -36,7 +34,7 @@
         </thead>
         <tbody>
 
-        {% for action in actions %}
+        {% for action in actions reversed %}
           <tr>
             <th scope="row">{{ forloop.counter }}</th>
             <th scope="row">{{ action.type }}</th>
