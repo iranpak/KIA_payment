@@ -136,15 +136,26 @@ def add_system_credit(request):
     user = request.user
     if user.is_authenticated:
         user_profile = Profile.objects.get(user=user)
+        system_credit = SystemCredit.objects.get(owner='system')
         if user_profile.role == 'Admin':
             if request.method == 'GET':
-                return render(request, 'KIA_admin/add_system_credit.html')
+                current_rial_credit = system_credit.rial_credit
+                current_dollar_credit = system_credit.dollar_credit
+                return render(request, 'KIA_admin/add_system_credit.html', {'current_rial_credit': current_rial_credit, 'current_dollar_credit': current_dollar_credit})
             elif request.method == 'POST':
-                increasing_credit = request.POST.get("added_credit")
-                system_credit = SystemCredit.objects.get(owner='system')
-                system_credit.rial_credit += increasing_credit
+                increasing_credit = int(request.POST.get("added_credit"))
+                selected_credit = request.POST.get("selected_credit")
+                description = "افزایش اعتبار سامانه"
+                if selected_credit == 'rial_credit':
+                    system_credit.rial_credit += increasing_credit
+                    description = 'افزایش اعتبار ریالی سامانه به میزان %s ریال' % increasing_credit
+                elif selected_credit == 'dollar_credit':
+                    system_credit.dollar_credit += increasing_credit
+                    description = 'افزایش اعتبار ارزی سامانه به میزان %s دلار' % increasing_credit
+
                 system_credit.save()
-                return redirect('admin_panel')
+                HistoryOfAdminActivities.objects.create(type='Charge', description=description)
+                return redirect('add_system_credit')
         else:
             return render(request, access_denied_template)
     else:
