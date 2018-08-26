@@ -99,7 +99,7 @@ class KIAServiceCreationForm(forms.ModelForm):
 
     class Meta:
         model = KIAService
-        fields = ('name', 'label', 'currency', 'variable_price', 'price', 'details', 'image_url')
+        fields = ('name', 'label', 'currency', 'variable_price', 'price', 'commission', 'details', 'image_url')
         labels = {
             'name': 'نام انگلیسی خدمت',
             'label': 'نام فارسی خدمت',
@@ -108,6 +108,7 @@ class KIAServiceCreationForm(forms.ModelForm):
             'price': 'قیمت',
             'details': 'توضیحات خدمت',
             'image_url': 'آدرس عکس خدمت',
+            'commission': 'درصد کارمزد(به صورت یک عدد از ۰ تا ۱۰۰)'
         }
 
 

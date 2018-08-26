@@ -56,7 +56,37 @@
     </div>
 
     <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
-      <form action="" method="post" novalidate>
+
+    {% if form.errors %}
+	<!-- Error messaging -->
+	<div id="errors">
+		<div class="inner">
+			<p>There were some errors in the information you entered. Please correct the following:</p>
+			{{ form.non_field_errors }}
+			<ul>
+				{% for field in form %}
+					{% if field.errors %}<li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+	<!-- /Error messaging -->
+    {% endif %}
+
+      <form action="" method="post">
+        {% csrf_token %}
+        <div class="form-group row">
+          <div class="col-sm-7">
+            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="">
+          </div>
+        </div>
+
+        <div style="padding-left: 150px">
+          <input type="submit" name="finish" class="btn btn-primary" value="پایان عملیات">
+        </div>
+      </form>
+
+      <form action="" method="post">
         {% csrf_token %}
         <div class="form-group row">
           <h3 class="col-sm-2">ادامهٔ اضافه کردن تراکنش جدید</h3>
@@ -79,8 +109,8 @@
 
 
         <div style="padding-left: 150px">
-          <input type="submit" name="cont" class="btn btn-primary" value="ادامه ساخت خدمت">
-          <input type="submit" name="finish" class="btn btn-primary" value="پایان ساخت خدمت">
+          <input type="submit" name="cont" class="btn btn-primary" value="ادامه عملیات">
+{#          <input type="submit" name="finish" class="btn btn-primary" value="پایان ساخت خدمت">#}
         </div>
 
       </form>

@@ -62,12 +62,11 @@ def services(request, name):
         form = KIAServiceForm(service)
         return render(request, 'KIA_services/service.html',
                       {'form': form, 'authenticated': authenticated,
-                       'service': service})
+                       'service': service, 'currency': get_exchange_rates()[service.currency]})
 
     elif request.method == "POST":
         form = KIAServiceForm(service, request.POST)
         if form.is_valid():
-            error = None
             transaction = KIATransaction()
             if pay_from_user_credit(service, transaction, user, form.get_json_data()):
                 transaction.initialize(service)
@@ -78,7 +77,7 @@ def services(request, name):
                 transaction.save()
                 transaction.assigned_emp = None
                 # TODO: send mail to user
-                return HttpResponse("Transaction saved")  # TODO: return a proper response
+                return HttpResponseRedirect("success")
             else:
                 error = 'اعتبار شما برای درخواست این خدمت کافی نیست'
                 form = KIAServiceForm(service)
@@ -90,13 +89,32 @@ def services(request, name):
                        'service': service})
 
 
+def services_success(request, name):
+    if not request.user.is_authenticated:
+        return render(request, not_authorized_template)
+
+    service = get_object_or_404(KIAService, name=name)
+    message = "درخواست شما برای خدمت" + service.label + "با موفقیت ثبت شد."
+    return_url = "/services"
+
+    return render(request, 'KIA_general/success.html', {'message': message,
+                                                        'return_url': return_url})
+
+
 def pay_from_user_credit(service, transaction, user, json_data):
-    cost = None
     if service.variable_price:
         decoded_data = json.loads(json_data)
-        cost = get_exchange_rates()[service.currency] * decoded_data['price']
+        cost = int(round(
+            get_exchange_rates()[service.currency] * decoded_data['price'] \
+            * (1 + (service.commission / 100.0))
+        ))
+        transaction.cost_in_currency = decoded_data['price']
     else:
-        cost = get_exchange_rates()[service.currency] * service.price
+        cost = int(round(
+            get_exchange_rates()[service.currency] * service.price \
+            * (1 + (service.commission / 100.0))
+        ))
+        transaction.cost_in_currency = service.price
 
     if user.credit >= cost:
         user.credit -= cost
@@ -121,93 +139,115 @@ def admin_service(request, name):
 
     elif request.method == "POST":
         if 'delete' in request.POST:
-            return service.delete()
+            service.delete()
+            return HttpResponseRedirect("delete/success")
         elif 'augment' in request.POST:
             return HttpResponseRedirect('/create_service/' + service.name)
         elif 'exclude' in request.POST:
             return HttpResponseRedirect('fields')
 
 
+def admin_service_delete_success(request, name):
+    user = request.user
+    if not user.is_authenticated:
+        return render(request, not_authorized_template)
+    if not is_user_admin(request):
+        return render(request, access_denied_template)
+
+    service = get_object_or_404(KIAService, name=name)
+    message = "سرویس" + service.label + "با موفقیت حذف شد."
+    return_url = "/admin/services"
+    return render(request, 'KIA_general/success.html', {'message': message,
+                                                        'return_url': return_url})
+
+
 def admin_service_fields(request, name):
+    # TODO: complete this
     return HttpResponseRedirect("Hello world!")
 
 
 def create_service(request):
-    if request.user.is_authenticated:
-        form = KIAServiceCreationForm()
-
-        if is_user_admin(request):
-            if request.method == 'GET':
-                return render(request, 'KIA_services/create_service.html', {'form': form})
-
-            elif request.method == "POST":
-                service_form = KIAServiceCreationForm(request.POST)
-                if service_form.is_valid():
-                    new_service = service_form.save()
-
-                    if (not new_service.variable_price) and (new_service.price is None):
-                        error = "قیمت خدمت را وارد کنید"
-                        return render(request, 'KIA_services/create_service.html',
-                                      {'form': form, 'error': error})
-                    if new_service.variable_price:
-                        price_field = KIAServiceField()
-                        price_field.service = new_service
-                        price_field.name = "price"
-                        price_field.label = "مبلغ پرداختی"
-                        price_field.type = KIAServiceField.integer_field
-                        price_field.optional = True
-                        price_field.args = None
-                        price_field.save()
-                    new_service.save()
-                    url = new_service.name + "/"
-
-                    return HttpResponseRedirect(url)
-                else:
-                    # TODO: return a proper response
-                    return HttpResponse(service_form.errors)
-        # TODO: return proper responses
-        else:
-            return render(request, access_denied_template)
-    else:
+    if not request.user.is_authenticated:
         return render(request, not_authorized_template)
+
+    if not is_user_admin(request):
+        return render(request, access_denied_template)
+
+    form = KIAServiceCreationForm()
+
+    if request.method == 'GET':
+        return render(request, 'KIA_services/create_service.html', {'form': form})
+
+    elif request.method == "POST":
+        service_form = KIAServiceCreationForm(request.POST)
+        if service_form.is_valid():
+            new_service = service_form.save()
+
+            if (not new_service.variable_price) and (new_service.price is None):
+                error = "قیمت خدمت را وارد کنید"
+                return render(request, 'KIA_services/create_service.html',
+                              {'form': form, 'error': error})
+            if new_service.variable_price:
+                price_field = KIAServiceField()
+                price_field.service = new_service
+                price_field.name = "price"
+                price_field.label = "مبلغ پرداختی"
+                price_field.type = KIAServiceField.integer_field
+                price_field.optional = False
+                price_field.args = None
+                price_field.save()
+            new_service.save()
+            url = new_service.name + "/"
+
+            return HttpResponseRedirect(url)
+        else:
+            return render(request, 'KIA_services/create_service.html', {'form': service_form})
 
 
 def create_service_cont(request, name):
+    if not request.user.is_authenticated:
+        return render(request, not_authorized_template)
+
+    if not is_user_admin(request):
+        return render(request, access_denied_template)
+
     service = get_object_or_404(KIAService, name=name)
 
-    if request.user.is_authenticated:
-        user = request.user
-        user_profile = Profile.objects.get(user=user)
-        role = user_profile.role
-        if is_user_admin(request):  # TODO: change this to admin
+    if request.method == 'GET':
+        form = KIAServiceFieldCreationForm()
+        return render(request, 'KIA_services/create_service_cont.html', {'form': form})
 
-            if request.method == 'GET':
-                form = KIAServiceFieldCreationForm()
-                return render(request, 'KIA_services/create_service_cont.html', {'form': form})
+    elif request.method == "POST":
+        field_form = KIAServiceFieldCreationForm(request.POST)
 
-            elif request.method == "POST":
-                field_form = KIAServiceFieldCreationForm(request.POST)
+        if 'finish' in field_form.data:
+            # TODO: send email to all users
+            return HttpResponseRedirect("success")
 
-                if field_form.is_valid():
-                    new_field = field_form.save()
-                    new_field.service = service
-                    new_field.save()
-
-                    if 'cont' in field_form.data:
-                        return HttpResponseRedirect("")
-                    elif 'finish' in field_form.data:
-                        return HttpResponse("service saved!")
-                    else:
-                        return HttpResponse(request.POST.get('action'))
-                else:
-                    # TODO: return a proper response
-                    return HttpResponse(field_form.errors)
-
-            # TODO: return proper responses
+        if field_form.is_valid():
+            if 'cont' in field_form.data:
+                new_field = field_form.save()
+                new_field.service = service
+                new_field.save()
+                return HttpResponseRedirect("")
             else:
-                return render(request, access_denied_template)
+                return HttpResponse(request.POST.get('action'))
         else:
-            return render(request, not_authorized_template)
+            return render(request, 'KIA_services/create_service_cont.html', {'form': field_form})
+
+
+def create_service_success(request, name):
+    if not request.user.is_authenticated:
+        return render(request, not_authorized_template)
+
+    if not is_user_admin(request):
+        return render(request, access_denied_template)
+
+    service = get_object_or_404(KIAService, name=name)
+    message = "عملیات با موفقیت انجام شد"
+    return_url = "/admin/services"
+    return render(request, 'KIA_general/success.html', {'message': message,
+                                                        'return_url': return_url})
 
 
 class ServiceListView(ListView):
@@ -311,6 +351,7 @@ def emp_transaction(request, index):
                 transaction.assigned_emp = user_profile
                 transaction.state = transaction.being_done
                 transaction.save()
+                return HttpResponseRedirect("take/success")
             else:
                 return HttpResponse("A problem happened")
 
@@ -319,6 +360,8 @@ def emp_transaction(request, index):
             if transaction.assigned_emp == user_profile:
                 transaction.state = transaction.done
                 transaction.save()
+                # TODO: check system credit
+                return HttpResponseRedirect("finish/success")
                 # TODO: send mail to user
             else:
                 return HttpResponse("A problem happened")
@@ -328,6 +371,7 @@ def emp_transaction(request, index):
             if transaction.assigned_emp == user_profile:
                 transaction.state = transaction.suspicious
                 transaction.save()
+                return HttpResponseRedirect("report/success")
             else:
                 return HttpResponse("A problem happened")
 
@@ -337,6 +381,7 @@ def emp_transaction(request, index):
                 transaction.state = transaction.failed
                 transaction.return_money()
                 transaction.save()
+                return HttpResponseRedirect("fail/success")
                 # TODO: send mail to user
             else:
                 return HttpResponse("A problem happened")
@@ -344,7 +389,54 @@ def emp_transaction(request, index):
         else:
             return HttpResponse(request.POST)
 
-        return HttpResponse("Successful")
+
+def emp_transaction_take_success(request):
+    if not request.user.is_authenticated:
+        return render(request, not_authorized_template)
+    if not is_user_emp(request):
+        return render(request, access_denied_template)
+
+    message = "تراکنش با موفقیت برای شما انتخاب شد"
+    return_url = "/emp/taken_transactions"
+    return render(request, 'KIA_general/success.html', {'message': message,
+                                                        'return_url': return_url})
+
+
+def emp_transaction_finish_success(request):
+    if not request.user.is_authenticated:
+        return render(request, not_authorized_template)
+    if not is_user_emp(request):
+        return render(request, access_denied_template)
+
+    message = "تراکنش با موفقیت به اتمام رسید و " \
+              "ایمیلی در همین رابطه برای کاربر مربوط فرستاده شد."
+    return_url = "/emp/taken_transactions"
+    return render(request, 'KIA_general/success.html', {'message': message,
+                                                        'return_url': return_url})
+
+
+def emp_transaction_report_success(request):
+    if not request.user.is_authenticated:
+        return render(request, not_authorized_template)
+    if not is_user_emp(request):
+        return render(request, access_denied_template)
+
+    message = "تراکنش به عنوان تراکنش مشکوک به مدیر سایت گزارش شد."
+    return_url = "/emp/taken_transactions"
+    return render(request, 'KIA_general/success.html', {'message': message,
+                                                        'return_url': return_url})
+
+
+def emp_transaction_fail_success(request):
+    if not request.user.is_authenticated:
+        return render(request, not_authorized_template)
+    if not is_user_emp(request):
+        return render(request, access_denied_template)
+
+    message = "تراکنش از سمت شما رد و ایمیلی متناسب با این موضوع برای کاربر مربوط فرستاده شد."
+    return_url = "/emp/taken_transactions"
+    return render(request, 'KIA_general/success.html', {'message': message,
+                                                        'return_url': return_url})
 
 
 def emp_taken_transactions(request):
