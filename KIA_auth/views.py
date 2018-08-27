@@ -19,7 +19,6 @@ not_authorized_template = 'KIA_general/not_authorized.html'
 
 
 def sign_up(request):
-
     if request.method == 'GET':
         form = SignUpForm()
         return render(request, 'KIA_auth/signup.html', {'form': form})
@@ -115,7 +114,9 @@ def edit_profile(request):
                 user_profile.phone_number = phone_number
                 user_profile.account_number = account_number
                 user_profile.save()
-                return redirect('edit_profile')
+                # return redirect('edit_profile')
+                return render(request, 'KIA_general/success.html',
+                              {'message': 'اظلاعات شما با موفقیت ویرایش شد', 'return_url': ''})
             else:
                 return render(request, 'KIA_auth/edit_profile.html', {'information': information, 'form': form})
 
@@ -165,7 +166,7 @@ def change_password(request):
                         user.password = new_hashed_password
                         user.save()
                         login(request, user)
-                        return redirect('home')
+                        return render(request, 'KIA_general/success.html', {'message': 'رمز عبور شما با موفقیت تغییر یافت', 'return_url': ''})
                     else:
                         errors = {'old password': 'The old password is wrong'}
                         return render(request, 'KIA_auth/change_password.html', {'errors': errors, 'form': form})
@@ -187,10 +188,10 @@ def add_credit(request):
             return render(request, 'KIA_auth/add_credit.html', {'current_credit': current_credit})
 
         elif request.method == 'POST':
-                increasing_credit = int(request.POST.get("added_credit"))
-                user_profile.credit += increasing_credit
-                user_profile.save()
-                return redirect('add_credit')
+            increasing_credit = int(request.POST.get("added_credit"))
+            user_profile.credit += increasing_credit
+            user_profile.save()
+            return redirect('add_credit')
     else:
         return render(request, not_authorized_template)
 
@@ -220,7 +221,7 @@ def anonymous_transfer(request):
         current_credit = user_profile.credit
 
         if request.method == 'GET':
-            return render(request, 'KIA_auth/anonymous_transfer.html', {'current_credit':  current_credit})
+            return render(request, 'KIA_auth/anonymous_transfer.html', {'current_credit': current_credit})
 
         elif request.method == 'POST':
             form = AnonymousTransferForm(request.POST)
@@ -266,11 +267,13 @@ def anonymous_transfer(request):
                     sys_user_profile.credit += transferring_amount
                     user_profile.save()
                     sys_user_profile.save()
-                    send_anonymous_transfer_create_account_email(target_email, transferring_amount, sys_username, sys_password)
+                    send_anonymous_transfer_create_account_email(target_email, transferring_amount, sys_username,
+                                                                 sys_password)
                     return redirect('anonymous_transfer')
 
             else:
-                return render(request, 'KIA_auth/anonymous_transfer.html', {'form': form, 'current_credit':  current_credit})
+                return render(request, 'KIA_auth/anonymous_transfer.html',
+                              {'form': form, 'current_credit': current_credit})
 
             return redirect('anonymous_transfer')
 
@@ -280,7 +283,7 @@ def anonymous_transfer(request):
 
 def send_anonymous_transfer_email(email_address, transferring_amount):
     subject = 'پرداخت ناشناس از سامانه KIA_payment'
-    message_body = 'در سامانه کیاپرداخت مبلغ %s ریال توسط یکی از کاربران بصورت ناشناس  به کیف پولتان واریز شده است.' %transferring_amount
+    message_body = 'در سامانه کیاپرداخت مبلغ %s ریال توسط یکی از کاربران بصورت ناشناس  به کیف پولتان واریز شده است.' % transferring_amount
     sender_address = 'kiapayment2018@gmail.com'
     receiver_addresses = [email_address]
     send_mail(subject, message_body, sender_address, receiver_addresses)
@@ -327,18 +330,3 @@ def transaction(request, index):
 
 def random_string_generator(size=6, chars=string.ascii_lowercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
