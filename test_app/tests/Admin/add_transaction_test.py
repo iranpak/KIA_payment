@@ -31,17 +31,6 @@ class UserRestriction(unittest.TestCase):
 
         assert flag
 
-    # def test_not_empty_field(self):
-    #     driver = self.driver
-    #     driver.get("http://127.0.0.1:8085/admin/add_transaction")
-    #     transaction_name = driver.find_element_by_name("transaction_name")
-    #     amount = driver.find_element_by_name("pay_amount")
-    #     submit_button = driver.find_element_by_name("submit_button")
-    #     transaction_name.send_keys()
-    #     amount.send_keys(100000)
-    #     submit_button.click()
-    #     assert driver.find_element_by_name("successfully_done") is not None
-
     def test_valid_pay_amount(self):
         driver = self.driver
         driver.get("http://127.0.0.1:8085/add_transaction")
