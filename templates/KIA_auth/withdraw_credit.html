@@ -1,6 +1,13 @@
 {% extends "master.html" %}
 
 {% block content %}
+  <head>
+    <link rel="stylesheet" href="/static/Panels.css">
+  </head>
+
+  <head>
+    <link rel="stylesheet" href="/static/Panels.css">
+  </head>
 
     <div id="wrapper" class="row" style="padding-bottom:20px;">
 
@@ -53,9 +60,12 @@
                     </div>
                 </div>
 
-                <div style="padding-left: 150px">
-                    <button type="submit" class="btn btn-primary" onclick="checkNotNeg(); checkMaximumAllowedValue();">ثبت</button>
-                </div>
+        <div style="padding-left: 150px">
+          <button type="button" onclick="takeAll()" class="btn btn-outline-primary">
+            تصویه حساب
+          </button>
+          <button type="submit" class="btn btn-primary" onclick="checkNotNeg()">ثبت</button>
+        </div>
 
             </form>
         </div>

@@ -4,6 +4,10 @@ import requests
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
+
+from KIA_admin.models import SystemCredit
+from KIA_notification.tasks import plan_transaction_expiration
+from KIA_notification.views import send_mail_to_user, send_mail_to_all_users
 from KIA_services.forms import KIAServiceForm
 from KIA_services.models import KIAService, KIATransaction, KIAServiceField
 from KIA_auth.models import Profile
@@ -55,13 +59,15 @@ def services(request, name):
         form = KIAServiceForm(service)
         return render(request, 'KIA_services/service.html',
                       {'form': form, 'authenticated': authenticated,
-                       'service': service, 'currency': get_exchange_rates()[service.currency]})
+                       'service': service, 'currency': get_exchange_rates()[service.currency],
+                       'role': Profile.objects.get(user=request.user).role})
 
     elif request.method == "POST":
         form = KIAServiceForm(service, request.POST)
         if form.is_valid():
             transaction = KIATransaction()
-            if pay_from_user_credit(service, transaction, user, form.get_json_data()):
+            flag = pay_from_user_credit(service, transaction, user, form.get_json_data())
+            if flag == 0:
                 transaction.initialize(service)
                 user_profile = Profile.objects.get(user=user)
                 transaction.user = user_profile
@@ -69,17 +75,33 @@ def services(request, name):
                 transaction.data = form.get_json_data()
                 transaction.save()
                 transaction.assigned_emp = None
-                # TODO: send mail to user
+                message = "درخواست شما برای خدمت" + service.label + "با موفقیت ثبت شد"
+                send_mail_to_user(user,
+                                  "ثبت درخواست موفق",
+                                  message)
                 return HttpResponseRedirect("success")
-            else:
+            elif flag == 1:
                 error = 'اعتبار شما برای درخواست این خدمت کافی نیست'
                 form = KIAServiceForm(service)
                 return render(request, 'KIA_services/service.html',
                               {'form': form, 'authenticated': authenticated,
                                'service': service, 'error': error})
+            elif flag == 2:
+                error = 'مبلغ این تراکنش از سقف مبلغ تراکنش ممکن بیشتر است'
+                form = KIAServiceForm(service)
+                return render(request, 'KIA_services/service.html',
+                              {'form': form, 'authenticated': authenticated,
+                               'service': service, 'error': error})
+            else:
+                error = 'مبلغ این تراکنش از کف مبلغ تراکنش ممکن کمتر است'
+                form = KIAServiceForm(service)
+                return render(request, 'KIA_services/service.html',
+                              {'form': form, 'authenticated': authenticated,
+                               'service': service, 'error': error})
+
         return render(request, 'KIA_services/service.html',
                       {'form': form, 'authenticated': authenticated,
-                       'service': service})
+                       'service': service, 'role': Profile.objects.get(user=request.user).role})
 
 
 def services_success(request, name):
@@ -91,7 +113,8 @@ def services_success(request, name):
     return_url = "/services"
 
     return render(request, 'KIA_general/success.html', {'message': message,
-                                                        'return_url': return_url})
+                                                        'return_url': return_url,
+                                                        'role': Profile.objects.get(user=request.user).role})
 
 
 def pay_from_user_credit(service, transaction, user, json_data):
@@ -102,6 +125,10 @@ def pay_from_user_credit(service, transaction, user, json_data):
             * (1 + (service.commission / 100.0))
         ))
         transaction.cost_in_currency = decoded_data['price']
+        if cost > 100000000:
+            return 2
+        elif cost < 500000:
+            return 3
     else:
         cost = int(round(
             get_exchange_rates()[service.currency] * service.price \
@@ -112,9 +139,12 @@ def pay_from_user_credit(service, transaction, user, json_data):
     if user.credit >= cost:
         user.credit -= cost
         transaction.cost_in_rial = cost
+        sc = SystemCredit.objects.get(owner="system")
+        sc.rial_credit += cost
+        sc.save()
         user.save()
-        return True
-    return False
+        return 0
+    return 1
 
 
 def admin_service(request, name):
@@ -128,7 +158,8 @@ def admin_service(request, name):
 
     if request.method == "GET":
         form = KIAServiceForm(service)
-        return render(request, 'KIA_services/admin_service.html', {'form': form})
+        return render(request, 'KIA_services/admin_service.html',
+                      {'form': form, 'label': service.label, 'role': Profile.objects.get(user=request.user).role})
 
     elif request.method == "POST":
         if 'delete' in request.POST:
@@ -151,7 +182,8 @@ def admin_service_delete_success(request, name):
     message = "سرویس" + service.label + "با موفقیت حذف شد."
     return_url = "/admin/services"
     return render(request, 'KIA_general/success.html', {'message': message,
-                                                        'return_url': return_url})
+                                                        'return_url': return_url,
+                                                        'role': Profile.objects.get(user=request.user).role})
 
 
 def admin_service_fields(request, name):
@@ -169,7 +201,8 @@ def create_service(request):
     form = KIAServiceCreationForm()
 
     if request.method == 'GET':
-        return render(request, 'KIA_services/create_service.html', {'form': form})
+        return render(request, 'KIA_services/create_service.html',
+                      {'form': form, 'role': Profile.objects.get(user=request.user).role})
 
     elif request.method == "POST":
         service_form = KIAServiceCreationForm(request.POST)
@@ -179,7 +212,7 @@ def create_service(request):
             if (not new_service.variable_price) and (new_service.price is None):
                 error = "قیمت خدمت را وارد کنید"
                 return render(request, 'KIA_services/create_service.html',
-                              {'form': form, 'error': error})
+                              {'form': form, 'error': error, 'role': Profile.objects.get(user=request.user).role})
             if new_service.variable_price:
                 price_field = KIAServiceField()
                 price_field.service = new_service
@@ -194,7 +227,8 @@ def create_service(request):
 
             return HttpResponseRedirect(url)
         else:
-            return render(request, 'KIA_services/create_service.html', {'form': service_form})
+            return render(request, 'KIA_services/create_service.html',
+                          {'form': service_form, 'role': Profile.objects.get(user=request.user).role})
 
 
 def create_service_cont(request, name):
@@ -208,13 +242,16 @@ def create_service_cont(request, name):
 
     if request.method == 'GET':
         form = KIAServiceFieldCreationForm()
-        return render(request, 'KIA_services/create_service_cont.html', {'form': form})
+        return render(request, 'KIA_services/create_service_cont.html',
+                      {'form': form, 'role': Profile.objects.get(user=request.user).role})
 
     elif request.method == "POST":
         field_form = KIAServiceFieldCreationForm(request.POST)
 
         if 'finish' in field_form.data:
-            # TODO: send email to all users
+            message = "خدمت " + service.label + "به سامانه کیاپرداخت اضافه شده است! بشتابید!"
+            send_mail_to_all_users("خدمت جدید!",
+                                   message)
             return HttpResponseRedirect("success")
 
         if field_form.is_valid():
@@ -226,7 +263,8 @@ def create_service_cont(request, name):
             else:
                 return HttpResponse(request.POST.get('action'))
         else:
-            return render(request, 'KIA_services/create_service_cont.html', {'form': field_form})
+            return render(request, 'KIA_services/create_service_cont.html',
+                          {'form': field_form, 'role': Profile.objects.get(user=request.user).role})
 
 
 def create_service_success(request, name):
@@ -240,7 +278,20 @@ def create_service_success(request, name):
     message = "عملیات با موفقیت انجام شد"
     return_url = "/admin/services"
     return render(request, 'KIA_general/success.html', {'message': message,
-                                                        'return_url': return_url})
+                                                        'return_url': return_url,
+                                                        'role': Profile.objects.get(user=request.user).role})
+
+
+class HomeListView(ListView):
+    model = KIAService
+    queryset = KIAService.objects.all()
+    template_name = 'KIA_general/homepage.html'
+    context_object_name = 'services'
+
+
+class HomeServiceListDispatchView(View):
+    def dispatch(self, request, *args, **kwargs):
+        return HomeListView.as_view()(request, *args, *kwargs)
 
 
 class ServiceListView(ListView):
@@ -258,7 +309,7 @@ class AdminServiceListDispatchView(View):
         if is_user_admin(request):
             return AdminServiceListView.as_view()(request, *args, *kwargs)
         else:
-            return render(request, access_denied_template)
+            return render(request, access_denied_template, {'role': Profile.objects.get(user=request.user).role})
 
 
 class AdminServiceListView(ListView):
@@ -310,7 +361,7 @@ class EmpTransactionListDispatchView(View):
         if is_user_emp(request):
             return EmpTransactionListView.as_view()(request, *args, *kwargs)
         else:
-            return render(request, access_denied_template)
+            return render(request, access_denied_template, {'role': Profile.objects.get(user=request.user).role})
 
 
 class EmpTransactionListView(ListView):
@@ -324,7 +375,7 @@ def emp_transaction(request, index):
     if not request.user.is_authenticated:
         return render(request, not_authorized_template)
     if not is_user_emp(request):
-        return render(request, access_denied_template)
+        return render(request, access_denied_template, {'role': Profile.objects.get(user=request.user).role})
 
     transaction = get_object_or_404(KIATransaction, id=index)
     decoded_data = json.loads(transaction.data)
@@ -334,7 +385,8 @@ def emp_transaction(request, index):
 
     if request.method == "GET":
         return render(request, 'KIA_services/emp_transaction.html'
-                      , {'transaction': transaction, 'data': decoded_data, 'user': user_profile})
+                      , {'transaction': transaction, 'data': decoded_data, 'user': user_profile,
+                         'role': Profile.objects.get(user=request.user).role})
 
     # TODO: decorate problem happened s
     elif request.method == 'POST':
@@ -344,6 +396,7 @@ def emp_transaction(request, index):
                 transaction.assigned_emp = user_profile
                 transaction.state = transaction.being_done
                 transaction.save()
+                plan_transaction_expiration(transaction)
                 return HttpResponseRedirect("take/success")
             else:
                 return HttpResponse("A problem happened")
@@ -351,11 +404,45 @@ def emp_transaction(request, index):
         elif 'finish' in request.POST:
 
             if transaction.assigned_emp == user_profile:
-                transaction.state = transaction.done
-                transaction.save()
-                # TODO: check system credit
-                return HttpResponseRedirect("finish/success")
-                # TODO: send mail to user
+                credit = transaction.cost_in_currency
+                flag = True
+
+                currency = transaction.service.currency
+                sc = SystemCredit.objects.get(owner="system")
+
+                if currency == KIAService.dollar:
+                    if credit > sc.dollar_credit:
+                        flag = False
+                    else:
+                        sc.dollar_credit = sc.dollar_credit - credit
+                        sc.save()
+                elif currency == KIAService.euro:
+                    if credit > sc.euro_credit:
+                        flag = False
+                    else:
+                        sc.euro_credit = sc.euro_credit - credit
+                        sc.save()
+                elif currency == KIAService.pound:
+                    if credit > sc.pound_credit:
+                        flag = False
+                    else:
+                        sc.pound_credit = sc.pound_credit - credit
+                        sc.save()
+
+                if flag:
+                    transaction.state = transaction.done
+                    transaction.save()
+                    message = "درخواست شما برای خدمت" + transaction.service.label + "با موفقیت انجام شد"
+                    send_mail_to_user(transaction.user,
+                                      "موفقیت اتمام خدمت", message)
+                    return HttpResponseRedirect("finish/success")
+                else:
+                    error = "موجودی ارزی سامانه برای تکمیل این عملیات کافی نیست."
+                    return render(request, 'KIA_services/emp_transaction.html'
+                                  , {'transaction': transaction,
+                                     'data': decoded_data,
+                                     'user': user_profile,
+                                     'error': error, 'role': Profile.objects.get(user=request.user).role})
             else:
                 return HttpResponse("A problem happened")
 
@@ -374,8 +461,9 @@ def emp_transaction(request, index):
                 transaction.state = transaction.failed
                 transaction.return_money()
                 transaction.save()
+                message = "متاسفانه درخواست شما برای خدمت" + transaction.service.label + "رد شد."
+                send_mail_to_user(transaction.user, "رد درخواست برای خدمت", message)
                 return HttpResponseRedirect("fail/success")
-                # TODO: send mail to user
             else:
                 return HttpResponse("A problem happened")
 
@@ -387,56 +475,60 @@ def emp_transaction_take_success(request):
     if not request.user.is_authenticated:
         return render(request, not_authorized_template)
     if not is_user_emp(request):
-        return render(request, access_denied_template)
+        return render(request, access_denied_template, {'role': Profile.objects.get(user=request.user).role})
 
     message = "تراکنش با موفقیت برای شما انتخاب شد"
     return_url = "/emp/taken_transactions"
     return render(request, 'KIA_general/success.html', {'message': message,
-                                                        'return_url': return_url})
+                                                        'return_url': return_url,
+                                                        'role': Profile.objects.get(user=request.user).role})
 
 
 def emp_transaction_finish_success(request):
     if not request.user.is_authenticated:
         return render(request, not_authorized_template)
     if not is_user_emp(request):
-        return render(request, access_denied_template)
+        return render(request, access_denied_template, {'role': Profile.objects.get(user=request.user).role})
 
     message = "تراکنش با موفقیت به اتمام رسید و " \
               "ایمیلی در همین رابطه برای کاربر مربوط فرستاده شد."
     return_url = "/emp/taken_transactions"
     return render(request, 'KIA_general/success.html', {'message': message,
-                                                        'return_url': return_url})
+                                                        'return_url': return_url,
+                                                        'role': Profile.objects.get(user=request.user).role})
 
 
 def emp_transaction_report_success(request):
     if not request.user.is_authenticated:
         return render(request, not_authorized_template)
     if not is_user_emp(request):
-        return render(request, access_denied_template)
+        return render(request, access_denied_template, {'role': Profile.objects.get(user=request.user).role})
 
     message = "تراکنش به عنوان تراکنش مشکوک به مدیر سایت گزارش شد."
     return_url = "/emp/taken_transactions"
     return render(request, 'KIA_general/success.html', {'message': message,
-                                                        'return_url': return_url})
+                                                        'return_url': return_url,
+                                                        'role': Profile.objects.get(user=request.user).role})
 
 
 def emp_transaction_fail_success(request):
     if not request.user.is_authenticated:
         return render(request, not_authorized_template)
     if not is_user_emp(request):
-        return render(request, access_denied_template)
+        return render(request, access_denied_template, {'role': Profile.objects.get(user=request.user).role})
 
     message = "تراکنش از سمت شما رد و ایمیلی متناسب با این موضوع برای کاربر مربوط فرستاده شد."
     return_url = "/emp/taken_transactions"
     return render(request, 'KIA_general/success.html', {'message': message,
-                                                        'return_url': return_url})
+                                                        'return_url': return_url,
+                                                        'role': Profile.objects.get(user=request.user).role})
 
 
 def emp_taken_transactions(request):
     if not request.user.is_authenticated:
         return render(request, not_authorized_template)
     if not is_user_emp(request):
-        return render(request, access_denied_template)
+        return render(request, access_denied_template, {'role': Profile.objects.get(user=request.user).role})
 
     user = request.user
     user_profile = Profile.objects.get(user=user)
@@ -447,7 +539,7 @@ def emp_taken_transactions(request):
                                                           , state=KIATransaction.done)
 
     suspicious_transactions = KIATransaction.objects.filter(assigned_emp=user_profile,
-                                                        state=KIATransaction.suspicious)
+                                                            state=KIATransaction.suspicious)
 
     failed_transactions = KIATransaction.objects.filter(assigned_emp=user_profile,
                                                         state=KIATransaction.failed)
@@ -456,21 +548,23 @@ def emp_taken_transactions(request):
                   , {'being_done_transactions': being_done_transactions
                       , 'done_transactions': finished_transactions
                       , 'suspicious_transactions': suspicious_transactions
-                      , 'failed_transactions': failed_transactions})
+                      , 'failed_transactions': failed_transactions,
+                     'role': Profile.objects.get(user=request.user).role})
 
 
 def admin_transaction(request, index):
     if not request.user.is_authenticated:
         return render(request, not_authorized_template)
     if not is_user_admin(request):
-        return render(request, access_denied_template)
+        return render(request, access_denied_template, {'role': Profile.objects.get(user=request.user).role})
 
     transaction = get_object_or_404(KIATransaction, id=index)
     decoded_data = json.loads(transaction.data)
 
     if request.method == "GET":
         return render(request, 'KIA_services/admin_transaction.html'
-                      , {'transaction': transaction, 'data': decoded_data})
+                      , {'transaction': transaction, 'data': decoded_data,
+                         'role': Profile.objects.get(user=request.user).role})
 
     # TODO: decorate problem happened s
     elif request.method == 'POST':
@@ -479,8 +573,8 @@ def admin_transaction(request, index):
             transaction.save()
 
         elif 'return' in request.POST:
-                transaction.state = transaction.being_done
-                transaction.save()
+            transaction.state = transaction.being_done
+            transaction.save()
 
         else:
             return HttpResponse("A problem happened")
@@ -491,29 +585,44 @@ def admin_transaction(request, index):
 def emp_panel(request):
     if not request.user.is_authenticated:
         return render(request, not_authorized_template)
-    if not is_user_emp(request) and not is_user_admin(request):
-        return render(request, access_denied_template)
+    if not is_user_emp(request):
+        return render(request, access_denied_template, {'role': Profile.objects.get(user=request.user).role})
 
     user = request.user
     user_profile = Profile.objects.get(user=user)
 
+    taken = KIATransaction.objects.filter(assigned_emp=Profile.objects.get(user=request.user)).count()
+    accepted = KIATransaction.objects.filter(assigned_emp=Profile.objects.get(user=request.user),
+                                             state=KIATransaction.done).count()
+
     return render(request, 'KIA_services/emp_panel.html', {'email': user_profile.user.email,
                                                            'name': user_profile.user.first_name,
-                                                           'username': user_profile.user.username})
+                                                           'username': user_profile.user.username,
+                                                           'taken': taken,
+                                                           'accepted': accepted,
+                                                           'role': Profile.objects.get(user=request.user).role})
 
 
 def get_exchange_rates():
-    response = requests.get('http://core.arzws.com/api/core?Token=a6d2b63a-5abf-42c0-bdb7-08d609cedc20&what=exchange')
-    data = json.loads(response.text)
-    all_currency_list = data['currencyBoard']
+    try:
+        response = requests.get(
+            'http://core.arzws.com/api/core?Token=a6d2b63a-5abf-42c0-bdb7-08d609cedc20&what=exchange')
+        data = json.loads(response.text)
+        all_currency_list = data['currencyBoard']
 
-    our_currency_list = {}
-    for currency in all_currency_list:
-        if currency['name'] == 'دلار آمریکا تهران':
-            our_currency_list[1] = currency['maxVal']
-        if currency['name'] == 'یورو':
-            our_currency_list[2] = currency['maxVal']
-        if currency['name'] == 'پوند انگلیس':
-            our_currency_list[3] = currency['maxVal']
+        our_currency_list = {}
+        for currency in all_currency_list:
+            if currency['name'] == 'دلار آمریکا تهران':
+                our_currency_list[1] = currency['maxVal']
+            if currency['name'] == 'یورو':
+                our_currency_list[2] = currency['maxVal']
+            if currency['name'] == 'پوند انگلیس':
+                our_currency_list[3] = currency['maxVal']
+    except:
+        our_currency_list = {
+            1: 105000,
+            2: 130000,
+            3: 135000,
+        }
 
     return our_currency_list

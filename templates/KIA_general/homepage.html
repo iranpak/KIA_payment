@@ -43,46 +43,45 @@
   </header>
 
 
-  <div class="container">
+  <div class="container" align="right">
 
-    <h1 class="my-4">خوش آمدید</h1>
+    <h1 class="my-4">خدمات ما</h1>
 
     <!-- Marketing Icons Section -->
     <div class="row">
       <div class="col-lg-4 mb-4">
         <div class="card h-100">
-          <h4 class="card-header">Card Title</h4>
+          <h4 class="card-header">سرویس‌های گوناگون</h4>
           <div class="card-body">
-            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente esse necessitatibus
-              neque.</p>
+            <p class="card-text">کیا پرداخت امکان انجام تراکنش‌های مختلف را برای شما ممکن می‌کند. تنها کافیست سرویس مورد
+              نظر خود را انتخاب کرده و وارد کردن اطلاعات و پرداخت هزینه به ریال را انجام دهید.</p>
           </div>
           <div class="card-footer">
-            <a href="#" class="btn btn-primary">Learn More</a>
+            <a href="/services" class="btn btn-primary">اطلاعات بیشتر</a>
           </div>
         </div>
       </div>
       <div class="col-lg-4 mb-4">
         <div class="card h-100">
-          <h4 class="card-header">Card Title</h4>
+          <h4 class="card-header">قیمت ارز و تبدیل واحد</h4>
           <div class="card-body">
-            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis ipsam eos, nam
-              perspiciatis natus commodi similique totam consectetur praesentium molestiae atque exercitationem ut
-              consequuntur, sed eveniet, magni nostrum sint fuga.</p>
+            <p class="card-text">شما می‌توانید به راحتی نرخ تبدیل ارزهای مختلف را مشاهده کرده و همچنین از ابزار تبدیل
+              واحد لحظه‌ای ما استفاده کنید.</p>
           </div>
           <div class="card-footer">
-            <a href="#" class="btn btn-primary">Learn More</a>
+            <a href="/currency_rates" class="btn btn-primary">اطلاعات بیشتر</a>
           </div>
         </div>
       </div>
       <div class="col-lg-4 mb-4">
         <div class="card h-100">
-          <h4 class="card-header">Card Title</h4>
+          <h4 class="card-header">ارتباط با مدیر</h4>
           <div class="card-body">
-            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente esse necessitatibus
-              neque.</p>
+            <p class="card-text">این امکان برای شما فراهم شده که در هر لحظه از شبانه روز به راحتی با مدیر سایت در تماس
+              بوده و سوالات و پیشنهادات خود را با وی در میان بگذارید.</p>
           </div>
           <div class="card-footer">
-            <a href="#" class="btn btn-primary">Learn More</a>
+            <a href="/contact_us" class="btn btn-primary">اطلاعات بیشتر</a>
           </div>
         </div>
       </div>
@@ -90,104 +89,56 @@
     <!-- /.row -->
 
     <!-- Portfolio Section -->
-    <h2>Portfolio Heading</h2>
+    <h2>برخی از سرویس‌ها</h2>
 
-    <div class="row">
+    {% for service in services %}
+      {% if forloop.counter0 < 3 %}
+        {% if forloop.counter0|divisibleby:3 %}
+          {#            <div class="row" align="center">#}
+          <div class="row">
+        {% endif %}
+
       <div class="col-lg-4 col-sm-6 portfolio-item">
         <div class="card h-100">
-          <a href="#"><img class="card-img-top" src="http://placehold.it/700x400" alt=""></a>
+          <a href="{{ service.name }}"><img style="width: 100%; height: 200px;" class="card-img-top"
+                                            src="{{ service.image_url }}" alt=""></a>
           <div class="card-body">
             <h4 class="card-title">
-              <a href="#">Project One</a>
+              <a href="/services/{{ service.name }}">خرید</a>
             </h4>
-            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet numquam aspernatur eum
-              quasi sapiente nesciunt? Voluptatibus sit, repellat sequi itaque deserunt, dolores in, nesciunt, illum
-              tempora ex quae? Nihil, dolorem!</p>
+            <p class="card-text">{{ service.label }}</p>
           </div>
         </div>
       </div>
-      <div class="col-lg-4 col-sm-6 portfolio-item">
-        <div class="card h-100">
-          <a href="#"><img class="card-img-top" src="http://placehold.it/700x400" alt=""></a>
-          <div class="card-body">
-            <h4 class="card-title">
-              <a href="#">Project Two</a>
-            </h4>
-            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam viverra euismod odio,
-              gravida pellentesque urna varius vitae.</p>
-          </div>
+      {% if forloop.counter0|add:1|divisibleby:3 or forloop.counter == services|length %}
         </div>
-      </div>
-      <div class="col-lg-4 col-sm-6 portfolio-item">
-        <div class="card h-100">
-          <a href="#"><img class="card-img-top" src="http://placehold.it/700x400" alt=""></a>
-          <div class="card-body">
-            <h4 class="card-title">
-              <a href="#">Project Three</a>
-            </h4>
-            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos quisquam, error quod sed
-              cumque, odio distinctio velit nostrum temporibus necessitatibus et facere atque iure perspiciatis mollitia
-              recusandae vero vel quam!</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-4 col-sm-6 portfolio-item">
-        <div class="card h-100">
-          <a href="#"><img class="card-img-top" src="http://placehold.it/700x400" alt=""></a>
-          <div class="card-body">
-            <h4 class="card-title">
-              <a href="#">Project Four</a>
-            </h4>
-            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam viverra euismod odio,
-              gravida pellentesque urna varius vitae.</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-4 col-sm-6 portfolio-item">
-        <div class="card h-100">
-          <a href="#"><img class="card-img-top" src="http://placehold.it/700x400" alt=""></a>
-          <div class="card-body">
-            <h4 class="card-title">
-              <a href="#">Project Five</a>
-            </h4>
-            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam viverra euismod odio,
-              gravida pellentesque urna varius vitae.</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-4 col-sm-6 portfolio-item">
-        <div class="card h-100">
-          <a href="#"><img class="card-img-top" src="http://placehold.it/700x400" alt=""></a>
-          <div class="card-body">
-            <h4 class="card-title">
-              <a href="#">Project Six</a>
-            </h4>
-            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque earum nostrum suscipit
-              ducimus nihil provident, perferendis rem illo, voluptate atque, sit eius in voluptates, nemo repellat
-              fugiat excepturi! Nemo, esse.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- /.row -->
+      {% endif %}
+
+      {% endif %}
+
+    {% endfor %}
+
+    <br>
+    <hr>
+    <br>
+
 
     <!-- Features Section -->
     <div class="row">
       <div class="col-lg-6">
-        <h2>Modern Business Features</h2>
-        <p>The Modern Business template by Start Bootstrap includes:</p>
+        <h2>ویژگی‌های سامانهٔ ما</h2>
+        <p>ویژگی‌های زیر سامانهٔ کیا پرداخت را یکتا می‌کند:</p>
         <ul>
           <li>
-            <strong>Bootstrap v4</strong>
+            تنوع بالای سرویس‌های ارائه شده
           </li>
-          <li>jQuery</li>
-          <li>Font Awesome</li>
-          <li>Working contact form with validation</li>
-          <li>Unstyled page elements for easy customization</li>
+          <li>تیم جوان و فعال</li>
+          <li>سادگی استفاده</li>
+          <li>پشتیبانی بالا</li>
+          <li>امنیت و حفظ حریم خصوصی کاربران</li>
         </ul>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, omnis doloremque non cum id
-          reprehenderit, quisquam totam aspernatur tempora minima unde aliquid ea culpa sunt. Reiciendis quia dolorum
-          ducimus unde.</p>
+        <p>ما در کیا پرداخت تلاش می‌کنیم خدمات خود را به نحوی ارائه کنیم که علاوه بر پاسخگویی به نیاز شما،‌ رضایت و
+          آرامش شما را نیز در بر داشته باشد.</p>
       </div>
       <div class="col-lg-6">
         <img class="img-fluid rounded" src="http://placehold.it/700x450" alt="">
@@ -197,16 +148,6 @@
 
     <hr>
 
-    <!-- Call to Action Section -->
-    <div class="row mb-4">
-      <div class="col-md-8">
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Molestias, expedita, saepe, vero rerum deleniti
-          beatae veniam harum neque nemo praesentium cum alias asperiores commodi.</p>
-      </div>
-      <div class="col-md-4">
-        <a class="btn btn-lg btn-secondary btn-block" href="#">Call to Action</a>
-      </div>
-    </div>
 
   </div>
 {% endblock content %}

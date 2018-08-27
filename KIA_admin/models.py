@@ -8,6 +8,8 @@ class SystemCredit(models.Model):
     owner = models.CharField(max_length=24, default='system')
     rial_credit = models.IntegerField(default=0)
     dollar_credit = models.IntegerField(default=0)
+    euro_credit = models.IntegerField(default=0)
+    pound_credit = models.IntegerField(default=0)
 
 
 class HistoryOfAdminActivities(models.Model):

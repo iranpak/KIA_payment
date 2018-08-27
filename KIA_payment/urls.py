@@ -56,6 +56,7 @@ urlpatterns = [
          , kia_services_views.admin_service_delete_success
          , name='admin_service_delete_success'),
     # auth
+    # TODO what is the user is already logged in?
     path('login/', auth_views.login, {'template_name': 'KIA_auth/login.html'}, name='login'),
     path('logout/', auth_views.logout, {'template_name': 'KIA_auth/logout.html'}, name='logout'),
     path('signup/', KIA_auth_views.sign_up, name='signup'),
@@ -88,7 +89,8 @@ urlpatterns = [
     path('emp/taken_transactions', kia_services_views.emp_taken_transactions, name='emp_taken_transactions'),
     path('send_email/', test_app_views.send_email, name='send_email'),
     # homepage
-    path('homepage/', test_app_views.homepage, name='homepage'),
+    # path('homepage/', test_app_views.homepage, name='homepage'),
+    path('homepage/', kia_services_views.HomeListView.as_view(), name='homepage'),
     # KIA_services
     path('services/<str:name>/', kia_services_views.services, name='services'),
     path('services/<str:name>/success', kia_services_views.services_success, name='services_success'),
@@ -97,5 +99,5 @@ urlpatterns = [
     path('create_service/<str:name>/success', kia_services_views.create_service_success, name='create_service_success'),
     path('services/', kia_services_views.ServiceListView.as_view(), name='service_list'),
     # tinymce
-    re_path(r'^tinymce/', include('tinymce.urls'))
+    # re_path(r'^tinymce/', include('tinymce.urls'))
 ]

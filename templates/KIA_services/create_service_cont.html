@@ -24,6 +24,7 @@
     #id_name {
       direction: ltr;
     }
+
     #id_args {
       direction: ltr;
     }
@@ -33,6 +34,9 @@
 {% extends "master.html" %}
 
 {% block content %}
+  <head>
+    <link rel="stylesheet" href="/static/Panels.css">
+  </head>
 
   <div id="wrapper" class="row" style="padding-bottom:20px;">
 
@@ -44,55 +48,46 @@
         {#        <a href="/admin/employees_activities" class="list-group-item list-group-item-action">فعالیت کارمندان</a>#}
         <a href="/admin/activities" class="list-group-item list-group-item-action">فعالیت‌ها</a>
         <a href="/admin/my_history" class="list-group-item list-group-item-action">سابقهٔ من</a>
-        <a href="/admin/financial_account_details" class="list-group-item list-group-item-action">جزئیات حساب مالی</a>
-
         <a href="/admin/restrict_user" class="list-group-item list-group-item-action">محدود کردن کاربر</a>
         <a href="/admin/remove_user_restriction" class="list-group-item list-group-item-action">رفع محدودیت</a>
         <a href="/admin/add_system_credit" class="list-group-item list-group-item-action">اضافه کردن اعتبار</a>
         {#        <a href="/admin/add_transaction" class="list-group-item list-group-item-action active">اضافه کردن تراکنش</a>#}
-        <a href="/create_service" class="list-group-item list-group-item-action active">اضافه کردن تراکنش</a>
-        <a href="/admin/services" class="list-group-item list-group-item-action">مشاهده و بررسی سرویس‌ها</a>
+        <a href="/create_service" id="create" class="list-group-item list-group-item-action">اضافه کردن تراکنش</a>
+        <a href="/admin/services" id="edit" class="list-group-item list-group-item-action">مشاهده و بررسی سرویس‌ها</a>
+        <a href="/admin/add_user" class="list-group-item list-group-item-action">اضافه کردن کاربر</a>
       </div>
     </div>
 
     <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
-
-    {% if form.errors %}
-	<!-- Error messaging -->
-	<div id="errors">
-		<div class="inner">
-			<p>There were some errors in the information you entered. Please correct the following:</p>
-			{{ form.non_field_errors }}
-			<ul>
-				{% for field in form %}
-					{% if field.errors %}<li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
-				{% endfor %}
-			</ul>
-		</div>
-	</div>
-	<!-- /Error messaging -->
-    {% endif %}
+      {% if form.errors %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <ul>
+            <strong>خطاهای زیر پیش آمده:</strong>
+            {{ form.non_field_errors }}
+            {% for field in form %}
+              {% if field.errors %}
+                <li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
+            {% endfor %}
+          </ul>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      {% endif %}
 
       <form action="" method="post">
         {% csrf_token %}
-        <div class="form-group row">
-          <div class="col-sm-7">
-            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="">
-          </div>
-        </div>
 
         <div style="padding-left: 150px">
-          <input type="submit" name="finish" class="btn btn-primary" value="پایان عملیات">
+          <button type="submit" name="finish" class="btn btn-primary">پایان عملیات</button>
+          {#          <input type="submit" name="finish" class="btn btn-primary" value="پایان عملیات">#}
         </div>
       </form>
 
       <form action="" method="post">
         {% csrf_token %}
-        <div class="form-group row">
-          <h3 class="col-sm-2">ادامهٔ اضافه کردن تراکنش جدید</h3>
-          <div class="col-sm-7">
-            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="">
-          </div>
+        <div class="form-group row" align="right">
+          <h3 class="col-sm-6">ادامهٔ اضافه کردن تراکنش جدید</h3>
         </div>
 
         {% for item in form %}
@@ -108,9 +103,10 @@
         {% endfor %}
 
 
-        <div style="padding-left: 150px">
-          <input type="submit" name="cont" class="btn btn-primary" value="ادامه عملیات">
-{#          <input type="submit" name="finish" class="btn btn-primary" value="پایان ساخت خدمت">#}
+        <div id="buttons" style="padding-left: 150px">
+          <button type="submit" name="cont" class="btn btn-primary">ادامه عملیات</button>
+          {#          <input type="submit" name="cont" class="btn btn-primary" value="">#}
+          {#          <input type="submit" name="finish" class="btn btn-primary" value="پایان ساخت خدمت">#}
         </div>
 
       </form>
@@ -118,7 +114,17 @@
 
   </div>
 
+  <script src="/static/Translator.js"></script>
+  <script src="/static/MakeInputsCute.js"></script>
   <script>
-      document.getElementById("id_args").value = "{\n\"val\": \"\"\n}"
+      document.getElementById("id_args").value = "{\n\"val\": \"\"\n}";
+      if (document.referrer.includes('create'))
+          document.getElementById('create').classList.add('active');
+      else {
+          document.getElementById('edit').classList.add('active');
+          document.getElementById('buttons').value += "<button type=\"button\" onclick=\"javascript:history.back()\" class=\"btn btn-primary\">\n" +
+              "            بازگشت\n" +
+              "          </button>";
+      }
   </script>
 {% endblock content %}

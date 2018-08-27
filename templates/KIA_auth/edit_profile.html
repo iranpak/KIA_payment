@@ -1,128 +1,130 @@
 {% extends "master.html" %}
 
 {% block content %}
+  <head>
+    <link rel="stylesheet" href="/static/Panels.css">
+  </head>
 
-    <div id="wrapper" class="row" style="padding-bottom:20px;">
+  <div id="wrapper" class="row" style="padding-bottom:20px;">
 
-        <!-- Sidebar -->
-        <div id="sidebar-wrapper" class="col-3" align="center" style="padding-right: 50px;">
-            <div class="list-group">
-                <a href="/user_panel" class="list-group-item list-group-item-action">پنل کاربری</a>
-                <a href="/edit_profile" class="list-group-item list-group-item-action active">ویرایش پروفایل</a>
-                <a href="/change_password" class="list-group-item list-group-item-action">تغییر رمز عبور</a>
-                <a href="/add_credit" class="list-group-item list-group-item-action">اضافه کردن اعتبار</a>
-                <a href="/withdraw_credit" class="list-group-item list-group-item-action">برداشت پول از اعتبار</a>
-                <a href="/anonymous_transfer" class="list-group-item list-group-item-action">پرداخت ناشناس</a>
-                <a href="/transactions" class="list-group-item list-group-item-action">تاریخچهٔ تراکنش‌ها</a>
-            </div>
-        </div>
-
-        <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
-
-            {% if form.errors %}
-                <!-- Error messaging -->
-                <div id="form_errors" style="background: #ffcccc;">
-                    <div class="inner">
-                        <p>خطاهای زیر پیش آمده:</p>
-                        {{ form.non_field_errors }}
-                        <ul>
-                            {% for field in form %}
-                                {% if field.errors %}
-                                    <li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-            {% endif %}
-            {% if errors %}
-                <div id="custom_errors" style="background: thistle;">
-                    <div class="inner">
-                <ul>
-                    {% for key, value in errors.items %}
-                        <div class="row">
-                            <label for="username" class="col-sm-4 col-form-label text-md-right">خطا مربوط به:</label>
-                            <div class="col-md-8">
-                                {{ key }}
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <label for="username" class="col-sm-4 col-form-label text-md-right">توضیح خطا:</label>
-                            <div class="col-md-8" dir="ltr">
-                                {{ value }}
-                            </div>
-                        </div>
-
-                    {% endfor %}
-                </ul>
-                    </div>
-                </div>
-
-            {% endif %}
-
-
-            <form method="post">
-                {% csrf_token %}
-                <div class="form-group row">
-                    <h3 class="col-sm-2">مشخصات</h3>
-                    <div class="col-sm-7">
-                        <input type="text" readonly class="form-control-plaintext" value="">
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label for="staticEmail" class="col-sm-2 col-form-label">نام کاربری</label>
-                    <div class="col-sm-7">
-                        <input type="text" readonly class="form-control-plaintext" id="username" name="username"
-                               value={{ information.username }}>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label for="staticEmail" class="col-sm-2 col-form-label">ایمیل</label>
-                    <div class="col-sm-7">
-                        <input type="email" readonly class="form-control-plaintext" id="email" name="email"
-                               value={{ information.email }}>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label for="inputName" class="col-sm-2 col-form-label">نام</label>
-                    <div class="col-sm-7">
-                        <input type="text" class="form-control" id="first_name" name="first_name"
-                               value={{ information.first_name }}>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="inputName" class="col-sm-2 col-form-label">نام خانوادگی</label>
-                    <div class="col-sm-7">
-                        <input type="text" class="form-control" id="last_name" name="last_name"
-                               value={{ information.last_name }}>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label for="inputName" class="col-sm-2 col-form-label">شماره تماس</label>
-                    <div class="col-sm-7">
-                        <input type="text" class="form-control" id="phone_number" name="phone_number"
-                               value={{ information.phone_number }}>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label for="inputName" class="col-sm-2 col-form-label">شماره حساب</label>
-                    <div class="col-sm-7">
-                        <input type="text" class="form-control" id="account_number" name="account_number"
-                               value={{ information.account_number }}>
-                    </div>
-                </div>
-                <div style="padding-left: 150px">
-                    <button type="submit" class="btn btn-primary" name="submit_button">ثبت</button>
-                </div>
-
-            </form>
-        </div>
-
+    <!-- Sidebar -->
+    <div id="sidebar-wrapper" class="col-3" align="center" style="padding-right: 50px;">
+      <div class="list-group">
+        <a href="/user_panel" class="list-group-item list-group-item-action">پنل کاربری</a>
+        <a href="/edit_profile" class="list-group-item list-group-item-action active">ویرایش پروفایل</a>
+        <a href="/change_password" class="list-group-item list-group-item-action">تغییر رمز عبور</a>
+        <a href="/add_credit" class="list-group-item list-group-item-action">اضافه کردن اعتبار</a>
+        <a href="/withdraw_credit" class="list-group-item list-group-item-action">برداشت پول از اعتبار</a>
+        <a href="/anonymous_transfer" class="list-group-item list-group-item-action">واریز مخفیانهٔ پول</a>
+        <a href="/transactions" class="list-group-item list-group-item-action">تاریخچهٔ تراکنش‌ها</a>
+      </div>
     </div>
 
+    <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
+
+      {% if form.errors %}
+        <!-- Error messaging -->
+        <div id="form_errors" style="background: #ffcccc;">
+          <div class="inner">
+            <p>خطاهای زیر پیش آمده:</p>
+            {{ form.non_field_errors }}
+            <ul>
+              {% for field in form %}
+                {% if field.errors %}
+                  <li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      {% endif %}
+      {% if errors %}
+        <div id="custom_errors" style="background: thistle;">
+          <div class="inner">
+            <ul>
+              {% for key, value in errors.items %}
+                <div class="row">
+                  <label for="username" class="col-sm-4 col-form-label text-md-right">خطا مربوط به:</label>
+                  <div class="col-md-8">
+                    {{ key }}
+                  </div>
+                </div>
+
+                <div class="row">
+                  <label for="username" class="col-sm-4 col-form-label text-md-right">توضیح خطا:</label>
+                  <div class="col-md-8" dir="ltr">
+                    {{ value }}
+                  </div>
+                </div>
+
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+
+      {% endif %}
+
+
+      <form method="post">
+        {% csrf_token %}
+        <div class="form-group row" align="right">
+          <h3 class="col-sm-6">مشخصات</h3>
+        </div>
+
+
+        <div class="form-group row">
+          <label for="staticEmail" class="col-sm-2 col-form-label">نام کاربری</label>
+          <div class="col-sm-7">
+            <input type="text" readonly class="form-control-plaintext" id="username"
+                   value={{ information.username }}>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="staticEmail" class="col-sm-2 col-form-label">ایمیل</label>
+          <div class="col-sm-7">
+            <input type="email" readonly class="form-control-plaintext" id="staticEmail"
+                   value={{ information.email }}>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="inputName" class="col-sm-2 col-form-label">نام</label>
+          <div class="col-sm-7">
+            <input type="text" class="form-control" id="first_name" name="first_name"
+                   value={{ information.first_name }}>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="inputName" class="col-sm-2 col-form-label">نام خانوادگی</label>
+          <div class="col-sm-7">
+            <input type="text" class="form-control" id="last_name" name="last_name"
+                   value={{ information.last_name }}>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="inputName" class="col-sm-2 col-form-label">شماره تماس</label>
+          <div class="col-sm-7">
+            <input type="text" class="form-control" id="phone_number" name="phone_number"
+                   value={{ information.phone_number }}>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="inputName" class="col-sm-2 col-form-label">شماره حساب</label>
+          <div class="col-sm-7">
+            <input type="text" class="form-control" id="account_number" name="account_number"
+                   value={{ information.account_number }}>
+          </div>
+        </div>
+        <div style="padding-left: 150px">
+          <button type="submit" class="btn btn-primary">ثبت</button>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+
+  <script src="/static/Translator.js"></script>
 {% endblock content %}

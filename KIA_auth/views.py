@@ -12,6 +12,8 @@ from django.contrib.auth.models import User
 from KIA_auth.models import Profile
 from django.contrib.auth import hashers
 from django.core.mail import send_mail
+from django.db.models import Sum, Count
+
 import string, random
 
 access_denied_template = 'KIA_general/access_denied.html'
@@ -21,7 +23,10 @@ not_authorized_template = 'KIA_general/not_authorized.html'
 def sign_up(request):
     if request.method == 'GET':
         form = SignUpForm()
-        return render(request, 'KIA_auth/signup.html', {'form': form})
+        if request.user.is_authenticated:
+            return redirect_to_home(request)
+        return render(request, 'KIA_auth/signup.html',
+                      {'form': form})
 
     elif request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -51,7 +56,8 @@ def sign_up(request):
             login(request, user)
             return redirect('home')
         else:
-            return render(request, 'KIA_auth/signup.html', {'form': form})
+            return render(request, 'KIA_auth/signup.html',
+                          {'form': form, 'role': Profile.objects.get(user=request.user).role, })
 
 
 def redirect_to_home(request):
@@ -59,13 +65,29 @@ def redirect_to_home(request):
     if user.is_authenticated:
         user_profile = Profile.objects.get(user=user)
         if user_profile.is_restricted:
-            return render(request, 'KIA_general/user_restricted.html')
+            return render(request, 'KIA_general/user_restricted.html',
+                          {'role': Profile.objects.get(user=request.user).role, })
         else:
             if user_profile.role == 'Admin':
-                return render(request, 'KIA_admin/admin_panel.html')
+                total_rial = \
+                    KIATransaction.objects.filter(state=KIATransaction.done).aggregate(total=Sum('cost_in_rial'))[
+                        'total']
+                done = KIATransaction.objects.filter(state=KIATransaction.done).count()
+                fail = KIATransaction.objects.filter(state=KIATransaction.failed).count()
+
+                return render(request, 'KIA_admin/admin_panel.html',
+                              {'total_rial': total_rial,
+                               'done': done,
+                               'fail': fail, 'role': Profile.objects.get(user=request.user).role, })
             elif user_profile.role == 'Employee':
-                return render(request, 'KIA_services/emp_panel.html')
-            return render(request, 'KIA_general/homepage.html')
+                taken = KIATransaction.objects.filter(assigned_emp=Profile.objects.get(user=request.user)).count()
+                accepted = KIATransaction.objects.filter(assigned_emp=Profile.objects.get(user=request.user),
+                                                         state=KIATransaction.done).count()
+
+                return render(request, 'KIA_services/emp_panel.html',
+                              {'taken': taken,
+                               'accepted': accepted, 'role': Profile.objects.get(user=request.user).role, })
+            return render(request, 'KIA_general/homepage.html', {'role': Profile.objects.get(user=request.user).role, })
     else:
         return render(request, 'KIA_general/homepage.html')
 
@@ -93,7 +115,8 @@ def edit_profile(request):
         }
         if request.method == 'GET':
 
-            return render(request, 'KIA_auth/edit_profile.html', {'information': information})
+            return render(request, 'KIA_auth/edit_profile.html',
+                          {'information': information, 'role': Profile.objects.get(user=request.user).role, })
 
         elif request.method == 'POST':
             form = EditProfileForm(request.POST)
@@ -118,7 +141,9 @@ def edit_profile(request):
                 return render(request, 'KIA_general/success.html',
                               {'message': 'اظلاعات شما با موفقیت ویرایش شد', 'return_url': ''})
             else:
-                return render(request, 'KIA_auth/edit_profile.html', {'information': information, 'form': form})
+                return render(request, 'KIA_auth/edit_profile.html', {'information': information, 'form': form,
+                                                                      'role': Profile.objects.get(
+                                                                          user=request.user).role, })
 
     else:
         return render(request, not_authorized_template)
@@ -129,6 +154,10 @@ def user_panel(request):
     if user.is_authenticated:
         user_profile = Profile.objects.get(user=user)
 
+        total_rial = KIATransaction.objects.filter(user=Profile.objects.get(user=request.user)).aggregate(
+            total=Sum('cost_in_rial'))['total']
+        cnt = KIATransaction.objects.filter(user=Profile.objects.get(user=request.user)).count()
+
         information = {
             'first_name': user.first_name,
             'last_name': user.last_name,
@@ -137,9 +166,12 @@ def user_panel(request):
             'account_number': user_profile.account_number,
             'phone_number': user_profile.phone_number,
             'credit': user_profile.credit,
+            'total_rial': total_rial,
+            'cnt': cnt
         }
 
-        return render(request, 'KIA_auth/user_panel.html', {'information': information})
+        return render(request, 'KIA_auth/user_panel.html',
+                      {'information': information, 'role': Profile.objects.get(user=request.user).role, })
     else:
         return render(request, not_authorized_template)
 
@@ -148,7 +180,8 @@ def change_password(request):
     user = request.user
     if user.is_authenticated:
         if request.method == 'GET':
-            return render(request, 'KIA_auth/change_password.html')
+            return render(request, 'KIA_auth/change_password.html',
+                          {'role': Profile.objects.get(user=request.user).role, })
 
         elif request.method == 'POST':
             form = ChangePasswordForm(request.POST)
@@ -169,12 +202,16 @@ def change_password(request):
                         return render(request, 'KIA_general/success.html', {'message': 'رمز عبور شما با موفقیت تغییر یافت', 'return_url': ''})
                     else:
                         errors = {'old password': 'The old password is wrong'}
-                        return render(request, 'KIA_auth/change_password.html', {'errors': errors, 'form': form})
+                        return render(request, 'KIA_auth/change_password.html', {'errors': errors, 'form': form,
+                                                                                 'role': Profile.objects.get(
+                                                                                     user=request.user).role, })
                 else:
                     errors = {'new password': "Passwords doesn't match"}
-                    return render(request, 'KIA_auth/change_password.html', {'errors': errors})
+                    return render(request, 'KIA_auth/change_password.html',
+                                  {'errors': errors, 'role': Profile.objects.get(user=request.user).role, })
             else:
-                return render(request, 'KIA_auth/change_password.html', {'form': form})
+                return render(request, 'KIA_auth/change_password.html',
+                              {'form': form, 'role': Profile.objects.get(user=request.user).role, })
     else:
         return render(request, not_authorized_template)
 
@@ -185,7 +222,8 @@ def add_credit(request):
         user_profile = Profile.objects.get(user=user)
         if request.method == 'GET':
             current_credit = user_profile.credit
-            return render(request, 'KIA_auth/add_credit.html', {'current_credit': current_credit})
+            return render(request, 'KIA_auth/add_credit.html',
+                          {'current_credit': current_credit, 'role': Profile.objects.get(user=request.user).role, })
 
         elif request.method == 'POST':
             increasing_credit = int(request.POST.get("added_credit"))
@@ -202,14 +240,16 @@ def withdraw_credit(request):
         user_profile = Profile.objects.get(user=user)
         if request.method == 'GET':
             current_credit = user_profile.credit
-            return render(request, 'KIA_auth/withdraw_credit.html', {'current_credit': current_credit})
+            return render(request, 'KIA_auth/withdraw_credit.html',
+                          {'current_credit': current_credit, 'role': Profile.objects.get(user=request.user).role, })
 
         elif request.method == 'POST':
             withdrawing_credit = int(request.POST.get("sub_credit"))
             user_profile.credit -= withdrawing_credit
             user_profile.save()
             current_credit = user_profile.credit
-            return render(request, 'KIA_auth/withdraw_credit.html', {'current_credit': current_credit})
+            return render(request, 'KIA_auth/withdraw_credit.html',
+                          {'current_credit': current_credit, 'role': Profile.objects.get(user=request.user).role, })
     else:
         return render(request, not_authorized_template)
 
@@ -221,7 +261,8 @@ def anonymous_transfer(request):
         current_credit = user_profile.credit
 
         if request.method == 'GET':
-            return render(request, 'KIA_auth/anonymous_transfer.html', {'current_credit': current_credit})
+            return render(request, 'KIA_auth/anonymous_transfer.html',
+                          {'current_credit': current_credit, 'role': Profile.objects.get(user=request.user).role, })
 
         elif request.method == 'POST':
             form = AnonymousTransferForm(request.POST)
@@ -273,7 +314,8 @@ def anonymous_transfer(request):
 
             else:
                 return render(request, 'KIA_auth/anonymous_transfer.html',
-                              {'form': form, 'current_credit': current_credit})
+                              {'form': form, 'current_credit': current_credit,
+                               'role': Profile.objects.get(user=request.user).role, })
 
             return redirect('anonymous_transfer')
 
@@ -318,7 +360,8 @@ def transaction_history(request):
     return render(request, 'KIA_auth/transaction_history.html', {'registered': registered_transactions,
                                                                  'being_done': being_done_transactions,
                                                                  'done': finished_transactions,
-                                                                 'failed': failed_transactions})
+                                                                 'failed': failed_transactions,
+                                                                 'role': Profile.objects.get(user=request.user).role, })
 
 
 def transaction(request, index):

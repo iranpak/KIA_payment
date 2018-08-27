@@ -1,107 +1,104 @@
 {% extends "master.html" %}
 
 {% block content %}
-    <div id="wrapper" class="row" style="padding-bottom:20px;">
+  <head>
+    <link rel="stylesheet" href="/static/Panels.css">
+  </head>
+  <div id="wrapper" class="row" style="padding-bottom:20px;">
 
-        <!-- Sidebar -->
-        <div id="sidebar-wrapper" class="col-3" align="center" style="padding-right: 50px;">
-            <div class="list-group">
-                <a href="/admin/panel" class="list-group-item list-group-item-action">پنل مدیر</a>
-                {#        <a href="/admin/users_activities" class="list-group-item list-group-item-action">فعالیت کاربران</a>#}
-                {#        <a href="/admin/employees_activities" class="list-group-item list-group-item-action">فعالیت کارمندان</a>#}
-                <a href="/admin/activities" class="list-group-item list-group-item-action">فعالیت‌ها</a>
-                <a href="/admin/my_history" class="list-group-item list-group-item-action">سابقهٔ من</a>
-                <a href="/admin/financial_account_details" class="list-group-item list-group-item-action">جزئیات حساب
-                    مالی</a>
+    <!-- Sidebar -->
+    <div id="sidebar-wrapper" class="col-3" align="center" style="padding-right: 50px;">
+      <div class="list-group">
+        <a href="/admin/panel" class="list-group-item list-group-item-action">پنل مدیر</a>
+        {#        <a href="/admin/users_activities" class="list-group-item list-group-item-action">فعالیت کاربران</a>#}
+        {#        <a href="/admin/employees_activities" class="list-group-item list-group-item-action">فعالیت کارمندان</a>#}
+        <a href="/admin/activities" class="list-group-item list-group-item-action">فعالیت‌ها</a>
+        <a href="/admin/my_history" class="list-group-item list-group-item-action">سابقهٔ من</a>
+        <a href="/admin/restrict_user" class="list-group-item list-group-item-action">محدود کردن کاربر</a>
+        <a href="/admin/remove_user_restriction" class="list-group-item list-group-item-action">رفع محدودیت</a>
+        <a href="/admin/add_system_credit" class="list-group-item list-group-item-action">اضافه کردن اعتبار</a>
+        <a href="/create_service" class="list-group-item list-group-item-action">اضافه کردن تراکنش</a>
+        <a href="/admin/services" class="list-group-item list-group-item-action">مشاهده و بررسی سرویس‌ها</a>
+        <a href="/admin/add_user" class="list-group-item list-group-item-action active">اضافه کردن کاربر</a>
+      </div>
+    </div>
 
-                <a href="/admin/restrict_user" class="list-group-item list-group-item-action">محدود کردن کاربر</a>
-                <a href="/admin/remove_user_restriction" class="list-group-item list-group-item-action">رفع محدودیت</a>
-                <a href="/admin/add_system_credit" class="list-group-item list-group-item-action">اضافه کردن اعتبار</a>
-                <a href="/create_service" class="list-group-item list-group-item-action">اضافه کردن تراکنش</a>
-                <a href="/admin/services" class="list-group-item list-group-item-action">مشاهده و بررسی سرویس‌ها</a>
-                <a href="/admin/add_user" class="list-group-item list-group-item-action active">اضافه کردن کاربر</a>
+    <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
+      <div class="form-group row" align="right">
+        <h3 class="col-sm-6">اضافه کردن کاربر جدید</h3>
+      </div>
+
+      {% if errors %}
+        <div id="form_errors" class="alert-danger">
+          <div class="inner">
+            <p>خطاهای زیر پیش آمده:</p>
+            <ul>
+              {% for key, value in errors.items %}
+                <li>{{ key }}: {{ value }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      {% endif %}
+      {% if form.errors %}
+        <!-- Error messaging -->
+        <div id="custom_errors" class="alert-danger">
+          <div class="inner">
+            <p>خطاهای زیر پیش آمده:</p>
+            {{ form.non_field_errors }}
+            <ul>
+              {% for field in form %}
+                {% if field.errors %}
+                  <li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      {% endif %}
+
+
+      <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="form-group row">
+            <div class="col-sm-2 col-form-label">
+              {{ field.label_tag }}
             </div>
+            <div class="col-sm-7">
+              {{ field }}
+            </div>
+          </div>
+        {% endfor %}
+
+        <div class="form-group row">
+          <label for="inputPassword" class="col-sm-2 col-form-label">Role</label>
+          <div class="col-sm-7">
+            <select class="form-control" name="role">
+              <option value="Employee">کارمند</option>
+              <option value="user">کاربر</option>
+            </select>
+          </div>
         </div>
 
-        <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
-            {% if errors %}
-                <div id="form_errors" class="alert-danger">
-                    <div class="inner">
-                    <p>خطاهای زیر پیش آمده:</p>
-                        <ul>
-                            {% for key, value in errors.items %}
-                                <li>{{ key }}: {{ value }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-            {% endif %}
-            {% if form.errors %}
-                <!-- Error messaging -->
-                <div id="custom_errors" class="alert-danger">
-                    <div class="inner">
-                        <p>خطاهای زیر پیش آمده:</p>
-                        {{ form.non_field_errors }}
-                        <ul>
-                            {% for field in form %}
-                                {% if field.errors %}
-                                    <li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-            {% endif %}
-
-
-            <form method="post">
-                {% csrf_token %}
-                {% for field in form %}
-                    <div class="form-group row">
-                        <div class="col-sm-2 col-form-label">
-                            {{ field.label_tag }}
-                        </div>
-                        <div class="col-sm-7">
-                            {{ field }}
-                        </div>
-                    </div>
-                {% endfor %}
-
-                <div class="form-group row">
-                    <label for="inputPassword" class="col-sm-2 col-form-label">Role</label>
-                    <div class="col-sm-7">
-                        <select class="form-control" name="role">
-                            <option value="Employee">کارمند</option>
-                            <option value="user">کاربر</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div style="padding-left: 150px">
-                    <button type="submit" class="btn btn-primary">ایجاد</button>
-                </div>
-
-                {#        <div class="form-group row">#}
-                {#          <label for="inputName" class="col-sm-2 col-form-label">نام</label>#}
-                {#          <div class="col-sm-7">#}
-                {#            <input type="text" class="form-control" id="first_name" name="first_name"#}
-                {#                   value={{ information.first_name }}>#}
-                {#          </div>#}
-                {#        </div>#}
-
-
-            </form>
-
+        <div style="padding-left: 150px">
+          <button type="submit" class="btn btn-primary">ایجاد</button>
         </div>
+
+      </form>
 
     </div>
 
-    <script>
-        inputs = document.getElementsByTagName('input')
-        for (let i = 0; i < inputs.length; i++) {
-            {#inputs[i].class = "form-control"#}
-            inputs[i].classList.add('form-control');
-        }
-    </script>
+  </div>
+
+  <script src="/static/Translator.js"></script>
+  <script src="/static/MakeInputsCute.js"></script>
+  {#  <script>#}
+  {#      inputs = document.getElementsByTagName('input')#}
+  {#      for (let i = 0; i < inputs.length; i++) {#}
+  {#inputs[i].class = "form-control"#}
+  {#          inputs[i].classList.add('form-control');#}
+  {#      }#}
+  {#  </script>#}
 
 {% endblock %}
 

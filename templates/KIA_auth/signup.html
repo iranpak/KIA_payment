@@ -2,72 +2,72 @@
 
 {% block content %}
 
-    <div id="page-content-wrapper" align="center">
-        {% if form.errors %}
-            <!-- Error messaging -->
-            <div id="form_errors" style="background: #ffcccc;">
-                <div class="inner">
-                    <p>خطاهای زیر پیش آمده:</p>
-                    {{ form.non_field_errors }}
-                    <ul>
-                        {% for field in form %}
-                            {% if field.errors %}
-                                <li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-        {% endif %}
-        {% if errors %}
-            {% if errors %}
-                <div id="custom_errors" style="background: #ffcccc;">
-                    <div class="inner">
-                        <ul>
-                            {% for key, value in errors.items %}
-                                <p>خطاهای زیر پیش آمده:</p>
-                                <li>{{ key }}: {{ value }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-            {% endif %}
-        {% endif %}
+  <div id="page-content-wrapper" align="center">
+    {% if form.errors %}
+      <!-- Error messaging -->
+      <div id="form_errors" style="background: #ffcccc;">
+        <div class="inner">
+          <p>خطاهای زیر پیش آمده:</p>
+          {{ form.non_field_errors }}
+          <ul>
+            {% for field in form %}
+              {% if field.errors %}
+                <li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    {% endif %}
+    {% if errors %}
+      {% if errors %}
+        <div id="custom_errors" style="background: #ffcccc;">
+          <div class="inner">
+            <ul>
+              {% for key, value in errors.items %}
+                <p>خطاهای زیر پیش آمده:</p>
+                <li>{{ key }}: {{ value }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      {% endif %}
+    {% endif %}
 
     <div class="container p-5" dir="rtl">
-        <div class="row justify-content-center">
-            <div class="col-md-8" align="center">
+      <div class="row justify-content-center">
+        <div class="col-md-8" align="center">
 
-                <div class="card" style="background: #E0E0E0; height: 660px; width: 500px;">
-                    <div class="card-header text-right">لطفا ابتدا در سامانه ثبت نام کنید</div>
+          <div class="card" style="background: #E0E0E0; height: 660px; width: 500px;">
+            <div class="card-header text-right">لطفا ابتدا در سامانه ثبت نام کنید</div>
 
-                    <div class="card-body" align="center">
-                        <form method="post">
-                            {% csrf_token %}
-                            {% for field in form %}
-                                <div class="form-group row">
-                                    <div class="col-sm-4 col-form-label text-md-right">
-                                        {{ field.label_tag }}
-                                    </div>
-                                    <div class="col-md-6">
-                                        {{ field }}
-                                    </div>
-                                </div>
-                            {% endfor %}
-                            <div class="form-group row mb-0">
-                                <div class="col-md-8 offset-md-4">
-                                    <button type="submit" class="btn btn-outline-primary">
-                                        ثبت نام
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
+            <div class="card-body" align="center">
+              <form method="post">
+                {% csrf_token %}
+                {% for field in form %}
+                  <div class="form-group row">
+                    <div class="col-sm-4 col-form-label text-md-right">
+                      {{ field.label_tag }}
                     </div>
+                    <div class="col-md-6">
+                      {{ field }}
+                    </div>
+                  </div>
+                {% endfor %}
+                <div class="form-group row mb-0">
+                  <div class="col-md-8 offset-md-4">
+                    <button type="submit" class="btn btn-outline-primary">
+                      ثبت نام
+                    </button>
+                  </div>
                 </div>
+              </form>
             </div>
+          </div>
         </div>
+      </div>
     </div>
-    </div>
-
+  </div>
+  <script src="/static/Translator.js"></script>
 {% endblock %}
 
 

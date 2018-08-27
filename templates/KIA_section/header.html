@@ -10,7 +10,7 @@
 
 <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark fixed-top">
   <div class="container">
-    <a class="navbar-brand" href="/">کیا پرداخت</a>
+    <a class="navbar-brand" href="/homepage">کیا پرداخت</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
             data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
             aria-label="Toggle navigation">
@@ -31,18 +31,49 @@
           <a class="nav-link" href="/contact_us" id="contact_us">ارتباط با ما</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/FAQ" id="contact_us">پرسش‌های متداول</a>
+          <a class="nav-link" href="/FAQ" id="faq">پرسش‌های متداول</a>
         </li>
-        {#        <li class="nav-item active">#}
-        {#          <a class="nav-link" id="testA" href="/404">تست</a>#}
-        {#        </li>#}
+
         {% if user.is_authenticated %}
-          <li class="nav-item">
-            <a class="nav-link" href="/admin/panel" id="admin">پنل مدیریت</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/emp/panel" id="emp">پنل کارمند</a>
-          </li>
+          {% if role == 'Admin' %}
+            <li class="nav-item dropdown">
+              <div align="right">
+                <a class="nav-link dropdown-toggle" href="#" id="admin" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
+                  پنل مدیریت
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownBlog"
+                     style="padding-left: 18px" align="right">
+                  <a class="dropdown-item" href="/admin/panel">پنل مدیر</a>
+                  <a class="dropdown-item" href="/admin/activities">فعالیت‌ها</a>
+                  <a class="dropdown-item" href="/admin/my_history">سابقه‌ٔ من</a>
+                  <a class="dropdown-item" href="/admin/restrict_user">محدود کردن کاربر</a>
+                  <a class="dropdown-item" href="/admin/remove_user_restriction">رفع محدودیت</a>
+                  <a class="dropdown-item" href="/admin/add_system_credit">اضافه کردن اعتبار</a>
+                  <a class="dropdown-item" href="/create_service">اضافه کردن تراکنش</a>
+                  <a class="dropdown-item" href="/admin/services/">مشاهدهٔ سرویس‌ها</a>
+                  <a class="dropdown-item" href="/admin/add_user">اضافه کردن کاربر</a>
+                </div>
+              </div>
+            </li>
+          {% endif %}
+
+          {% if role == 'Employee' %}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="emp" data-toggle="dropdown"
+                 aria-haspopup="true" aria-expanded="false">
+                پنل کارمند
+              </a>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownBlog"
+                   style="padding-left: 18px">
+                <a class="dropdown-item" href="/emp/panel">پنل کارمند</a>
+                <a class="dropdown-item" href="/emp/transactions">مشاهدهٔ تراکنش‌ها</a>
+                <a class="dropdown-item" href="/emp/taken_transactions">تراکنش‌های شما</a>
+                <a class="dropdown-item" href="/send_email">ارسال پیام برای کاربر</a>
+              </div>
+            </li>
+          {% endif %}
+
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="profile" data-toggle="dropdown"
                aria-haspopup="true" aria-expanded="false">
@@ -57,7 +88,6 @@
               <a class="dropdown-item" href="/withdraw_credit">برداشت پول از اعتبار</a>
               <a class="dropdown-item" href="/anonymous_transfer">پرداخت ناشناس</a>
               <a class="dropdown-item" href="/transactions">تاریخچهٔ تراکنش‌ها</a>
-              {#              <a class="dropdown-item" href="faq.html">افزایش اعتبار</a>#}
             </div>
           </li>
           <li class="nav-item">
@@ -89,15 +119,14 @@
         crossorigin="anonymous"></script>
 
 <script>
-    var loc = document.URL.match(/\/[a-z_]+\//)[0];
+    var loc = document.URL.match(/\/[A-Za-z_]+\//)[0];
     loc = loc.substring(1, loc.length - 1);
     {#document.getElementById("testA").innerHTML = loc;#}
-
     if (loc == 'services')
         document.getElementById("services").className += " active";
-    else if (loc == 'admin')
+    else if (loc == 'admin' || loc == 'create_service')
         document.getElementById("admin").className += " active";
-    else if (loc == 'emp')
+    else if (loc == 'emp' || loc == 'send_email')
         document.getElementById("emp").className += " active";
     else if (loc == 'about')
         document.getElementById("about").className += " active";
@@ -107,7 +136,8 @@
         document.getElementById("login").className += " active";
     else if (loc == 'signup')
         document.getElementById("signup").className += " active";
-
+    else if (loc == 'FAQ')
+        document.getElementById("faq").className += " active";
     else if (loc == 'currency_rates')
         document.getElementById("currency_rates").className += " active";
     else

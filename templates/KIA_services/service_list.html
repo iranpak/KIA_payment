@@ -31,7 +31,7 @@
     <!-- Page Heading/Breadcrumbs -->
     <div align="right">
       <h1 class="mt-4 mb-3">سرویس‌ها
-        <small>در سایت</small>
+        <small>در سامانه</small>
       </h1>
     </div>
 
@@ -52,9 +52,7 @@
         <div class="card h-100">
           <h4 class="card-header">{{ service.name }}</h4>
           <div class="card-body">
-{#            <div class="img-wrap" style="width: 50px; height: 40px;">#}
-              <img src="{{ service.image_url }}" alt="بدون تصویر" style="max-height: 200px; width: 100%;">
-{#            </div>#}
+            <img src="{{ service.image_url }}" alt="بدون تصویر" style="max-height: 200px; width: 100%;">
             <p class="card-text">{{ service.label }}</p>
           </div>
           <div class="card-footer">
