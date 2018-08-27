@@ -249,7 +249,7 @@ def create_service_cont(request, name):
         field_form = KIAServiceFieldCreationForm(request.POST)
 
         if 'finish' in field_form.data:
-            message = "خدمت" + service.label + "به سامانه کیاپرداخت اضافه شده است! بشتابید!"
+            message = "خدمت " + service.label + "به سامانه کیاپرداخت اضافه شده است! بشتابید!"
             send_mail_to_all_users("خدمت جدید!",
                                    message)
             return HttpResponseRedirect("success")

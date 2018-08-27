@@ -33,7 +33,7 @@ def send_email_by_employee(request):
 
 def send_mail_to_user(user, subject, message):
     sender_address = 'kiapayment2018@gmail.com'
-    email_address = user.email
+    email_address = [user.user.email]
     send_mail(subject, message, sender_address, email_address)
 
 
