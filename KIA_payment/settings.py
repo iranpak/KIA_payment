@@ -25,7 +25,10 @@ SECRET_KEY = '$da@8yu%9$!ibh*$w#k+s6zgof)04t@qfl!ewdb5_d*#*=(o7@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "valde.serveo.net",
+    "127.0.0.1"
+]
 
 
 # Application definition

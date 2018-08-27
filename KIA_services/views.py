@@ -6,6 +6,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 
 from KIA_admin.models import SystemCredit
+from KIA_notification.tasks import plan_transaction_expiration
+from KIA_notification.views import send_mail_to_user, send_mail_to_all_users
 from KIA_services.forms import KIAServiceForm
 from KIA_services.models import KIAService, KIATransaction, KIAServiceField
 from KIA_auth.models import Profile
@@ -71,7 +73,10 @@ def services(request, name):
                 transaction.data = form.get_json_data()
                 transaction.save()
                 transaction.assigned_emp = None
-                # TODO: send mail to user
+                message = "درخواست شما برای خدمت" + service.label + "با موفقیت ثبت شد"
+                send_mail_to_user(user,
+                                  "ثبت درخواست موفق",
+                                  message)
                 return HttpResponseRedirect("success")
             else:
                 error = 'اعتبار شما برای درخواست این خدمت کافی نیست'
@@ -219,7 +224,9 @@ def create_service_cont(request, name):
         field_form = KIAServiceFieldCreationForm(request.POST)
 
         if 'finish' in field_form.data:
-            # TODO: send email to all users
+            message = "خدمت" + service.label + "به سامانه کیاپرداخت اضافه شده است! بشتابید!"
+            send_mail_to_all_users("خدمت جدید!",
+                                   message)
             return HttpResponseRedirect("success")
 
         if field_form.is_valid():
@@ -349,6 +356,7 @@ def emp_transaction(request, index):
                 transaction.assigned_emp = user_profile
                 transaction.state = transaction.being_done
                 transaction.save()
+                plan_transaction_expiration(transaction)
                 return HttpResponseRedirect("take/success")
             else:
                 return HttpResponse("A problem happened")
@@ -384,8 +392,10 @@ def emp_transaction(request, index):
                 if flag:
                     transaction.state = transaction.done
                     transaction.save()
+                    message = "درخواست شما برای خدمت" + transaction.service.label + "با موفقیت انجام شد"
+                    send_mail_to_user(transaction.user,
+                                      "موفقیت اتمام خدمت", message)
                     return HttpResponseRedirect("finish/success")
-                    # TODO: send mail to user
                 else:
                     error = "موجودی ارزی سامانه برای تکمیل این عملیات کافی نیست."
                     return render(request, 'KIA_services/emp_transaction.html'
@@ -411,8 +421,9 @@ def emp_transaction(request, index):
                 transaction.state = transaction.failed
                 transaction.return_money()
                 transaction.save()
+                message = "متاسفانه درخواست شما برای خدمت" + transaction.service.label + "رد شد."
+                send_mail_to_user(transaction.user, "رد درخواست برای خدمت", message)
                 return HttpResponseRedirect("fail/success")
-                # TODO: send mail to user
             else:
                 return HttpResponse("A problem happened")
 
@@ -553,7 +564,6 @@ def get_exchange_rates():
             if currency['name'] == 'یورو':
                 our_currency_list[2] = currency['maxVal']
             if currency['name'] == 'پوند انگلیس':
-
                 our_currency_list[3] = currency['maxVal']
     except:
         our_currency_list = {
