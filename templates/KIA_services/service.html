@@ -178,16 +178,16 @@
                   document.getElementById('final_price').innerText =
                       Math.round(parseInt(document.getElementById('price').innerText)
                           * currency * (1 + commission / 100));
-              } else {
-                  document.getElementById('final_price').innerText = 0;
               }
           };
 
+      };
+      window.onload = function () {
           document.getElementById("id_price").onchange = function () {
               document.getElementById('final_price').innerText =
                   Math.round(parseInt(document.getElementById('id_price').value)
                       * currency * (1 + commission / 100));
           };
-      }
+      };
   </script>
 {% endblock content %}
