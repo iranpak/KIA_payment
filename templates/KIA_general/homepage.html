@@ -2,7 +2,7 @@
 
 {% block content %}
   <header>
-    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+    <div id="carousel" class="carousel slide" data-ride="carousel">
       <ol class="carousel-indicators">
         <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
         <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
@@ -43,7 +43,7 @@
   </header>
 
 
-  <div class="container" align="right">
+  <div class="container" align="right" id="features">
 
     <h1 class="my-4">خدمات ما</h1>
 
@@ -89,7 +89,7 @@
     <!-- /.row -->
 
     <!-- Portfolio Section -->
-    <h2>برخی از سرویس‌ها</h2>
+    <h2 id="services">برخی از سرویس‌ها</h2>
 
     {% for service in services %}
       {% if forloop.counter0 < 3 %}
@@ -124,7 +124,7 @@
 
 
     <!-- Features Section -->
-    <div class="row">
+    <div class="row" id="properties">
       <div class="col-lg-6">
         <h2>ویژگی‌های سامانهٔ ما</h2>
         <p>ویژگی‌های زیر سامانهٔ کیا پرداخت را یکتا می‌کند:</p>
