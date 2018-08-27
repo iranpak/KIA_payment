@@ -109,7 +109,7 @@ def services_success(request, name):
         return render(request, not_authorized_template)
 
     service = get_object_or_404(KIAService, name=name)
-    message = "درخواست شما برای خدمت" + service.label + "با موفقیت ثبت شد."
+    message = "درخواست شما برای خدمت " + service.label + " با موفقیت ثبت شد."
     return_url = "/services"
 
     return render(request, 'KIA_general/success.html', {'message': message,

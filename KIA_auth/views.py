@@ -279,7 +279,7 @@ def anonymous_transfer(request):
                 all_users = User.objects.all()
                 account_number_exists = False
                 for sys_user in all_users:
-                    if sys_user.username == 'iran':
+                    if sys_user.username == 'iran' or sys_user.username == 'super':
                         continue
                     sys_user_profile = Profile.objects.get(user=sys_user)
                     print(sys_user_profile.account_number)
