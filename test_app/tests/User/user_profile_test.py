@@ -122,6 +122,33 @@ class UserTest(unittest.TestCase):
 
         assert flag
 
+    def test_user_change_password_invalid(self):
+        driver = self.driver
+
+        self.login_as_user()
+
+        driver.get("http://127.0.0.1:8085/change_password")
+        old_password = driver.find_element_by_name("old_password")
+        new_password = driver.find_element_by_name("new_password")
+        new_password_again = driver.find_element_by_name("new_password_confirmation")
+
+        submit_button = driver.find_element_by_name("submit_button")
+
+        old_password.send_keys("wrong_pasword")
+        new_password.send_keys("3432asdf")
+        new_password_again.send_keys("3432asdf")
+
+        submit_button.click()
+
+        try:
+            WebDriverWait(driver, 2) \
+                .until(expected_conditions.presence_of_element_located((By.ID, "custom_errors")))
+            flag = True
+        except TimeoutException:
+            flag = False
+
+        assert flag
+
     def test_user_change_password_valid(self):
         driver = self.driver
 
@@ -149,32 +176,6 @@ class UserTest(unittest.TestCase):
 
         assert flag
 
-    def test_user_change_password_invalid(self):
-        driver = self.driver
-
-        self.login_as_user()
-
-        driver.get("http://127.0.0.1:8085/change_password")
-        old_password = driver.find_element_by_name("old_password")
-        new_password = driver.find_element_by_name("new_password")
-        new_password_again = driver.find_element_by_name("new_password_confirmation")
-
-        submit_button = driver.find_element_by_name("submit_button")
-
-        old_password.send_keys("1q1q1q1q")
-        new_password.send_keys("1q1q1q1q")
-        new_password_again.send_keys("3432asdf")
-
-        submit_button.click()
-
-        try:
-            WebDriverWait(driver, 2) \
-                .until(expected_conditions.presence_of_element_located((By.NAME, "form_errors")))
-            flag = True
-        except TimeoutException:
-            flag = False
-
-        assert flag
 
 
 if __name__ == '__main__':

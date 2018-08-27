@@ -396,7 +396,7 @@ def emp_transaction(request, index):
                 transaction.assigned_emp = user_profile
                 transaction.state = transaction.being_done
                 transaction.save()
-                plan_transaction_expiration(transaction)
+                plan_transaction_expiration(transaction.id)
                 return HttpResponseRedirect("take/success")
             else:
                 return HttpResponse("A problem happened")
@@ -471,7 +471,7 @@ def emp_transaction(request, index):
             return HttpResponse(request.POST)
 
 
-def emp_transaction_take_success(request):
+def emp_transaction_take_success(request, index):
     if not request.user.is_authenticated:
         return render(request, not_authorized_template)
     if not is_user_emp(request):
@@ -484,7 +484,7 @@ def emp_transaction_take_success(request):
                                                         'role': Profile.objects.get(user=request.user).role})
 
 
-def emp_transaction_finish_success(request):
+def emp_transaction_finish_success(request, index):
     if not request.user.is_authenticated:
         return render(request, not_authorized_template)
     if not is_user_emp(request):
@@ -498,7 +498,7 @@ def emp_transaction_finish_success(request):
                                                         'role': Profile.objects.get(user=request.user).role})
 
 
-def emp_transaction_report_success(request):
+def emp_transaction_report_success(request, index):
     if not request.user.is_authenticated:
         return render(request, not_authorized_template)
     if not is_user_emp(request):
@@ -511,7 +511,7 @@ def emp_transaction_report_success(request):
                                                         'role': Profile.objects.get(user=request.user).role})
 
 
-def emp_transaction_fail_success(request):
+def emp_transaction_fail_success(request, index):
     if not request.user.is_authenticated:
         return render(request, not_authorized_template)
     if not is_user_emp(request):
@@ -606,7 +606,7 @@ def emp_panel(request):
 def get_exchange_rates():
     try:
         response = requests.get(
-            'http://core.arzws.com/api/core?Token=a6d2b63a-5abf-42c0-bdb7-08d609cedc20&what=exchange')
+            'http://core.arzws.com/api/core?Token=2c354ffd-c336-41d8-e073-08d60c13485c&what=exchange')
         data = json.loads(response.text)
         all_currency_list = data['currencyBoard']
 

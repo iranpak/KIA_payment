@@ -62,9 +62,11 @@
           {% endif %}
 
           {% if error %}
-            <p style="color: red;">
-              {{ error }}
-            </p>
+              <div id="error">
+                <p style="color: red;">
+                    {{ error }}
+                </p>
+              </div>
           {% endif %}
 
           <form action="" method="post">
@@ -135,7 +137,7 @@
               </div>
             </div>
             <div style="padding-left: 150px">
-              <button type="submit" class="btn btn-primary">تایید</button>
+              <button type="submit" class="btn btn-primary" name="submit">تایید</button>
               {#              <input type="submit" value="تایید" class="btn btn-primary">#}
               <button type="button" onclick="javascript:history.back()" class="btn btn-primary">
                 بازگشت
