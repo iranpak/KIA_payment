@@ -6,6 +6,7 @@ import json
 from KIA_auth.forms import ContactUsForm
 from KIA_admin.models import ContactUsMessages
 from django.shortcuts import redirect
+from django.core.mail import send_mail
 
 # Create your views here.
 from KIA_auth.models import Profile
@@ -34,6 +35,7 @@ def contact_us(request):
             message = cleaned_data.get('message')
             ContactUsMessages.objects.create(sender_name=sender_name, sender_phone_number=sender_phone,
                                              sender_email=sender_email, message=message)
+            send_contact_us_eamil(sender_name, sender_phone, sender_email, message)
             return render(request, 'KIA_general/success.html',
                           {'message': 'پیام شما با موفقیت ارسال شد', 'return-url': 'contact_us'})
         else:
@@ -45,6 +47,20 @@ def contact_us(request):
 
     template = loader.get_template('KIA_general/contact_us.html')
     return HttpResponse(template.render(context, request))
+
+
+def send_contact_us_eamil(sender_name, sender_phone, sender_email, message):
+    subject = 'پیام کاربران'
+    message = message
+    message += '\n'
+    message += 'نام فرستنده: %s' %sender_name
+    message += '\n'
+    message += 'شماره تلفن: %s' % sender_phone
+    message += '\n'
+    message += 'آدرس ایمیل: %s' % sender_email
+    sender_address = 'kiapayment2018@gmail.com'
+    receiver_addresses = ['kiapayment2018@gmail.com']
+    send_mail(subject, message, sender_address, receiver_addresses)
 
 
 def not_found(request):
