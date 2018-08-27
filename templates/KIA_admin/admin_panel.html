@@ -1,6 +1,9 @@
 {% extends "master.html" %}
 
 {% block content %}
+  <head>
+    <link rel="stylesheet" href="/static/Panels.css">
+  </head>
 
   <div id="wrapper" class="row" style="padding-bottom:20px;">
 
@@ -23,9 +26,51 @@
 
     <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
       <form>
-        <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
-          <h2>به پنل خود خوش آمدید {{ name }} </h2>
+        <div class="form-group row" align="right">
+          <h3 class="col-sm-6">به پنل خود خوش آمدید {{ name }} </h3>
         </div>
+
+        <div class="form-group row">
+          <label for="staticEmail" class="col-sm-2 col-form-label">تعداد کل اعضای سامانه</label>
+          <div class="col-sm-7">
+            <input type="number" readonly class="form-control-plaintext" id="staticEmail"
+                   value={{ taken }}>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="staticEmail" class="col-sm-2 col-form-label">موجودی سامانه</label>
+          <div class="col-sm-7">
+            <input type="number" readonly class="form-control-plaintext" id="staticEmail"
+                   value={{ accepted }}>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="staticEmail" class="col-sm-2 col-form-label">تعداد تراکنش‌های تایید شده</label>
+          <div class="col-sm-7">
+            <input type="number" readonly class="form-control-plaintext" id="staticEmail"
+                   value={{ done }}>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="staticEmail" class="col-sm-2 col-form-label">تعداد تراکنش‌های رد شده</label>
+          <div class="col-sm-7">
+            <input type="number" readonly class="form-control-plaintext" id="staticEmail"
+                   value={{ fail }}>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="staticEmail" class="col-sm-2 col-form-label">هزینهٔ ریالی کل تراکنش‌های تایید شده</label>
+          <div class="col-sm-7">
+            <input type="number" readonly class="form-control-plaintext" id="staticEmail"
+                   value={{ total_rial }}>
+          </div>
+        </div>
+
+
       </form>
     </div>
 

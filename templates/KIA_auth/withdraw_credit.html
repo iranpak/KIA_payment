@@ -1,6 +1,13 @@
 {% extends "master.html" %}
 
 {% block content %}
+  <head>
+    <link rel="stylesheet" href="/static/Panels.css">
+  </head>
+
+  <head>
+    <link rel="stylesheet" href="/static/Panels.css">
+  </head>
 
   <div id="wrapper" class="row" style="padding-bottom:20px;">
 
@@ -20,11 +27,8 @@
     <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
       <form method="post">
         {% csrf_token %}
-        <div class="form-group row">
-          <h3 class="col-sm-3">برداشت پول از حساب</h3>
-          <div class="col-sm-6">
-            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="">
-          </div>
+        <div class="form-group row" align="right">
+          <h3 class="col-sm-6">برداشت پول از حساب</h3>
         </div>
 
         <div class="form-group row">
@@ -38,7 +42,7 @@
         <div class="form-group row">
           <label for="inputPassword" class="col-sm-2 col-form-label">اعتبار برداشتی (ریال)</label>
           <div class="col-sm-7">
-            <input type="number" min="0" step="1000" class="form-control" id="sub_credit" name="sub_credit"
+            <input type="number" min="0" step="10000" class="form-control" id="sub_credit" name="sub_credit"
                    placeholder="0" dir="ltr"
                    onchange="calcDiff();">
           </div>
@@ -53,6 +57,9 @@
         </div>
 
         <div style="padding-left: 150px">
+          <button type="button" onclick="takeAll()" class="btn btn-outline-primary">
+            تصویه حساب
+          </button>
           <button type="submit" class="btn btn-primary" onclick="checkNotNeg()">ثبت</button>
         </div>
 
@@ -62,6 +69,11 @@
   </div>
 
   <script>
+      function takeAll() {
+          document.getElementById("sub_credit").value = parseInt(document.getElementById("old_credit").value);
+          calcDiff();
+      }
+
       function calcDiff() {
           var diff = parseInt(document.getElementById("old_credit").value) -
               parseInt(document.getElementById("sub_credit").value);
@@ -72,7 +84,7 @@
           if (parseInt(document.getElementById("sub_credit").value) >
               parseInt(document.getElementById("old_credit").value)) {
               document.getElementById("sub_credit").value = 0;
-              alert("نمی‌توانید بیشتر از اعتبارتان بردارید!");
+              swal("نمی‌توانید بیشتر از اعتبارتان بردارید!");
           }
       }
   </script>

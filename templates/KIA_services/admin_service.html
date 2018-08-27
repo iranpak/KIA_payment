@@ -21,6 +21,9 @@
 {% extends "master.html" %}
 
 {% block content %}
+  <head>
+    <link rel="stylesheet" href="/static/Panels.css">
+  </head>
 
   <div id="wrapper" class="row" style="padding-bottom:20px;">
     <div id="sidebar-wrapper" class="col-3" align="center" style="padding-right: 50px;">
@@ -44,11 +47,8 @@
       <form action="" method="post" novalidate>
         {% csrf_token %}
 
-        <div class="form-group row">
-          <h3 class="col-sm-2">مشاهده و ویرایش سرویس {{ label }}</h3>
-          <div class="col-sm-7">
-            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="">
-          </div>
+        <div class="form-group row" align="right">
+          <h3 class="col-sm-6">مشاهده و ویرایش سرویس {{ label }}</h3>
         </div>
 
         {% for item in form %}
@@ -63,8 +63,10 @@
         {% endfor %}
 
         <div style="padding-left: 150px">
-          <input type="submit" name="delete" value="حذف سرویس" class="btn btn-primary">
-          <input type="submit" name="augment" value="افزودن فیلد به سرویس" class="btn btn-primary">
+          <button type="submit" name="delete" class="btn btn-primary">حذف سرویس</button>
+          <button type="submit" name="augment" class="btn btn-primary">افزودن فیلد به سرویس</button>
+          {#          <input type="submit" name="delete" value="حذف سرویس" class="btn btn-primary">#}
+          {#          <input type="submit" name="augment" value="افزودن فیلد به سرویس" class="btn btn-primary">#}
           <button type="button" onclick="javascript:history.back()" class="btn btn-primary">
             بازگشت
           </button>
@@ -76,5 +78,6 @@
     </div>
   </div>
 
+  <script src="/static/MakeInputsCute.js"></script>
 
 {% endblock content %}

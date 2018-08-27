@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'KIA_admin',
     'KIA_notification',
     'KIA_general',
-    'tinymce',
+    # 'tinymce',
     'background_task',
 ]
 

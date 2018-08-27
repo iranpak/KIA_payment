@@ -15,7 +15,7 @@ def send_email_by_employee(request):
         user_profile = Profile.objects.get(user=user)
         if user_profile.role == 'Employee' or user_profile.role == 'Admin':
             if request.method == 'GET':
-                return render(request, 'KIA_notification/send_email_by_employee.html')
+                return render(request, 'KIA_notification/send_email_by_employee.html', {'role': Profile.objects.get(user=request.user).role})
             elif request.method == 'POST':
                 subject = request.POST.get('subject')
                 message_body = request.POST.get('message_body')
@@ -26,7 +26,7 @@ def send_email_by_employee(request):
                 send_mail(subject, message_body, sender_address, receiver_addresses)
                 return redirect('emp_panel')
         else:
-            return render(request, access_denied_template)
+            return render(request, access_denied_template, {'role': Profile.objects.get(user=request.user).role})
     else:
         return render(request, not_authorized_template)
 

@@ -1,8 +1,13 @@
 {% extends "master.html" %}
 
 {% block content %}
+  <head>
+    <link rel="stylesheet" href="/static/Panels.css">
+  </head>
+
   <div class="row">
-    <h2>{{ message }}</h2>
-    <a href={{ return_url }}>بازگشت</a>
+    <div class="col" align="center">
+      <h2> {{ message }} </h2><h5><a href={{ return_url }}>بازگشت</a></h5>
+    </div>
   </div>
 {% endblock content %}

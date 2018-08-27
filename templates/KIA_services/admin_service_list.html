@@ -24,7 +24,9 @@
 {% extends "master.html" %}
 
 {% block content %}
-
+  <head>
+    <link rel="stylesheet" href="/static/Panels.css">
+  </head>
 
   <div id="wrapper" class="row" style="padding-bottom:20px;">
 
@@ -47,6 +49,10 @@
 
     <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px"
          align="right">
+
+      <div class="form-group row" align="right">
+        <h3 class="col-sm-6">سرویس‌های موجود</h3>
+      </div>
 
       {% if services %}
         {% for service in services %}
