@@ -8,6 +8,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 import time
 
 
+#### DONE
+
 class UserRestriction(unittest.TestCase):
 
     def setUp(self):
