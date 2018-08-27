@@ -9,6 +9,9 @@ import time
 
 
 #### DONE
+ADMIN_PASSWORD = '1q1q1q1q'
+ADMIN_USERNAME = 'admin'
+
 
 class UserRestriction(unittest.TestCase):
 
@@ -18,7 +21,7 @@ class UserRestriction(unittest.TestCase):
     def test_successfully_restrict_users(self):
         driver = self.driver
 
-        self.login(driver)
+        self.login_as_admin()
 
         driver.get("http://127.0.0.1:8085/admin/restrict_user")
         username_field = WebDriverWait(driver, 1).until(
@@ -39,12 +42,13 @@ class UserRestriction(unittest.TestCase):
 
         assert flag
 
-    def login(self, driver):
+    def login_as_admin(self):
+        driver = self.driver
         driver.get("http://127.0.0.1:8085/login")
         username = driver.find_element_by_name('username')
-        username.send_keys('admin')
+        username.send_keys(ADMIN_USERNAME)
         password = driver.find_element_by_name('password')
-        password.send_keys('1q1q1q1q')
+        password.send_keys(ADMIN_PASSWORD)
         button = driver.find_element_by_name('submit_button')
         button.click()
         time.sleep(1)
@@ -52,7 +56,7 @@ class UserRestriction(unittest.TestCase):
     def test_successfully_remove_restriction_of_users(self):
         driver = self.driver
 
-        self.login(driver)
+        self.login_as_admin()
 
         driver.get("http://127.0.0.1:8085/admin/restrict_user")
         username_field = WebDriverWait(driver, 1).until(
