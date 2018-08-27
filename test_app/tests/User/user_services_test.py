@@ -1,3 +1,4 @@
+import time
 from selenium import webdriver
 import unittest
 
@@ -6,165 +7,139 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
+USER_USER = "user"
+USER_PASS = "3=3=3=3="
+SLEEP_TIME = 1
+
 
 class UserTest(unittest.TestCase):
 
     def setUp(self):
         self.driver = webdriver.Firefox()
 
-    # def test_user_transactions(self):
+    def login_as_user(self):
+        driver = self.driver
+        driver.get("http://127.0.0.1:8085/login/")
+        time.sleep(SLEEP_TIME)
+
+        username = driver.find_element_by_name('username')
+        username.send_keys(USER_USER)
+        password = driver.find_element_by_name('password')
+        password.send_keys(USER_PASS)
+        button = driver.find_element_by_name('submit_button')
+        button.click()
+
+    # def test_user_wallet_valid(self):
     #     driver = self.driver
-    #     driver.get("http://127.0.0.1:8085/user_transactions")
+    #     driver.get("http://127.0.0.1:8085/user_wallet")
     #
-    #     transactions_list = driver.find_element_by_id("transactions_list")
+    #     credit_increase = driver.find_element_by_name("credit")
+    #     credit_increase.send_keys("50000")
     #
-    #     assert transactions_list.find_element_by_class_name("transaction_row") is not None
+    #     submit_button = driver.find_element_by_name("registerButton")
+    #     submit_button.click()
+    #
+    #     try:
+    #         WebDriverWait(driver, 2)
+    #     except:
+    #         print("An error occurred during waiting")
+    #
+    #     assert driver.current_url == "http://127.0.0.1:8085/payment"
+    #
+    # def test_user_wallet_invalid(self):
+    #     driver = self.driver
+    #     driver.get("http://127.0.0.1:8085/user_wallet")
+    #
+    #     credit_increase = driver.find_element_by_name("credit")
+    #     credit_increase.send_keys("99999999999999999999999")
+    #
+    #     submit_button = driver.find_element_by_name("registerButton")
+    #     submit_button.click()
+    #
+    #     try:
+    #         WebDriverWait(driver, 2) \
+    #              .until(expected_conditions.presence_of_element_located((By.NAME, "invalid_credit")))
+    #         flag = True
+    #     except TimeoutException:
+    #         flag = False
+    #
+    #     assert flag
 
-    def test_user_wallet_valid(self):
+    def test_user_service_successful(self):
+        self.login_as_user()
+
         driver = self.driver
-        driver.get("http://127.0.0.1:8085/user_wallet")
+        driver.get("http://127.0.0.1:8085/services/test_service")
+        time.sleep(SLEEP_TIME)
 
-        credit_increase = driver.find_element_by_name("credit")
-        credit_increase.send_keys("50000")
+        price = driver.find_element_by_name("price")
+        name = driver.find_element_by_name("name")
+        submit = driver.find_element_by_name("submit")
 
-        submit_button = driver.find_element_by_name("registerButton")
-        submit_button.click()
+        name.send_keys("test")
+        price.send_keys("20")
+
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+        submit.click()
 
         try:
-            WebDriverWait(driver, 2)
-        except:
-            print("An error occurred during waiting")
-
-        assert driver.current_url == "http://127.0.0.1:8085/payment"
-
-    def test_user_wallet_invalid(self):
-        driver = self.driver
-        driver.get("http://127.0.0.1:8085/user_wallet")
-
-        credit_increase = driver.find_element_by_name("credit")
-        credit_increase.send_keys("99999999999999999999999")
-
-        submit_button = driver.find_element_by_name("registerButton")
-        submit_button.click()
-
-        try:
-            WebDriverWait(driver, 2) \
-                 .until(expected_conditions.presence_of_element_located((By.NAME, "invalid_credit")))
+            WebDriverWait(driver, 5) \
+                .until(expected_conditions.url_contains("success"))
             flag = True
         except TimeoutException:
             flag = False
 
         assert flag
 
-    # def test_physical_mastercard_valid(self):
-    #     driver = self.driver
-    #     driver.get("http://127.0.0.1:8085/services/physical_mastercard")
+    # def test_user_service_fail_1(self):
+    #     self.login_as_user()
     #
-    #     credit = driver.find_element_by_name("credit")
+    #     driver = self.driver
+    #     driver.get("http://127.0.0.1:8085/services/test_service")
+    #     time.sleep(SLEEP_TIME)
+    #
+    #     price = driver.find_element_by_name("price")
     #     name = driver.find_element_by_name("name")
+    #     submit = driver.find_element_by_name("submit")
     #
-    #     credit.send_keys("200")
-    #     name.send_keys("Ali Alavi")
+    #     name.send_keys("test")
+    #     price.send_keys("1")
     #
-    #     submit_button = driver.find_element_by_name("registerButton")
-    #     submit_button.click()
+    #     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    #
+    #     submit.click()
     #
     #     try:
-    #         WebDriverWait(driver, 2) \
-    #              .until(expected_conditions.presence_of_element_located((By.NAME, "successful_request")))
+    #         WebDriverWait(driver, SLEEP_TIME) \
+    #             .until(expected_conditions.presence_of_element_located((By.NAME, "error")))
     #         flag = True
     #     except TimeoutException:
     #         flag = False
     #
     #     assert flag
     #
-    # def test_physical_mastercard_invalid(self):
-    #     driver = self.driver
-    #     driver.get("http://127.0.0.1:8085/services/physical_mastercard")
+    # def test_user_service_fail_2(self):
+    #     self.login_as_user()
     #
-    #     credit = driver.find_element_by_name("credit")
+    #     driver = self.driver
+    #     driver.get("http://127.0.0.1:8085/services/test_service")
+    #     time.sleep(SLEEP_TIME)
+    #
+    #     price = driver.find_element_by_name("price")
     #     name = driver.find_element_by_name("name")
+    #     submit = driver.find_element_by_name("submit")
     #
-    #     credit.send_keys("1000000")
-    #     name.send_keys("Ali Alavi")
+    #     name.send_keys("test")
+    #     price.send_keys("1000")
     #
-    #     submit_button = driver.find_element_by_name("registerButton")
-    #     submit_button.click()
+    #     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     #
-    #     try:
-    #         WebDriverWait(driver, 2) \
-    #             .until(expected_conditions.presence_of_element_located((By.NAME, "not_enough_credit")))
-    #         flag = True
-    #     except TimeoutException:
-    #         flag = False
-    #
-    #     assert flag
-    #
-    # def test_return_money_valid_and_invalid(self):
-    #     driver = self.driver
-    #     driver.get("http://127.0.0.1:8085/return_money")
-    #
-    #     credit = driver.find_element_by_name("return_credit")
-    #     credit.send_keys("200000")
-    #
-    #     submit_button = driver.find_element_by_name("registerButton")
-    #     submit_button.click()
+    #     submit.click()
     #
     #     try:
-    #         WebDriverWait(driver, 2) \
-    #             .until(expected_conditions.presence_of_element_located((By.NAME, "successful_return"))
-    #                    or expected_conditions.presence_of_element_located((By.NAME, "not_enough_credit")))
-    #         flag = True
-    #     except TimeoutException:
-    #         flag = False
-    #
-    #     assert flag
-    #
-    # def test_anonymous_money_invalid_account_number(self):
-    #     driver = self.driver
-    #     driver.get("http://127.0.0.1:8085/anonymous_money")
-    #
-    #     account_number = driver.find_element_by_name("account_number")
-    #     money = driver.find_element_by_name("value")
-    #     email = driver.find_element_by_name("email")
-    #
-    #     account_number.send_keys("12")
-    #     money.send_keys("200000")
-    #     email.send_keys("alialavi@gmail.com")
-    #
-    #     submit_button = driver.find_element_by_name("registerButton")
-    #     submit_button.click()
-    #
-    #     try:
-    #         WebDriverWait(driver, 2) \
-    #             .until(expected_conditions.presence_of_element_located((By.NAME, "invalid_account")))
-    #         flag = True
-    #     except TimeoutException:
-    #         flag = False
-    #
-    #     assert flag
-    #
-    # def test_anonymous_money(self):
-    #     driver = self.driver
-    #     driver.get("http://127.0.0.1:8085/anonymous_money")
-    #
-    #     account_number = driver.find_element_by_name("account_number")
-    #     money = driver.find_element_by_name("value")
-    #     email = driver.find_element_by_name("email")
-    #
-    #     account_number.send_keys("123456789101112131415161")
-    #     money.send_keys("200000")
-    #     email.send_keys("alialavi@gmail.com")
-    #
-    #     submit_button = driver.find_element_by_name("registerButton")
-    #     submit_button.click()
-    #
-    #     try:
-    #         WebDriverWait(driver, 2) \
-    #             .until(expected_conditions.presence_of_element_located((By.NAME, "not_enough_credit"))
-    #                    or expected_conditions.presence_of_element_located((By.NAME, "different_email"))
-    #                    or expected_conditions.presence_of_element_located((By.NAME, "no_account"))
-    #                    or expected_conditions.presence_of_element_located((By.NAME, "all_saved")))
+    #         WebDriverWait(driver, SLEEP_TIME) \
+    #             .until(expected_conditions.presence_of_element_located((By.NAME, "error")))
     #         flag = True
     #     except TimeoutException:
     #         flag = False

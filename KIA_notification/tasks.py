@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from background_task import background
+from django.contrib.auth.models import User
 
 from KIA_admin.models import SystemCredit
 from KIA_auth.models import Profile
@@ -9,7 +10,8 @@ from KIA_services.models import KIATransaction
 
 
 @background(schedule=timedelta(days=1))
-def plan_transaction_expiration(transaction):
+def plan_transaction_expiration(transaction_id):
+    transaction = KIATransaction.objects.get(id=transaction_id)
     if transaction.state == KIATransaction.registered:
         transaction.delete()
         message = "متاسفانه درخواست شما برای خدمت" + transaction.service.label + "به دلیل شلوغی " + \
@@ -18,7 +20,10 @@ def plan_transaction_expiration(transaction):
 
 
 @background(schedule=timedelta(days=30))
-def plan_employee_wage(employee):
+def plan_employee_wage(employee_username):
+    emp = User.objects.get(username=employee_username)
+    employee = Profile.objects.get(user=emp)
+
     employee.credit += 100000
     sc = SystemCredit.objects.get(owner="system")
     sc.rial_credit -= 100000

@@ -258,7 +258,7 @@ def add_user(request):
                                                      account_number=account_number, role=role)
                     profile.save()
                     if role == 'Employee':
-                        plan_employee_wage(profile, repeat_until=None)
+                        plan_employee_wage(profile.user.username, repeat_until=None)
 
                     description = 'ایجاد کاربر با نام  کاربری %s' % username
                     HistoryOfAdminActivities.objects.create(type='Create user', description=description)

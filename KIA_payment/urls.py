@@ -85,6 +85,18 @@ urlpatterns = [
     path('all_transactions/1234', test_app_views.sample_transaction, name='sample_transaction'),
     # TODO converted to:
     path('emp/transactions/<int:index>/', kia_services_views.emp_transaction, name='emp_transaction'),
+    path('emp/transactions/<int:index>/take/success/',
+         kia_services_views.emp_transaction_take_success,
+         name='emp_transaction_take'),
+    path('emp/transactions/<int:index>/report/success/',
+         kia_services_views.emp_transaction_report_success,
+         name='emp_transaction_report'),
+    path('emp/transactions/<int:index>/finish/success/',
+         kia_services_views.emp_transaction_finish_success,
+         name='emp_transaction_finish'),
+    path('emp/transactions/<int:index>/fail/success/',
+         kia_services_views.emp_transaction_fail_success,
+         name='emp_transaction_fail'),
     path('emp/taken_transactions', kia_services_views.emp_taken_transactions, name='emp_taken_transactions'),
     path('send_email/', test_app_views.send_email, name='send_email'),
     # homepage
