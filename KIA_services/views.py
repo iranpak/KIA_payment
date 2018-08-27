@@ -1,24 +1,18 @@
 import datetime
 import json
-import requests
 
+import requests
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
+from django.views.generic.list import ListView, View
 
 from KIA_admin.models import SystemCredit
+from KIA_auth.models import Profile
 from KIA_notification.tasks import plan_transaction_expiration
 from KIA_notification.views import send_mail_to_user, send_mail_to_all_users
-from KIA_services.forms import KIAServiceForm
-from KIA_services.models import KIAService, KIATransaction, KIAServiceField
-from KIA_auth.models import Profile
-from KIA_services.forms import KIAServiceForm
-from django.views.generic.list import ListView, View
-from django.contrib.auth.models import User
-
 from KIA_services.forms import KIAServiceForm, KIAServiceCreationForm, KIAServiceFieldCreationForm
 from KIA_services.models import KIAService, KIATransaction
-from KIA_auth.models import Profile
-from KIA_auth.models import Profile
+from KIA_services.models import KIAServiceField
 
 access_denied_template = 'KIA_general/access_denied.html'
 not_authorized_template = 'KIA_general/not_authorized.html'
@@ -65,7 +59,8 @@ def services(request, name):
         form = KIAServiceForm(service, request.POST)
         if form.is_valid():
             transaction = KIATransaction()
-            if pay_from_user_credit(service, transaction, user, form.get_json_data()):
+            flag = pay_from_user_credit(service, transaction, user, form.get_json_data())
+            if flag == 0:
                 transaction.initialize(service)
                 user_profile = Profile.objects.get(user=user)
                 transaction.user = user_profile
@@ -78,12 +73,25 @@ def services(request, name):
                                   "ثبت درخواست موفق",
                                   message)
                 return HttpResponseRedirect("success")
-            else:
+            elif flag == 1:
                 error = 'اعتبار شما برای درخواست این خدمت کافی نیست'
                 form = KIAServiceForm(service)
                 return render(request, 'KIA_services/service.html',
                               {'form': form, 'authenticated': authenticated,
                                'service': service, 'error': error})
+            elif flag == 2:
+                error = 'مبلغ این تراکنش از سقف مبلغ تراکنش ممکن بیشتر است'
+                form = KIAServiceForm(service)
+                return render(request, 'KIA_services/service.html',
+                              {'form': form, 'authenticated': authenticated,
+                               'service': service, 'error': error})
+            else:
+                error = 'مبلغ این تراکنش از کف مبلغ تراکنش ممکن کمتر است'
+                form = KIAServiceForm(service)
+                return render(request, 'KIA_services/service.html',
+                              {'form': form, 'authenticated': authenticated,
+                               'service': service, 'error': error})
+
         return render(request, 'KIA_services/service.html',
                       {'form': form, 'authenticated': authenticated,
                        'service': service})
@@ -109,6 +117,10 @@ def pay_from_user_credit(service, transaction, user, json_data):
             * (1 + (service.commission / 100.0))
         ))
         transaction.cost_in_currency = decoded_data['price']
+        if cost > 100000000:
+            return 2
+        elif cost < 500000:
+            return 3
     else:
         cost = int(round(
             get_exchange_rates()[service.currency] * service.price \
@@ -123,8 +135,8 @@ def pay_from_user_credit(service, transaction, user, json_data):
         sc.rial_credit += cost
         sc.save()
         user.save()
-        return True
-    return False
+        return 0
+    return 1
 
 
 def admin_service(request, name):
