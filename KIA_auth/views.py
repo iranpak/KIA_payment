@@ -69,11 +69,24 @@ def redirect_to_home(request):
                           {'role': Profile.objects.get(user=request.user).role, })
         else:
             if user_profile.role == 'Admin':
+                total_rial = \
+                    KIATransaction.objects.filter(state=KIATransaction.done).aggregate(total=Sum('cost_in_rial'))[
+                        'total']
+                done = KIATransaction.objects.filter(state=KIATransaction.done).count()
+                fail = KIATransaction.objects.filter(state=KIATransaction.failed).count()
+
                 return render(request, 'KIA_admin/admin_panel.html',
-                              {'role': Profile.objects.get(user=request.user).role, })
+                              {'total_rial': total_rial,
+                               'done': done,
+                               'fail': fail, 'role': Profile.objects.get(user=request.user).role, })
             elif user_profile.role == 'Employee':
+                taken = KIATransaction.objects.filter(assigned_emp=Profile.objects.get(user=request.user)).count()
+                accepted = KIATransaction.objects.filter(assigned_emp=Profile.objects.get(user=request.user),
+                                                         state=KIATransaction.done).count()
+
                 return render(request, 'KIA_services/emp_panel.html',
-                              {'role': Profile.objects.get(user=request.user).role, })
+                              {'taken': taken,
+                               'accepted': accepted, 'role': Profile.objects.get(user=request.user).role, })
             return render(request, 'KIA_general/homepage.html', {'role': Profile.objects.get(user=request.user).role, })
     else:
         return redirect('login')
