@@ -7,6 +7,8 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
 
+### DONE
+
 class RegisterTest(unittest.TestCase):
 
     def setUp(self):

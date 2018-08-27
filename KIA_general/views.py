@@ -27,7 +27,8 @@ def contact_us(request):
             message = cleaned_data.get('message')
             ContactUsMessages.objects.create(sender_name=sender_name, sender_phone_number=sender_phone,
                                              sender_email=sender_email, message=message)
-            return redirect('contact_us')
+            return render(request, 'KIA_general/success.html',
+                          {'message': 'پیام شما با موفقیت ارسال شد', 'return-url': 'contact_us'})
         else:
             return render(request, 'KIA_general/contact_us.html', {'form': form})
 

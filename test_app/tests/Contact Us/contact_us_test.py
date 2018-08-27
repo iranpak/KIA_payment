@@ -7,31 +7,59 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
 
+### DONE
+
 class ContactUsNotEmptyField(unittest.TestCase):
 
     def setUp(self):
         self.driver = webdriver.Firefox()
 
-    def test_contact_us_not_empty_field(self):
+    def test_contact_us_success_send_message(self):
         driver = self.driver
-        driver.get("http://127.0.0.1:8085/contact_us/")
 
-        ticket_box = driver.find_element_by_name("ticketBox")
-        first_name = driver.find_element_by_name("firstName")
-        last_name = driver.find_element_by_name("lastName")
+        driver.get("http://127.0.0.1:8085/contact_us")
+        name = driver.find_element_by_name("name")
+        phone_number = driver.find_element_by_name("phone")
         email = driver.find_element_by_name("email")
-        send_button = driver.find_element_by_name("sendButton")
+        message = driver.find_element_by_name("message")
+        send_button = driver.find_element_by_name("submit_button")
 
-        ticket_box.send_keys("salam")
-        first_name.send_keys("ali")
-        last_name.send_keys("alavi")
+        name.send_keys("ali alavi")
         email.send_keys("ali@gmail.com")
+        phone_number.send_keys("12345")
+        message.send_keys("very good")
 
         send_button.click()
 
         try:
-            WebDriverWait(driver, 2) \
-                .until(expected_conditions.presence_of_element_located((By.NAME, "successfully_sent")))
+            WebDriverWait(driver, 1) \
+                .until(expected_conditions.presence_of_element_located((By.ID, "success")))
+            flag = True
+        except TimeoutException:
+            flag = False
+
+        assert flag
+
+    def test_contact_us_not_empty_field(self):
+        driver = self.driver
+
+        driver.get("http://127.0.0.1:8085/contact_us")
+        name = driver.find_element_by_name("name")
+        phone_number = driver.find_element_by_name("phone")
+        email = driver.find_element_by_name("email")
+        message = driver.find_element_by_name("message")
+        send_button = driver.find_element_by_name("submit_button")
+
+        name.send_keys("ali alavi")
+        email.send_keys("ali@gmail.com")
+        phone_number.send_keys("")
+        message.send_keys("very good")
+
+        send_button.click()
+
+        try:
+            WebDriverWait(driver, 1) \
+                .until(expected_conditions.presence_of_element_located((By.ID, "form_errors")))
             flag = True
         except TimeoutException:
             flag = False
