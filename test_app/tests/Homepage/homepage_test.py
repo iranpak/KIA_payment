@@ -27,9 +27,9 @@ class CheckActivities(unittest.TestCase):
         driver.get("http://127.0.0.1:8085/homepage")
 
         assert driver.find_element_by_id("carousel") is not None
-        assert driver.find_element_by_name("features") is not None
-        assert driver.find_element_by_name("services") is not None
-        assert driver.find_element_by_name("properties") is not None
+        assert driver.find_element_by_id("features") is not None
+        assert driver.find_element_by_id("services") is not None
+        assert driver.find_element_by_id("properties") is not None
 
     def tearDown(self):
         self.driver.close()
