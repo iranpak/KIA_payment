@@ -21,10 +21,14 @@ def send_email_by_employee(request):
                 message_body = request.POST.get('message_body')
                 sender_address = 'kiapayment2018@gmail.com'
                 receiver_username = request.POST.get('receiver_username')
-                receiver_user = User.objects.get(username=receiver_username)
-                receiver_addresses = [receiver_user.email]
-                send_mail(subject, message_body, sender_address, receiver_addresses)
-                return redirect('emp_panel')
+                try:
+                    receiver_user = User.objects.get(username=receiver_username)
+                    receiver_addresses = [receiver_user.email]
+                    send_mail(subject, message_body, sender_address, receiver_addresses)
+                    return render(request, 'KIA_general/success.html', {'message': 'ایمیل با موفقیت برای کاربر ارسال شد', 'return_url': ''})
+                except Exception as e:
+                    errors = {'نام کاربری': 'کاربری با این نام کاربری در سامانه وجود ندارد'}
+                    return render(request, 'KIA_notification/send_email_by_employee.html', {'errors': errors})
         else:
             return render(request, access_denied_template, {'role': Profile.objects.get(user=request.user).role})
     else:
