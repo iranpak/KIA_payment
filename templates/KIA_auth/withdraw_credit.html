@@ -9,91 +9,95 @@
     <link rel="stylesheet" href="/static/Panels.css">
   </head>
 
-    <div id="wrapper" class="row" style="padding-bottom:20px;">
+  <div id="wrapper" class="row" style="padding-bottom:20px;">
 
-        <!-- Sidebar -->
-        <div id="sidebar-wrapper" class="col-3" align="center" style="padding-right: 50px;">
-            <div class="list-group">
-                <a href="/user_panel" class="list-group-item list-group-item-action">پنل کاربری</a>
-                <a href="/edit_profile" class="list-group-item list-group-item-action">ویرایش پروفایل</a>
-                <a href="/change_password" class="list-group-item list-group-item-action">تغییر رمز عبور</a>
-                <a href="/add_credit" class="list-group-item list-group-item-action ">اضافه کردن اعتبار</a>
-                <a href="/withdraw_credit" class="list-group-item list-group-item-action active">برداشت پول از
-                    اعتبار</a>
-                <a href="/anonymous_transfer" class="list-group-item list-group-item-action">پرداخت ناشناس</a>
-                <a href="/transactions" class="list-group-item list-group-item-action">تاریخچهٔ تراکنش‌ها</a>
-            </div>
+    <!-- Sidebar -->
+    <div id="sidebar-wrapper" class="col-3" align="center" style="padding-right: 50px;">
+      <div class="list-group">
+        <a href="/user_panel" class="list-group-item list-group-item-action">پنل کاربری</a>
+        <a href="/edit_profile" class="list-group-item list-group-item-action">ویرایش پروفایل</a>
+        <a href="/change_password" class="list-group-item list-group-item-action">تغییر رمز عبور</a>
+        <a href="/add_credit" class="list-group-item list-group-item-action ">اضافه کردن اعتبار</a>
+        <a href="/withdraw_credit" class="list-group-item list-group-item-action active">برداشت پول از
+          اعتبار</a>
+        <a href="/anonymous_transfer" class="list-group-item list-group-item-action">پرداخت ناشناس</a>
+        <a href="/transactions" class="list-group-item list-group-item-action">تاریخچهٔ تراکنش‌ها</a>
+      </div>
+    </div>
+
+    <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
+      <form method="post">
+        {% csrf_token %}
+        <div class="form-group row">
+          <h3 class="col-sm-3">برداشت پول از حساب</h3>
+          <div class="col-sm-6">
+            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="">
+          </div>
         </div>
 
-        <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
-            <form method="post">
-                {% csrf_token %}
-                <div class="form-group row">
-                    <h3 class="col-sm-3">برداشت پول از حساب</h3>
-                    <div class="col-sm-6">
-                        <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="">
-                    </div>
-                </div>
+        <div class="form-group row">
+          <label for="staticEmail" class="col-sm-2 col-form-label">اعتبار فعلی</label>
+          <div class="col-sm-7">
+            <input type="text" readonly class="form-control-plaintext" id="old_credit"
+                   value="{{ current_credit }} ریال ">
+          </div>
+        </div>
 
-                <div class="form-group row">
-                    <label for="staticEmail" class="col-sm-2 col-form-label">اعتبار فعلی</label>
-                    <div class="col-sm-7">
-                        <input type="text" readonly class="form-control-plaintext" id="old_credit"
-                               value="{{ current_credit }} ریال ">
-                    </div>
-                </div>
+        <div class="form-group row">
+          <label for="inputPassword" class="col-sm-2 col-form-label">اعتبار برداشتی (ریال)</label>
+          <div class="col-sm-7">
+            <input type="number" min="0" step="1" class="form-control" id="sub_credit" name="sub_credit"
+                   placeholder="0" dir="ltr"
+                   onchange="calcDiff();">
+          </div>
+        </div>
 
-                <div class="form-group row">
-                    <label for="inputPassword" class="col-sm-2 col-form-label">اعتبار برداشتی (ریال)</label>
-                    <div class="col-sm-7">
-                        <input type="number" min="0" step="1000" class="form-control" id="sub_credit" name="sub_credit"
-                               placeholder="0" dir="ltr"
-                               onchange="calcDiff();">
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label for="staticEmail" class="col-sm-2 col-form-label" id="test_label">اعتبار حاصل</label>
-                    <div class="col-sm-7">
-                        <input type="text" readonly class="form-control-plaintext" id="final_credit" name="final_credit"
-                               value="{{ current_credit }} ریال ">
-                    </div>
-                </div>
+        <div class="form-group row">
+          <label for="staticEmail" class="col-sm-2 col-form-label" id="test_label">اعتبار حاصل</label>
+          <div class="col-sm-7">
+            <input type="text" readonly class="form-control-plaintext" id="final_credit" name="final_credit"
+                   value="{{ current_credit }} ریال ">
+          </div>
+        </div>
 
         <div style="padding-left: 150px">
           <button type="button" onclick="takeAll()" class="btn btn-outline-primary">
-            تصویه حساب
+            تسویه حساب
           </button>
           <button type="submit" class="btn btn-primary" onclick="checkNotNeg()">ثبت</button>
         </div>
 
-            </form>
-        </div>
-
+      </form>
     </div>
 
-    <script>
-        function calcDiff() {
-            var diff = parseInt(document.getElementById("old_credit").value) -
-                parseInt(document.getElementById("sub_credit").value);
-            document.getElementById("final_credit").value = diff + " ریال";
-        }
+  </div>
 
-        function checkNotNeg() {
-            if (parseInt(document.getElementById("sub_credit").value) >
-                parseInt(document.getElementById("old_credit").value)) {
-                document.getElementById("sub_credit").value = 0;
-                alert("نمی‌توانید بیشتر از اعتبارتان بردارید!");
-            }
-        }
+  <script>
+      function takeAll() {
+          document.getElementById("sub_credit").value = parseInt(document.getElementById("old_credit").value);
+      }
 
-        function checkMaximumAllowedValue() {
-            if (parseInt(document.getElementById("sub_credit").value) > 100000000) {
-                document.getElementById("sub_credit").value = 0;
-                alert("نمی‌توانید بیشتر از سقف مجاز تراکنش انجام دهید!")
+      function calcDiff() {
+          var diff = parseInt(document.getElementById("old_credit").value) -
+              parseInt(document.getElementById("sub_credit").value);
+          document.getElementById("final_credit").value = diff + " ریال";
+      }
 
-            }
-        }
-    </script>
+      function checkNotNeg() {
+          if (parseInt(document.getElementById("sub_credit").value) >
+              parseInt(document.getElementById("old_credit").value)) {
+              document.getElementById("sub_credit").value = 0;
+              alert("نمی‌توانید بیشتر از اعتبارتان بردارید!");
+          }
+      }
+
+      function checkMaximumAllowedValue() {
+          if (parseInt(document.getElementById("sub_credit").value) > 100000000) {
+              document.getElementById("sub_credit").value = 0;
+              alert("نمی‌توانید بیشتر از سقف مجاز تراکنش انجام دهید!")
+
+          }
+      }
+  </script>
 
 {% endblock content %}

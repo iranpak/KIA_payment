@@ -1,4 +1,6 @@
-from django.shortcuts import render
+import json
+
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.db.models import Q
 from KIA_services.models import KIATransaction
@@ -365,11 +367,16 @@ def transaction_history(request):
 
 
 def transaction(request, index):
-    if request.user.is_authenticated:
-        user = Profile.objects.get(user=request.user)
-    else:
-        return HttpResponse("Login first")
+    if not request.user.is_authenticated:
+        return render(request, not_authorized_template)
 
+    user = Profile.objects.get(user=request.user)
+    transaction = get_object_or_404(KIATransaction, id=index)
+    decoded_data = json.loads(transaction.data)
+
+    return render(request, 'KIA_services/transaction.html', {'transaction': transaction,
+                                                             'data': decoded_data,
+                                                             'role': Profile.objects.get(user=request.user).role,})
 
 def random_string_generator(size=6, chars=string.ascii_lowercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
