@@ -62,6 +62,10 @@ for (let i = 0; i < lis.length; i++) {
         lis[i].innerText = 'رمز عبور وارد شده بیش از حد متداول است';
     else if (lis[i].innerText.includes('Password confirmation: This password is entirely numeric'))
         lis[i].innerText = 'رمز عبور وارد شده نمی‌تواند تماما عدد باشد';
-    // else if (lis[i].innerText.includes(''))
-    //     lis[i].innerText = '';
+    else if (lis[i].innerText.includes('First name: This field is required'))
+        lis[i].innerText = 'وارد کردن نام اجباری است';
+    else if (lis[i].innerText.includes('Last name: This field is required'))
+        lis[i].innerText = 'وارد کردن نام خانوادگی اجباری است';
+    else if (lis[i].innerText.includes('Phone number: This field is required'))
+        lis[i].innerText = 'وارد کردن شماره تماس اجباری است';
 }

@@ -2,7 +2,7 @@
 
 {% block content %}
   <header>
-    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+    <div id="carousel" class="carousel slide" data-ride="carousel">
       <ol class="carousel-indicators">
         <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
         <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
@@ -10,21 +10,21 @@
       </ol>
       <div class="carousel-inner" role="listbox">
         <!-- Slide One - Set the background image for this slide in the line below -->
-        <div class="carousel-item active" style="background-image: url('http://placehold.it/1900x1080')">
+        <div class="carousel-item active" style="background-image: url('/static/images/exam.jpg')">
           <div class="carousel-caption d-none d-md-block">
             <h3>خرید سرویس</h3>
             <p>در این جا می‌توانید تافل بخرید.</p>
           </div>
         </div>
         <!-- Slide Two - Set the background image for this slide in the line below -->
-        <div class="carousel-item" style="background-image: url('http://placehold.it/1900x1080')">
+        <div class="carousel-item" style="background-image: url('/static/images/uni.jpg')">
           <div class="carousel-caption d-none d-md-block">
             <h3>پول دانشگاه</h3>
             <p>می‌توانید پول دانشگاه بدهید.</p>
           </div>
         </div>
         <!-- Slide Three - Set the background image for this slide in the line below -->
-        <div class="carousel-item" style="background-image: url('http://placehold.it/1900x1080')">
+        <div class="carousel-item" style="background-image: url('/static/images/currency.jpg')">
           <div class="carousel-caption d-none d-md-block">
             <h3>نرخ تبدیل</h3>
             <p>می‌توانید نرخ تبدیل دلار و یورو و پوند را ببینید.</p>
@@ -43,7 +43,7 @@
   </header>
 
 
-  <div class="container" align="right">
+  <div class="container" align="right" id="features">
 
     <h1 class="my-4">خدمات ما</h1>
 
@@ -89,7 +89,7 @@
     <!-- /.row -->
 
     <!-- Portfolio Section -->
-    <h2>برخی از سرویس‌ها</h2>
+    <h2 id="services">برخی از سرویس‌ها</h2>
 
     {% for service in services %}
       {% if forloop.counter0 < 3 %}
@@ -124,7 +124,7 @@
 
 
     <!-- Features Section -->
-    <div class="row">
+    <div class="row" id="properties">
       <div class="col-lg-6">
         <h2>ویژگی‌های سامانهٔ ما</h2>
         <p>ویژگی‌های زیر سامانهٔ کیا پرداخت را یکتا می‌کند:</p>
@@ -141,7 +141,7 @@
           آرامش شما را نیز در بر داشته باشد.</p>
       </div>
       <div class="col-lg-6">
-        <img class="img-fluid rounded" src="http://placehold.it/700x450" alt="">
+        <img class="img-fluid rounded" style="width: 700px; height: 300px;" src="/static/images/payment2.jpg" alt="">
       </div>
     </div>
     <!-- /.row -->

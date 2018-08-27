@@ -117,19 +117,12 @@ def currency_rates(request):
         if currency['name'] == 'پوند انگلیس':
             our_currency_list.append({'name': 'پوند انگلیس', 'to_rial': int(currency['maxVal'])})
 
-    return render(request, 'KIA_general/currency_rates.html',
-                  {'rates': our_currency_list, 'role': Profile.objects.get(user=request.user).role})
-
-
-def service_info(request):
-    info = {
-        'name': 'TOEFL',
-        'price': '215',
-        'currency': 'Dollar',
-        'detail': 'An English exam',
-    }
-    return render(request, 'KIA_general/service_info.html',
-                  {'info': info, 'role': Profile.objects.get(user=request.user).role})
+    if not request.user.is_authenticated:
+        return render(request, 'KIA_general/currency_rates.html',
+                      {'rates': our_currency_list})
+    else:
+        return render(request, 'KIA_general/currency_rates.html',
+                      {'rates': our_currency_list, 'role': Profile.objects.get(user=request.user).role})
 
 
 def purchase(request):
