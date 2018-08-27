@@ -23,120 +23,171 @@
 {% extends "master.html" %}
 
 {% block content %}
+  <div class="container" align="right">
+    <div align="right">
+      <h1 class="mt-4 mb-3">خرید سرویس
+        <small>{{ service.label }}</small>
+      </h1>
+    </div>
 
-  <div id="wrapper" class="row" style="padding-bottom:20px;">
-    <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
-      {% if authenticated %}
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="/">خانه</a>
+      </li>
+      <li class="breadcrumb-item active">
+        <a href="/services">سرویس‌ها</a>
+      </li>
+      <li class="breadcrumb-item active">خرید سرویس</li>
+    </ol>
 
-        {% if form.errors %}
-        <!-- Error messaging -->
-        <div id="errors">
-            <div class="inner">
+    <div id="wrapper" class="row" style="padding-bottom:20px;">
+      <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
+        {% if authenticated %}
+
+          {% if form.errors %}
+            <!-- Error messaging -->
+            <div id="errors">
+              <div class="inner">
                 <p>There were some errors in the information you entered. Please correct the following:</p>
                 {{ form.non_field_errors }}
                 <ul>
-                    {% for field in form %}
-                        {% if field.errors %}<li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
-                    {% endfor %}
+                  {% for field in form %}
+                    {% if field.errors %}
+                      <li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
+                  {% endfor %}
                 </ul>
+              </div>
             </div>
-        </div>
-        <!-- /Error messaging -->
-        {% endif %}
+            <!-- /Error messaging -->
+          {% endif %}
 
-        {% if error %}
-          <p style="color: red;">
-            {{ error }}
-          </p>
-        {% endif %}
+          {% if error %}
+            <p style="color: red;">
+              {{ error }}
+            </p>
+          {% endif %}
 
-        <form action="" method="post">
-          {% csrf_token %}
+          <form action="" method="post">
+            {% csrf_token %}
 
-          <div class="form-group row">
-            <h3 class="col-sm-2">خرید سرویس {{ service.label }}</h3>
-            <div class="col-sm-7">
-              <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="">
-            </div>
-          </div>
-
-          {#          <table>#}
-          {#            {{ form.as_table }}#}
-          {#          </table>#}
-
-          <div class="form-group row">
-            <div class="col-sm-4 col-form-label text-md-right">
-              توضیحات
-            </div>
-            <div class="col-md-6">
-              {{ service.details }}
-            </div>
-          </div>
+            {#            <div class="form-group row" align="right">#}
+            {#              <h3 class="col-sm-5">خرید سرویس {{ service.label }}</h3>#}
+            {#            </div>#}
 
 
-          <div class="form-group row">
-            <div class="col-sm-4 col-form-label text-md-right">
-              نوع ارز
-            </div>
-            <div class="col-md-6">
-              {{ service.get_currency_display }}
-            </div>
-          </div>
-
-          {% if not service.variable_price %}
             <div class="form-group row">
               <div class="col-sm-4 col-form-label text-md-right">
-                هزینه خدمت
+                توضیحات
               </div>
               <div class="col-md-6">
-                {{ service.price }}
+                {{ service.details }}
               </div>
             </div>
-          {% endif %}
+
+
+            <div class="form-group row">
+              <div class="col-sm-4 col-form-label text-md-right">
+                نوع ارز
+              </div>
+              <div class="col-md-6">
+                {{ service.get_currency_display }}
+              </div>
+            </div>
+
+            {% if not service.variable_price %}
+              <div class="form-group row" name="variable">
+                <div class="col-sm-4 col-form-label text-md-right">
+                  هزینه خدمت
+                </div>
+                <div class="col-md-6" id="price">
+                  {{ service.price }}
+                </div>
+              </div>
+            {% endif %}
 
             <div class="form-group row">
               <div class="col-sm-4 col-form-label text-md-right">
                 درصد کارمزد خدمت
               </div>
-              <div class="col-md-6">
+              <div class="col-md-6" id="commission">
                 {{ service.commission }}
               </div>
             </div>
 
-          {% for item in form %}
-            {#            {{ item.label_tag }}{{ item }}#}
-            <div class="form-group row">
-              <div class="col-sm-4 col-form-label text-md-right">
-                {{ item.label_tag }}
+            {% for item in form %}
+              {#            {{ item.label_tag }}{{ item }}#}
+              <div class="form-group row">
+                <div class="col-sm-4 col-form-label text-md-right">
+                  {{ item.label_tag }}
+                </div>
+                <div class="col-md-6">
+                  {{ item }}
+                </div>
               </div>
-              <div class="col-md-6">
-                {{ item }}
-              </div>
-            </div>
-          {% endfor %}
+            {% endfor %}
 
             <div class="form-group row">
               <div class="col-sm-4 col-form-label text-md-right">
                 هزینه تمام‌شده خدمت
               </div>
-              <div class="col-md-6">
-                {{ service.price }} * {{ currency }} * (1 + {{ service.commission }})
+              <div class="col-md-6" id="final_price">
+                {#                {{ service.price }} * {{ currency }} * (1 + {{ service.commission }})#}
               </div>
             </div>
+            <div style="padding-left: 150px">
+              <button type="submit" class="btn btn-primary">تایید</button>
+              {#              <input type="submit" value="تایید" class="btn btn-primary">#}
+              <button type="button" onclick="javascript:history.back()" class="btn btn-primary">
+                بازگشت
+              </button>
+              {#            <button type="submit" class="btn btn-primary">خرید</button>#}
+            </div>
 
-          <div style="padding-left: 150px">
-            <input type="submit" value="تایید" class="btn btn-primary">
-            {#            <button type="submit" class="btn btn-primary">خرید</button>#}
-          </div>
+          </form>
+        {% else %}
+          <p>You must login to see the form!</p>
+        {% endif %}
 
-        </form>
-      {% else %}
-        <p>You must login to see the form!</p>
-      {% endif %}
 
+      </div>
 
     </div>
-
   </div>
 
+  <script src="/static/Translator.js"></script>
+  <script src="/static/MakeInputsCute.js"></script>
+  <script>
+
+      let commission = parseInt(document.getElementById('commission').innerText);
+      let currency = {{ currency }};
+
+      if (document.getElementsByName("variable").length > 0) { // not variable
+          document.getElementById('final_price').innerText =
+              Math.round(parseInt(document.getElementById('price').innerText)
+                  * currency * (1 + commission / 100));
+      } else {
+          document.getElementById('final_price').innerText = 0;
+      }
+
+      window.onchange = function () {
+          document.onchange = function () {
+              let commission = parseInt(document.getElementById('commission').innerText);
+              let currency = {{ currency }};
+
+              if (document.getElementsByName("variable").length > 0) { // not variable
+                  document.getElementById('final_price').innerText =
+                      Math.round(parseInt(document.getElementById('price').innerText)
+                          * currency * (1 + commission / 100));
+              } else {
+                  document.getElementById('final_price').innerText = 0;
+              }
+          };
+
+          document.getElementById("id_price").onchange = function () {
+              document.getElementById('final_price').innerText =
+                  Math.round(parseInt(document.getElementById('id_price').value)
+                      * currency * (1 + commission / 100));
+          };
+      }
+  </script>
 {% endblock content %}

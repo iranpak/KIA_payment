@@ -1,15 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-    {{ message }}
-    <button type="button" class="btn btn-primary">
-        <a href={{ return_url }}>
-            بازگشت
-        </a>
-    </button>
-</body>
-</html>
+{% extends "master.html" %}
+
+{% block content %}
+  <head>
+    <link rel="stylesheet" href="/static/Panels.css">
+  </head>
+
+  <div class="row">
+    <div class="col" align="center">
+      <h2> {{ message }} </h2><h5><a href={{ return_url }}>بازگشت</a></h5>
+    </div>
+  </div>
+{% endblock content %}

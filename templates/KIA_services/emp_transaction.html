@@ -29,6 +29,9 @@
 {% extends "master.html" %}
 
 {% block content %}
+  <head>
+    <link rel="stylesheet" href="/static/Panels.css">
+  </head>
 
   <div id="wrapper" class="row" style="padding-bottom:20px;">
 
@@ -44,9 +47,9 @@
 
     <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
 
-    {% if error %}
+      {% if error %}
         <h1>{{ error }}</h1>
-    {% endif %}
+      {% endif %}
       <div class="row" align="center">
         <div class="col-2"></div>
         <div class="col-2">نام خدمت</div>

@@ -1,11 +1,16 @@
 {% extends "master.html" %}
 
+{% load static %}
+
 {% block content %}
   <div class="row">
     <div class="col" align="center">
       <h1>دسترسی به این صفحه مخصوص اعضای سامانه است!</h1>
+{#      <img src="http://imgurl.ir/uploads/g198962_author.jpg" alt="بدون تصویر" >#}
+      <img src="{% static "author.jpg" %}" alt="No">
+{#      <img src="/static/author.jpg" alt="No">#}
       <h5><a href="/login">وارد</a> سایت شده و یا در صورت نداشتن حساب کاربری
-      <a href="/signup">ثبت نام</a> کنید</h5>
+        <a href="/signup">ثبت نام</a> کنید</h5>
     </div>
   </div>
 {% endblock content %}

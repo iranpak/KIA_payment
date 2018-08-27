@@ -1,6 +1,9 @@
 {% extends "master.html" %}
 
 {% block content %}
+  <head>
+    <link rel="stylesheet" href="/static/Panels.css">
+  </head>
 
   <div id="wrapper" class="row" style="padding-bottom:20px;">
 
@@ -8,12 +11,10 @@
     <div id="sidebar-wrapper" class="col-3" align="center" style="padding-right: 50px;">
       <div class="list-group">
         <a href="/admin/panel" class="list-group-item list-group-item-action">پنل مدیر</a>
-{#        <a href="/admin/users_activities" class="list-group-item list-group-item-action">فعالیت کاربران</a>#}
-{#        <a href="/admin/employees_activities" class="list-group-item list-group-item-action">فعالیت کارمندان</a>#}
+        {#        <a href="/admin/users_activities" class="list-group-item list-group-item-action">فعالیت کاربران</a>#}
+        {#        <a href="/admin/employees_activities" class="list-group-item list-group-item-action">فعالیت کارمندان</a>#}
         <a href="/admin/activities" class="list-group-item list-group-item-action">فعالیت‌ها</a>
         <a href="/admin/my_history" class="list-group-item list-group-item-action">سابقهٔ من</a>
-        <a href="/admin/financial_account_details" class="list-group-item list-group-item-action">جزئیات حساب مالی</a>
-
         <a href="/admin/restrict_user" class="list-group-item list-group-item-action">محدود کردن کاربر</a>
         <a href="/admin/remove_user_restriction" class="list-group-item list-group-item-action active">رفع محدودیت</a>
         <a href="/admin/add_system_credit" class="list-group-item list-group-item-action ">اضافه کردن اعتبار</a>
@@ -24,27 +25,25 @@
     </div>
 
     <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
-        {% if errors %}
-                <div id="custom_errors" style="background: #ffcccc;">
-                    <div class="inner">
-                        <ul>
-                            {% for key, value in errors.items %}
-                                <p>خطاهای زیر پیش آمده:</p>
-                                <li>{{ key }}: {{ value }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
+      {% if errors %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <ul>
+            {% for key, value in errors.items %}
+              <strong>خطاهای زیر پیش آمده:</strong>
+              <li>{{ key }}: {{ value }}</li>
+            {% endfor %}
+          </ul>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      {% endif %}
 
-            {% endif %}
-      <form  method="post">
-          {% csrf_token %}
+      <form method="post">
+        {% csrf_token %}
 
-        <div class="form-group row">
-          <h3 class="col-sm-2">رفع محدودیت کاربر</h3>
-          <div class="col-sm-7">
-            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="">
-          </div>
+        <div class="form-group row" align="right">
+          <h3 class="col-sm-6">رفع محدودیت کاربر</h3>
         </div>
 
         <div class="form-group row">
@@ -64,4 +63,5 @@
 
   </div>
 
+  <script src="/static/Translator.js"></script>
 {% endblock content %}
