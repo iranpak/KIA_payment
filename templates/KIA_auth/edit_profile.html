@@ -74,7 +74,7 @@
         <div class="form-group row">
           <label for="staticEmail" class="col-sm-2 col-form-label">نام کاربری</label>
           <div class="col-sm-7">
-            <input type="text" readonly class="form-control-plaintext" id="username"
+            <input type="text" readonly class="form-control-plaintext" id="username" name="username"
                    value={{ information.username }}>
           </div>
         </div>
@@ -82,7 +82,7 @@
         <div class="form-group row">
           <label for="staticEmail" class="col-sm-2 col-form-label">ایمیل</label>
           <div class="col-sm-7">
-            <input type="email" readonly class="form-control-plaintext" id="staticEmail"
+            <input type="email" readonly class="form-control-plaintext" id="email" name="email"
                    value={{ information.email }}>
           </div>
         </div>
@@ -118,7 +118,7 @@
           </div>
         </div>
         <div style="padding-left: 150px">
-          <button type="submit" class="btn btn-primary">ثبت</button>
+          <button type="submit" class="btn btn-primary" name="submit_button" id="submit_button">ثبت</button>
         </div>
 
       </form>
