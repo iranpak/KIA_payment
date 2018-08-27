@@ -23,3 +23,10 @@ class SystemTransactions(models.Model):
     type = models.CharField(max_length=32, default='Charge')
     description = models.CharField(max_length=256)
     date = jmodels.jDateTimeField(default=jdatetime.datetime.now)
+
+
+class ContactUsMessages(models.Model):
+    sender_name = models.CharField(max_length=32)
+    sender_phone_number = models.CharField(max_length=11)
+    sender_email = models.CharField(max_length=64)
+    message = models.CharField(max_length=256)

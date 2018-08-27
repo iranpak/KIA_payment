@@ -68,7 +68,7 @@ def redirect_to_home(request):
                 return render(request, 'KIA_services/emp_panel.html')
             return render(request, 'KIA_general/homepage.html')
     else:
-        return redirect('login')
+        return render(request, 'KIA_general/homepage.html')
 
 
 def send_registration_email(email_address):

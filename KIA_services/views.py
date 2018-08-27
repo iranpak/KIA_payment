@@ -491,7 +491,7 @@ def admin_transaction(request, index):
 def emp_panel(request):
     if not request.user.is_authenticated:
         return render(request, not_authorized_template)
-    if not is_user_emp(request):
+    if not is_user_emp(request) and not is_user_admin(request):
         return render(request, access_denied_template)
 
     user = request.user

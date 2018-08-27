@@ -3,8 +3,9 @@ from django.http import HttpResponse
 from django.template import loader
 import requests
 import json
-
-# Create your views here.
+from KIA_auth.forms import ContactUsForm
+from KIA_admin.models import ContactUsMessages
+from django.shortcuts import redirect
 
 
 def about(request):
@@ -14,9 +15,21 @@ def about(request):
 
 
 def contact_us(request):
-    context = {}
-    template = loader.get_template('KIA_general/contact_us.html')
-    return HttpResponse(template.render(context, request))
+    if request.method == 'GET':
+        return render(request, 'KIA_general/contact_us.html')
+    elif request.method == 'POST':
+        form = ContactUsForm(request.POST)
+        if form.is_valid():
+            cleaned_data = form.cleaned_data
+            sender_name = cleaned_data.get('name')
+            sender_phone = cleaned_data.get('phone')
+            sender_email = cleaned_data.get('email')
+            message = cleaned_data.get('message')
+            ContactUsMessages.objects.create(sender_name=sender_name, sender_phone_number=sender_phone,
+                                             sender_email=sender_email, message=message)
+            return redirect('contact_us')
+        else:
+            return render(request, 'KIA_general/contact_us.html', {'form': form})
 
 
 def not_found(request):
@@ -42,33 +55,11 @@ def user_restricted(request):
     template = loader.get_template('KIA_general/user_restricted.html')
     return HttpResponse(template.render(context, request))
 
+
 def faq(request):
     context = {}
     template = loader.get_template('KIA_general/FAQ.html')
     return HttpResponse(template.render(context, request))
-
-
-# def services(request):
-#     ss = [
-#         {'name': 'خفن',
-#          'info': 'سرویس عادی'},
-#         {'name': 'ایزی',
-#          'info': 'سرویس نرمال'},
-#         {'name': 'شاخ',
-#          'info': 'سرویس عجیب'},
-#         {'name': 'عالی',
-#          'info': 'سرویس خوب'},
-#         {'name': 'معمولی',
-#          'info': 'سرویس بد'},
-#         {'name': 'ساده',
-#          'info': 'سرویس پیچیده'},
-#         {'name': 'ایول',
-#          'info': 'سرویس کارکرد'},
-#     ]
-#     return render(request, 'KIA_general/services.html', {'ss': ss})
-#     # context = {}
-#     # template = loader.get_template('KIA_general/services.html')
-#     # return HttpResponse(template.render(context, request))
 
 
 def currency_rates(request):
@@ -107,9 +98,3 @@ def purchase(request):
         'ملاحظات',
     ]
     return render(request, 'KIA_general/purchase.html', {'name': name, 'info': info})
-
-
-
-
-
-
