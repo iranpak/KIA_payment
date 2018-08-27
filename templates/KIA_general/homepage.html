@@ -89,38 +89,38 @@
     <!-- /.row -->
 
     <!-- Portfolio Section -->
-    <h2>Portfolio Heading</h2>
+    <h2>برخی از سرویس‌ها</h2>
 
     {% for service in services %}
       {% if forloop.counter0 < 3 %}
           {% if forloop.counter0|divisibleby:3 %}
-            <div class="row" align="center">
-{#            <div class="row">#}
+{#            <div class="row" align="center">#}
+            <div class="row">
           {% endif %}
 
-      <div class="col-lg-4 mb-4">
-        <div class="card h-100">
-          <h4 class="card-header">{{ service.name }}</h4>
-          <div class="card-body">
-            <img src="{{ service.image_url }}" alt="بدون تصویر" style="max-height: 200px; width: 100%;">
-            <p class="card-text">{{ service.label }}</p>
-          </div>
-          <div class="card-footer">
-            <a href="{{ service.name }}" class="btn btn-primary">خرید</a>
-          </div>
-        </div>
-      </div>
-
-{#        <div class="col-lg-4 col-sm-6 portfolio-item">#}
+{#      <div class="col-lg-4 mb-4">#}
 {#        <div class="card h-100">#}
-{#          <a href="{{ service.name }}"><img class="card-img-top" src="{{ service.image_url }}" alt=""></a>#}
+{#          <h4 class="card-header">{{ service.name }}</h4>#}
 {#          <div class="card-body">#}
-{#            <h4 class="card-title">#}
-{#              <a href="{{ service.name }}">خرید</a>#}
-{#            </h4>#}
+{#            <img src="{{ service.image_url }}" alt="بدون تصویر" style="max-height: 200px; width: 100%;">#}
 {#            <p class="card-text">{{ service.label }}</p>#}
 {#          </div>#}
+{#          <div class="card-footer">#}
+{#            <a href="{{ service.name }}" class="btn btn-primary">خرید</a>#}
+{#          </div>#}
 {#        </div>#}
+{#      </div>#}
+
+        <div class="col-lg-4 col-sm-6 portfolio-item">
+        <div class="card h-100">
+          <a href="{{ service.name }}"><img style="width: 100%; height: 200px;" class="card-img-top" src="{{ service.image_url }}" alt=""></a>
+          <div class="card-body">
+            <h4 class="card-title">
+              <a href="/services/{{ service.name }}">خرید</a>
+            </h4>
+            <p class="card-text">{{ service.label }}</p>
+          </div>
+        </div>
       </div>
       {% if forloop.counter0|add:1|divisibleby:3 or forloop.counter == services|length %}
         </div>
@@ -129,6 +129,8 @@
       {% endif %}
 
     {% endfor %}
+
+  <br><hr><br>
 
 {#    <div class="row">#}
 {#      <div class="col-lg-4 col-sm-6 portfolio-item">#}
@@ -235,16 +237,6 @@
 
     <hr>
 
-    <!-- Call to Action Section -->
-    <div class="row mb-4">
-      <div class="col-md-8">
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Molestias, expedita, saepe, vero rerum deleniti
-          beatae veniam harum neque nemo praesentium cum alias asperiores commodi.</p>
-      </div>
-      <div class="col-md-4">
-        <a class="btn btn-lg btn-secondary btn-block" href="#">Call to Action</a>
-      </div>
-    </div>
 
   </div>
 {% endblock content %}

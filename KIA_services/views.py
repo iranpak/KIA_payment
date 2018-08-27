@@ -264,6 +264,18 @@ def create_service_success(request, name):
                                                         'role': Profile.objects.get(user=request.user).role})
 
 
+class HomeListView(ListView):
+    model = KIAService
+    queryset = KIAService.objects.all()
+    template_name = 'KIA_general/homepage.html'
+    context_object_name = 'services'
+
+
+class HomeServiceListDispatchView(View):
+    def dispatch(self, request, *args, **kwargs):
+        return HomeListView.as_view()(request, *args, *kwargs)
+
+
 class ServiceListView(ListView):
     model = KIAService
     queryset = KIAService.objects.all()

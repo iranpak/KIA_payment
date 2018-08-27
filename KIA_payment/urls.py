@@ -89,7 +89,7 @@ urlpatterns = [
     path('send_email/', test_app_views.send_email, name='send_email'),
     # homepage
     # path('homepage/', test_app_views.homepage, name='homepage'),
-    path('homepage/', kia_services_views.ServiceListView.as_view(), name='homepage'),
+    path('homepage/', kia_services_views.HomeListView.as_view(), name='homepage'),
     # KIA_services
     path('services/<str:name>/', kia_services_views.services, name='services'),
     path('services/<str:name>/success', kia_services_views.services_success, name='services_success'),
