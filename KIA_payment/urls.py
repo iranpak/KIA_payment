@@ -38,6 +38,7 @@ urlpatterns = [
          name='financial_account_details'),
     path('admin/add_system_credit', KIA_admin_views.add_system_credit, name='add_system_credit'),
     path('admin/restrict_user', KIA_admin_views.restrict_user, name='restrict_user'),
+    # path('admin/restrict_user/success', KIA_admin_views.restrict_user_success, name='restrict_user_success'),
     path('admin/remove_user_restriction', KIA_admin_views.remove_user_restriction, name='remove_user_restriction'),
     # path('admin/add_transaction/', KIA_admin_views.add_transaction, name='add_transaction'),
     path('admin/add_user', KIA_admin_views.add_user, name='add_user'),

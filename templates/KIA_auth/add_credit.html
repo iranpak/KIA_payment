@@ -15,7 +15,7 @@
         <a href="/change_password" class="list-group-item list-group-item-action">تغییر رمز عبور</a>
         <a href="/add_credit" class="list-group-item list-group-item-action active">اضافه کردن اعتبار</a>
         <a href="/withdraw_credit" class="list-group-item list-group-item-action">برداشت پول از اعتبار</a>
-        <a href="/anonymous_transfer" class="list-group-item list-group-item-action">واریز مخفیانهٔ پول</a>
+        <a href="/anonymous_transfer" class="list-group-item list-group-item-action">پرداخت ناشناس</a>
         <a href="/transactions" class="list-group-item list-group-item-action">تاریخچهٔ تراکنش‌ها</a>
       </div>
     </div>
@@ -52,7 +52,7 @@
         </div>
 
         <div style="padding-left: 150px">
-          <button type="submit" class="btn btn-primary">ثبت</button>
+          <button type="submit" class="btn btn-primary" onclick="checkMaximumAllowedValue()">ثبت</button>
         </div>
 
       </form>
@@ -79,6 +79,14 @@
               alert("wow");
           };
       }
+
+      function checkMaximumAllowedValue() {
+            if (parseInt(document.getElementById("added_credit").value) > 100000000) {
+                document.getElementById("added_credit").value = 0;
+                alert("نمی‌توانید بیشتر از سقف مجاز تراکنش انجام دهید!")
+
+            }
+        }
   </script>
 
 {% endblock content %}

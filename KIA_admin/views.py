@@ -59,9 +59,9 @@ def restrict_user(request):
                         description = 'شما دسترسی کاربر %s را مسدود کردید.' % restricting_user
                         HistoryOfAdminActivities.objects.create(type='User restriction', description=description,
                                                                 message=restricting_message)
-                        from django.utils import timezone
-                        print(timezone.get_current_timezone())
-                        return redirect('restrict_user')
+
+                        return render(request, 'KIA_general/success.html',
+                                      {'message': 'کاربر با موفقیت مسدود شد', 'return_url': 'restrict_user'})
 
                     except Exception as e:
                         print(e)
@@ -86,6 +86,7 @@ def remove_user_restriction(request):
                               {'role': Profile.objects.get(user=request.user).role, })
             elif request.method == 'POST':
                 restricting_username = request.POST.get("res_username")
+                restricting_message = request.POST.get("restrict_message")
                 if restricting_username:
                     try:
                         restricting_user = User.objects.get(username=restricting_username)
@@ -94,8 +95,10 @@ def remove_user_restriction(request):
                         restricting_user_profile.save()
                         description = 'شما دسترسی کاربر %s را باز کردید.' % restricting_user
                         HistoryOfAdminActivities.objects.create(type='User restriction',
-                                                                description=description)
-                        return redirect('remove_user_restriction')
+                                                                description=description, message=restricting_message)
+                        # return redirect('remove_user_restriction')
+                        return render(request, 'KIA_general/success.html',
+                                      {'message': 'دسترسی کاربر با موفقیت باز شد', 'return_url': 'remove_user_restriction'})
 
                     except Exception as e:
                         errors = {'username': 'There is no user with this username'}

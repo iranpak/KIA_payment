@@ -66,7 +66,8 @@ def services(request, name):
         form = KIAServiceForm(service, request.POST)
         if form.is_valid():
             transaction = KIATransaction()
-            if pay_from_user_credit(service, transaction, user, form.get_json_data()):
+            flag = pay_from_user_credit(service, transaction, user, form.get_json_data())
+            if flag == 0:
                 transaction.initialize(service)
                 user_profile = Profile.objects.get(user=user)
                 transaction.user = user_profile
@@ -79,12 +80,25 @@ def services(request, name):
                                   "ثبت درخواست موفق",
                                   message)
                 return HttpResponseRedirect("success")
-            else:
+            elif flag == 1:
                 error = 'اعتبار شما برای درخواست این خدمت کافی نیست'
                 form = KIAServiceForm(service)
                 return render(request, 'KIA_services/service.html',
                               {'form': form, 'authenticated': authenticated,
-                               'service': service, 'error': error, 'role': Profile.objects.get(user=request.user).role})
+                               'service': service, 'error': error})
+            elif flag == 2:
+                error = 'مبلغ این تراکنش از سقف مبلغ تراکنش ممکن بیشتر است'
+                form = KIAServiceForm(service)
+                return render(request, 'KIA_services/service.html',
+                              {'form': form, 'authenticated': authenticated,
+                               'service': service, 'error': error})
+            else:
+                error = 'مبلغ این تراکنش از کف مبلغ تراکنش ممکن کمتر است'
+                form = KIAServiceForm(service)
+                return render(request, 'KIA_services/service.html',
+                              {'form': form, 'authenticated': authenticated,
+                               'service': service, 'error': error})
+
         return render(request, 'KIA_services/service.html',
                       {'form': form, 'authenticated': authenticated,
                        'service': service, 'role': Profile.objects.get(user=request.user).role})
@@ -111,6 +125,10 @@ def pay_from_user_credit(service, transaction, user, json_data):
             * (1 + (service.commission / 100.0))
         ))
         transaction.cost_in_currency = decoded_data['price']
+        if cost > 100000000:
+            return 2
+        elif cost < 500000:
+            return 3
     else:
         cost = int(round(
             get_exchange_rates()[service.currency] * service.price \
@@ -125,8 +143,8 @@ def pay_from_user_credit(service, transaction, user, json_data):
         sc.rial_credit += cost
         sc.save()
         user.save()
-        return True
-    return False
+        return 0
+    return 1
 
 
 def admin_service(request, name):
@@ -231,7 +249,7 @@ def create_service_cont(request, name):
         field_form = KIAServiceFieldCreationForm(request.POST)
 
         if 'finish' in field_form.data:
-            message = "خدمت" + service.label + "به سامانه کیاپرداخت اضافه شده است! بشتابید!"
+            message = "خدمت " + service.label + "به سامانه کیاپرداخت اضافه شده است! بشتابید!"
             send_mail_to_all_users("خدمت جدید!",
                                    message)
             return HttpResponseRedirect("success")

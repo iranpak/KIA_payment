@@ -119,13 +119,21 @@
           document.getElementById("final_credit").value = diff;
       }
 
-      function checkNotNeg() {
-          if (parseInt(document.getElementById("transfer_credit").value) >
-              parseInt(document.getElementById("old_credit").value)) {
-              document.getElementById("transfer_credit").value = 0;
-              swal("نمی‌توانید بیشتر از اعتبارتان واریز کنید!");
-          }
-      }
-  </script>
+        function checkNotNeg() {
+            if (parseInt(document.getElementById("transfer_credit").value) >
+                parseInt(document.getElementById("old_credit").value)) {
+                document.getElementById("transfer_credit").value = 0;
+                alert("نمی‌توانید بیشتر از اعتبارتان واریز کنید!");
+            }
+        }
+
+        function checkMaximumAllowedValue() {
+            if (parseInt(document.getElementById("transfer_credit").value) > 100000000) {
+                document.getElementById("transfer_credit").value = 0;
+                document.getElementById("expired").value = "1";
+                alert("نمی‌توانید بیشتر از سقف مجاز تراکنش انجام دهید!")
+            }
+        }
+    </script>
 
 {% endblock content %}

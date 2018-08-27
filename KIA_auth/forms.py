@@ -47,3 +47,10 @@ class AnonymousTransferForm(forms.Form):
     email = forms.CharField(required=True)
     account_number = forms.CharField(required=True)
     transfer_credit = forms.IntegerField(required=True)
+
+
+class ContactUsForm(forms.Form):
+    name = forms.CharField(required=True)
+    phone = forms.CharField(required=True)
+    email = forms.CharField(required=True)
+    message = forms.CharField(required=True)

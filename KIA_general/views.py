@@ -3,6 +3,9 @@ from django.http import HttpResponse
 from django.template import loader
 import requests
 import json
+from KIA_auth.forms import ContactUsForm
+from KIA_admin.models import ContactUsMessages
+from django.shortcuts import redirect
 
 # Create your views here.
 from KIA_auth.models import Profile
@@ -19,6 +22,22 @@ def about(request):
 
 
 def contact_us(request):
+    if request.method == 'GET':
+        return render(request, 'KIA_general/contact_us.html')
+    elif request.method == 'POST':
+        form = ContactUsForm(request.POST)
+        if form.is_valid():
+            cleaned_data = form.cleaned_data
+            sender_name = cleaned_data.get('name')
+            sender_phone = cleaned_data.get('phone')
+            sender_email = cleaned_data.get('email')
+            message = cleaned_data.get('message')
+            ContactUsMessages.objects.create(sender_name=sender_name, sender_phone_number=sender_phone,
+                                             sender_email=sender_email, message=message)
+            return render(request, 'KIA_general/success.html',
+                          {'message': 'پیام شما با موفقیت ارسال شد', 'return-url': 'contact_us'})
+        else:
+            return render(request, 'KIA_general/contact_us.html', {'form': form})
     if not request.user.is_authenticated:
         context = {}
     else:

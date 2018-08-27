@@ -89,7 +89,7 @@ def redirect_to_home(request):
                                'accepted': accepted, 'role': Profile.objects.get(user=request.user).role, })
             return render(request, 'KIA_general/homepage.html', {'role': Profile.objects.get(user=request.user).role, })
     else:
-        return redirect('login')
+        return render(request, 'KIA_general/homepage.html')
 
 
 def send_registration_email(email_address):
@@ -137,7 +137,9 @@ def edit_profile(request):
                 user_profile.phone_number = phone_number
                 user_profile.account_number = account_number
                 user_profile.save()
-                return redirect('edit_profile')
+                # return redirect('edit_profile')
+                return render(request, 'KIA_general/success.html',
+                              {'message': 'اظلاعات شما با موفقیت ویرایش شد', 'return_url': ''})
             else:
                 return render(request, 'KIA_auth/edit_profile.html', {'information': information, 'form': form,
                                                                       'role': Profile.objects.get(
@@ -197,7 +199,7 @@ def change_password(request):
                         user.password = new_hashed_password
                         user.save()
                         login(request, user)
-                        return redirect('home')
+                        return render(request, 'KIA_general/success.html', {'message': 'رمز عبور شما با موفقیت تغییر یافت', 'return_url': ''})
                     else:
                         errors = {'old password': 'The old password is wrong'}
                         return render(request, 'KIA_auth/change_password.html', {'errors': errors, 'form': form,
@@ -266,6 +268,10 @@ def anonymous_transfer(request):
             form = AnonymousTransferForm(request.POST)
             if form.is_valid():
                 cleaned_data = form.cleaned_data
+                expired_transfer = request.POST.get("expired")
+                print(expired_transfer)
+                if expired_transfer == "1":
+                    return redirect('anonymous_transfer')
                 target_email = cleaned_data.get("email")
                 target_account_number = cleaned_data.get("account_number")
                 transferring_amount = cleaned_data.get("transfer_credit")
