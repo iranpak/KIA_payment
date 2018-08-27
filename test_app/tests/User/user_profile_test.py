@@ -134,9 +134,9 @@ class UserTest(unittest.TestCase):
 
         submit_button = driver.find_element_by_name("submit_button")
 
-        old_password.send_keys("2w2w2w2w")
-        new_password.send_keys("1q1q1q1q")
-        new_password_again.send_keys("1q1q1q1q")
+        old_password.send_keys("1q1q1q1q")
+        new_password.send_keys("2w2w2w2w")
+        new_password_again.send_keys("2w2w2w2w")
 
         submit_button.click()
 
