@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from KIA_auth.models import Profile
+from KIA_notification.tasks import plan_employee_wage
 from .models import SystemCredit
 from .models import HistoryOfAdminActivities
 from .models import SystemTransactions
@@ -256,6 +257,9 @@ def add_user(request):
                     profile = Profile.objects.create(user=user, phone_number=phone_number,
                                                      account_number=account_number, role=role)
                     profile.save()
+                    if role == 'Employee':
+                        plan_employee_wage(profile, repeat_until=None)
+
                     description = 'ایجاد کاربر با نام  کاربری %s' % username
                     HistoryOfAdminActivities.objects.create(type='Create user', description=description)
                     send_registration_email(user.email, username, password, role)

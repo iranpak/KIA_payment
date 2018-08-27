@@ -1,10 +1,16 @@
+import time
 from selenium import webdriver
 import unittest
 
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
+
+ADMIN_USER = "admin"
+ADMIN_PASS = "2=2=2=2="
+SLEEP_TIME = 3
 
 
 class UserRestriction(unittest.TestCase):
@@ -12,19 +18,49 @@ class UserRestriction(unittest.TestCase):
     def setUp(self):
         self.driver = webdriver.Firefox()
 
-    def test_successfully_add_transaction(self):
+    def login_as_admin(self):
         driver = self.driver
-        driver.get("http://127.0.0.1:8085/add_transaction")
-        transaction_name = driver.find_element_by_name("transaction_name")
-        amount = driver.find_element_by_name("pay_amount")
-        submit_button = driver.find_element_by_name("submit_button")
-        transaction_name.send_keys("IELTS")
-        amount.send_keys(100000)
+        driver.get("http://127.0.0.1:8085/login/")
+        time.sleep(SLEEP_TIME)
+
+        username = driver.find_element_by_name('username')
+        username.send_keys(ADMIN_USER)
+        password = driver.find_element_by_name('password')
+        password.send_keys(ADMIN_PASS)
+        button = driver.find_element_by_name('submit_button')
+        button.click()
+
+    def test_successfully_add_transaction(self):
+        self.login_as_admin()
+
+        driver = self.driver
+        driver.get("http://127.0.0.1:8085/create_service/")
+        time.sleep(SLEEP_TIME)
+
+        name = driver.find_element_by_name("name")
+        label = driver.find_element_by_name("label")
+        select = Select(driver.find_element_by_name('currency'))
+        checkbox = driver.find_element_by_name("variable_price")
+        commission = driver.find_element_by_name("commission")
+        details = driver.find_element_by_name("details")
+        image_url = driver.find_element_by_name("image_url")
+
+        submit_button = driver.find_element_by_name("submit")
+
+        name.send_keys("khar")
+        label.send_keys("خر")
+        select.select_by_value('1')
+        checkbox.click()
+        commission.send_keys("20")
+        details.send_keys("توضیحات")
+        image_url.send_keys("http://127.0.0.1:8085/create_service/")
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
         submit_button.click()
 
         try:
             WebDriverWait(driver, 2) \
-                .until(expected_conditions.presence_of_element_located((By.NAME, "successfully_done")))
+                .until(expected_conditions.url_contains("khar"))
             flag = True
         except TimeoutException:
             flag = False
@@ -42,27 +78,27 @@ class UserRestriction(unittest.TestCase):
     #     submit_button.click()
     #     assert driver.find_element_by_name("successfully_done") is not None
 
-    def test_valid_pay_amount(self):
-        driver = self.driver
-        driver.get("http://127.0.0.1:8085/add_transaction")
-        transaction_name = driver.find_element_by_name("transaction_name")
-        amount = driver.find_element_by_name("pay_amount")
-        submit_button = driver.find_element_by_name("submit_button")
-        transaction_name.send_keys("IELTS")
-        amount.send_keys("asd54df")
-        submit_button.click()
-
-        try:
-            WebDriverWait(driver, 2) \
-                .until(expected_conditions.presence_of_element_located((By.NAME, "invalid_input")))
-            flag = True
-        except TimeoutException:
-            flag = False
-
-        assert flag
-
-    def tearDown(self):
-        self.driver.close()
+    # def test_valid_pay_amount(self):
+    #     driver = self.driver
+    #     driver.get("http://127.0.0.1:8085/add_transaction")
+    #     transaction_name = driver.find_element_by_name("transaction_name")
+    #     amount = driver.find_element_by_name("pay_amount")
+    #     submit_button = driver.find_element_by_name("submit_button")
+    #     transaction_name.send_keys("IELTS")
+    #     amount.send_keys("asd54df")
+    #     submit_button.click()
+    #
+    #     try:
+    #         WebDriverWait(driver, 2) \
+    #             .until(expected_conditions.presence_of_element_located((By.NAME, "invalid_input")))
+    #         flag = True
+    #     except TimeoutException:
+    #         flag = False
+    #
+    #     assert flag
+    #
+    # def tearDown(self):
+    #     self.driver.close()
 
 
 if __name__ == '__main__':

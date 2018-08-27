@@ -30,3 +30,19 @@ def send_email_by_employee(request):
     else:
         return render(request, not_authorized_template)
 
+
+def send_mail_to_user(user, subject, message):
+    sender_address = 'kiapayment2018@gmail.com'
+    email_address = user.email
+    send_mail(subject, message, sender_address, email_address)
+
+
+def send_mail_to_all_users(subject, message):
+    users = Profile.objects.all()
+    for user in users:
+        send_mail_to_user(user, subject, message)
+
+
+def send_mail_to_admin(subject, message):
+    admin = Profile.objects.get(role="Admin")
+    message
