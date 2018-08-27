@@ -52,7 +52,7 @@
         </div>
 
         <div style="padding-left: 150px">
-          <button type="submit" class="btn btn-primary">ثبت</button>
+          <button type="submit" class="btn btn-primary" onclick="checkMaximumAllowedValue()">ثبت</button>
         </div>
 
       </form>
@@ -79,6 +79,14 @@
               alert("wow");
           };
       }
+
+      function checkMaximumAllowedValue() {
+            if (parseInt(document.getElementById("added_credit").value) > 100000000) {
+                document.getElementById("added_credit").value = 0;
+                alert("نمی‌توانید بیشتر از سقف مجاز تراکنش انجام دهید!")
+
+            }
+        }
   </script>
 
 {% endblock content %}

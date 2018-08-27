@@ -226,6 +226,10 @@ def anonymous_transfer(request):
             form = AnonymousTransferForm(request.POST)
             if form.is_valid():
                 cleaned_data = form.cleaned_data
+                expired_transfer = request.POST.get("expired")
+                print(expired_transfer)
+                if expired_transfer == "1":
+                    return redirect('anonymous_transfer')
                 target_email = cleaned_data.get("email")
                 target_account_number = cleaned_data.get("account_number")
                 transferring_amount = cleaned_data.get("transfer_credit")
