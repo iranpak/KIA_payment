@@ -98,7 +98,7 @@ def faq(request):
 
 
 def currency_rates(request):
-    response = requests.get('http://core.arzws.com/api/core?Token=a6d2b63a-5abf-42c0-bdb7-08d609cedc20&what=exchange')
+    response = requests.get('http://core.arzws.com/api/core?Token=2c354ffd-c336-41d8-e073-08d60c13485c&what=exchange')
     data = json.loads(response.text)
     all_currency_list = data['currencyBoard']
     our_currency_list = []
