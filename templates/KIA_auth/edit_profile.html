@@ -23,44 +23,33 @@
     <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
 
       {% if form.errors %}
-        <!-- Error messaging -->
-        <div id="form_errors" style="background: #ffcccc;">
-          <div class="inner">
-            <p>خطاهای زیر پیش آمده:</p>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <ul>
+            <strong>خطاهای زیر پیش آمده:</strong>
             {{ form.non_field_errors }}
-            <ul>
-              {% for field in form %}
-                {% if field.errors %}
-                  <li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
-              {% endfor %}
-            </ul>
-          </div>
+            {% for field in form %}
+              {% if field.errors %}
+                <li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
+            {% endfor %}
+          </ul>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
       {% endif %}
+
       {% if errors %}
-        <div id="custom_errors" style="background: thistle;">
-          <div class="inner">
-            <ul>
-              {% for key, value in errors.items %}
-                <div class="row">
-                  <label for="username" class="col-sm-4 col-form-label text-md-right">خطا مربوط به:</label>
-                  <div class="col-md-8">
-                    {{ key }}
-                  </div>
-                </div>
-
-                <div class="row">
-                  <label for="username" class="col-sm-4 col-form-label text-md-right">توضیح خطا:</label>
-                  <div class="col-md-8" dir="ltr">
-                    {{ value }}
-                  </div>
-                </div>
-
-              {% endfor %}
-            </ul>
-          </div>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <ul>
+            {% for key, value in errors.items %}
+              <strong>خطاهای زیر پیش آمده:</strong>
+              <li>{{ key }}: {{ value }}</li>
+            {% endfor %}
+          </ul>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
-
       {% endif %}
 
 
@@ -74,7 +63,7 @@
         <div class="form-group row">
           <label for="staticEmail" class="col-sm-2 col-form-label">نام کاربری</label>
           <div class="col-sm-7">
-            <input type="text" readonly class="form-control-plaintext" id="username"
+            <input type="text" readonly class="form-control-plaintext" id="username" name="username"
                    value={{ information.username }}>
           </div>
         </div>
@@ -82,7 +71,7 @@
         <div class="form-group row">
           <label for="staticEmail" class="col-sm-2 col-form-label">ایمیل</label>
           <div class="col-sm-7">
-            <input type="email" readonly class="form-control-plaintext" id="staticEmail"
+            <input type="email" readonly class="form-control-plaintext" id="email" name="email"
                    value={{ information.email }}>
           </div>
         </div>
@@ -118,7 +107,7 @@
           </div>
         </div>
         <div style="padding-left: 150px">
-          <button type="submit" class="btn btn-primary">ثبت</button>
+          <button type="submit" class="btn btn-primary" name="submit_button" id="submit_button">ثبت</button>
         </div>
 
       </form>

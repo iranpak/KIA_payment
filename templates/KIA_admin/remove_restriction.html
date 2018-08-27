@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="/static/Panels.css">
   </head>
 
-  <div id="wrapper" class="row" style="padding-bottom:20px;">
+    <div id="wrapper" class="row" style="padding-bottom:20px;">
 
     <!-- Sidebar -->
     <div id="sidebar-wrapper" class="col-3" align="center" style="padding-right: 50px;">
@@ -46,22 +46,31 @@
           <h3 class="col-sm-6">رفع محدودیت کاربر</h3>
         </div>
 
-        <div class="form-group row">
-          <label for="inputName" class="col-sm-2 col-form-label">نام کاربری</label>
-          <div class="col-sm-7">
-            <input class="form-control" id="res_username" name="res_username" aria-describedby="emailHelp"
-                   placeholder="username" dir="ltr">
-          </div>
+                <div class="form-group row">
+                    <label for="inputName" class="col-sm-2 col-form-label">نام کاربری</label>
+                    <div class="col-sm-7">
+                        <input class="form-control" id="res_username" name="res_username" aria-describedby="emailHelp"
+                               placeholder="username" dir="ltr">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-sm-2"><label for="exampleFormControlTextarea1">پیغام مربوطه</label></div>
+                    <div class="col-sm-7"><textarea class="form-control" id="restrict_message" name="restrict_message"
+                                                    rows="3"
+                                                    placeholder="پیام مورد نظر برای ارسال به کاربر را اینجا وارد کنید"></textarea>
+                    </div>
+
+                </div>
+
+                <div style="padding-left: 150px">
+                    <button type="submit" class="btn btn-primary" name="submit_button">ثبت</button>
+                </div>
+
+            </form>
         </div>
 
-        <div style="padding-left: 150px">
-          <button type="submit" class="btn btn-primary">ثبت</button>
-        </div>
-
-      </form>
     </div>
-
-  </div>
 
   <script src="/static/Translator.js"></script>
 {% endblock content %}

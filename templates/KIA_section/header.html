@@ -69,7 +69,7 @@
                 <a class="dropdown-item" href="/emp/panel">پنل کارمند</a>
                 <a class="dropdown-item" href="/emp/transactions">مشاهدهٔ تراکنش‌ها</a>
                 <a class="dropdown-item" href="/emp/taken_transactions">تراکنش‌های شما</a>
-                <a class="dropdown-item" href="/send_email">ارسال پیام برای کاربر</a>
+                <a class="dropdown-item" href="/send_email">ارسال ایمیل برای کاربر</a>
               </div>
             </li>
           {% endif %}
@@ -86,7 +86,7 @@
               <a class="dropdown-item" href="/change_password">تغییر رمز عبور</a>
               <a class="dropdown-item" href="/add_credit">افزایش اعتبار</a>
               <a class="dropdown-item" href="/withdraw_credit">برداشت پول از اعتبار</a>
-              <a class="dropdown-item" href="/anonymous_transfer">واریز مخفیانهٔ پول</a>
+              <a class="dropdown-item" href="/anonymous_transfer">پرداخت ناشناس</a>
               <a class="dropdown-item" href="/transactions">تاریخچهٔ تراکنش‌ها</a>
             </div>
           </li>
@@ -140,6 +140,7 @@
         document.getElementById("faq").className += " active";
     else if (loc == 'currency_rates')
         document.getElementById("currency_rates").className += " active";
+    else if (loc == 'homepage' || loc == '') ;
     else
         document.getElementById("profile").className += " active";
 </script>

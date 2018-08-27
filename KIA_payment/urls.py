@@ -20,7 +20,6 @@ urlpatterns = [
     path('not_authorized/', KIA_gen_views.not_authorized, name='not_authorized'),
     path('access_denied/', KIA_gen_views.access_denied, name='access_denied'),
     path('user_restricted/', KIA_gen_views.user_restricted, name='user_restricted'),
-    path('service_info/', KIA_gen_views.service_info, name='service_info'),
     path('purchase/', KIA_gen_views.purchase, name='purchase'),
     path('currency_rates/', KIA_gen_views.currency_rates, name='currency_rates'),
     path('FAQ/', KIA_gen_views.faq, name='faq'),
@@ -39,6 +38,7 @@ urlpatterns = [
          name='financial_account_details'),
     path('admin/add_system_credit', KIA_admin_views.add_system_credit, name='add_system_credit'),
     path('admin/restrict_user', KIA_admin_views.restrict_user, name='restrict_user'),
+    # path('admin/restrict_user/success', KIA_admin_views.restrict_user_success, name='restrict_user_success'),
     path('admin/remove_user_restriction', KIA_admin_views.remove_user_restriction, name='remove_user_restriction'),
     # path('admin/add_transaction/', KIA_admin_views.add_transaction, name='add_transaction'),
     path('admin/add_user', KIA_admin_views.add_user, name='add_user'),
@@ -100,7 +100,6 @@ urlpatterns = [
     path('emp/taken_transactions', kia_services_views.emp_taken_transactions, name='emp_taken_transactions'),
     path('send_email/', test_app_views.send_email, name='send_email'),
     # homepage
-    # path('homepage/', test_app_views.homepage, name='homepage'),
     path('homepage/', kia_services_views.HomeListView.as_view(), name='homepage'),
     # KIA_services
     path('services/<str:name>/', kia_services_views.services, name='services'),

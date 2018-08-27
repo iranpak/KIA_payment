@@ -1,6 +1,5 @@
 from django.db.models import Sum
 from django.shortcuts import render
-from django.http import HttpResponse
 from django.contrib.auth.models import User
 from KIA_auth.models import Profile
 from KIA_notification.tasks import plan_employee_wage
@@ -12,6 +11,7 @@ from django.core.mail import send_mail
 from KIA_auth.forms import AdminCreateUserForm
 from django.shortcuts import redirect
 from KIA_services.models import KIAService, KIATransaction, KIAServiceField
+from KIA_services.views import get_exchange_rates
 
 access_denied_template = 'KIA_general/access_denied.html'
 not_authorized_template = 'KIA_general/not_authorized.html'
@@ -59,9 +59,9 @@ def restrict_user(request):
                         description = 'شما دسترسی کاربر %s را مسدود کردید.' % restricting_user
                         HistoryOfAdminActivities.objects.create(type='User restriction', description=description,
                                                                 message=restricting_message)
-                        from django.utils import timezone
-                        print(timezone.get_current_timezone())
-                        return redirect('restrict_user')
+
+                        return render(request, 'KIA_general/success.html',
+                                      {'message': 'کاربر با موفقیت مسدود شد', 'return_url': 'restrict_user'})
 
                     except Exception as e:
                         print(e)
@@ -86,6 +86,7 @@ def remove_user_restriction(request):
                               {'role': Profile.objects.get(user=request.user).role, })
             elif request.method == 'POST':
                 restricting_username = request.POST.get("res_username")
+                restricting_message = request.POST.get("restrict_message")
                 if restricting_username:
                     try:
                         restricting_user = User.objects.get(username=restricting_username)
@@ -94,8 +95,11 @@ def remove_user_restriction(request):
                         restricting_user_profile.save()
                         description = 'شما دسترسی کاربر %s را باز کردید.' % restricting_user
                         HistoryOfAdminActivities.objects.create(type='User restriction',
-                                                                description=description)
-                        return redirect('remove_user_restriction')
+                                                                description=description, message=restricting_message)
+                        # return redirect('remove_user_restriction')
+                        return render(request, 'KIA_general/success.html',
+                                      {'message': 'دسترسی کاربر با موفقیت باز شد',
+                                       'return_url': 'remove_user_restriction'})
 
                     except Exception as e:
                         errors = {'username': 'There is no user with this username'}
@@ -192,23 +196,64 @@ def add_system_credit(request):
         user_profile = Profile.objects.get(user=user)
         system_credit = SystemCredit.objects.get(owner='system')
         if is_user_admin(request):
+            current_rial_credit = system_credit.rial_credit
+            current_dollar_credit = system_credit.dollar_credit
+            current_euro_credit = system_credit.euro_credit
+            current_pound_credit = system_credit.pound_credit
             if request.method == 'GET':
-                current_rial_credit = system_credit.rial_credit
-                current_dollar_credit = system_credit.dollar_credit
-                return render(request, 'KIA_admin/add_system_credit.html', {'current_rial_credit': current_rial_credit,
-                                                                            'current_dollar_credit': current_dollar_credit,
-                                                                            'role': Profile.objects.get(
-                                                                                user=request.user).role, })
+                return render(request, 'KIA_admin/add_system_credit.html',
+                              {'current_rial_credit': current_rial_credit, 'current_euro_credit': current_euro_credit,
+                               'current_pound_credit': current_pound_credit,
+                               'current_dollar_credit': current_dollar_credit,
+                               'role': Profile.objects.get(
+                                   user=request.user).role, })
             elif request.method == 'POST':
                 increasing_credit = int(request.POST.get("added_credit"))
                 selected_credit = request.POST.get("selected_credit")
                 description = "افزایش اعتبار سامانه"
+                rates = get_exchange_rates()
                 if selected_credit == 'rial_credit':
                     system_credit.rial_credit += increasing_credit
                     description = 'افزایش اعتبار ریالی سامانه به میزان %s ریال' % increasing_credit
                 elif selected_credit == 'dollar_credit':
+                    dollar_rate = rates[1]
+                    to_rial = dollar_rate * increasing_credit
+                    if to_rial > current_rial_credit:
+                        errors = {'مبلغ شارژ': 'مبلغ وارد شده بیش از اعتبار ریالی سامانه است'}
+                        return render(request, 'KIA_admin/add_system_credit.html',
+                                      {'errors': errors, 'current_rial_credit': current_rial_credit,
+                                       'current_euro_credit': current_euro_credit,
+                                       'current_pound_credit': current_pound_credit,
+                                       'current_dollar_credit': current_dollar_credit, })
+                    system_credit.rial_credit -= to_rial
                     system_credit.dollar_credit += increasing_credit
-                    description = 'افزایش اعتبار ارزی سامانه به میزان %s دلار' % increasing_credit
+                    description = 'افزایش اعتبار دلاری سامانه به میزان %s دلار' % increasing_credit
+                elif selected_credit == 'euro_credit':
+                    euro_rate = rates[1]
+                    to_rial = euro_rate * increasing_credit
+                    if to_rial > current_rial_credit:
+                        errors = {'مبلغ شارژ': 'مبلغ وارد شده بیش از اعتبار ریالی سامانه است'}
+                        return render(request, 'KIA_admin/add_system_credit.html',
+                                      {'errors': errors, 'current_rial_credit': current_rial_credit,
+                                       'current_euro_credit': current_euro_credit,
+                                       'current_pound_credit': current_pound_credit,
+                                       'current_dollar_credit': current_dollar_credit, })
+                    system_credit.rial_credit -= to_rial
+                    system_credit.euro_credit += increasing_credit
+                    description = 'افزایش اعتبار یورو سامانه به میزان %s یورو' % increasing_credit
+                elif selected_credit == 'pound_credit':
+                    pound_rate = rates[1]
+                    to_rial = pound_rate * increasing_credit
+                    if to_rial > current_rial_credit:
+                        errors = {'مبلغ شارژ': 'مبلغ وارد شده بیش از اعتبار ریالی سامانه است'}
+                        return render(request, 'KIA_admin/add_system_credit.html',
+                                      {'errors': errors, 'current_rial_credit': current_rial_credit,
+                                       'current_euro_credit': current_euro_credit,
+                                       'current_pound_credit': current_pound_credit,
+                                       'current_dollar_credit': current_dollar_credit, })
+                    system_credit.rial_credit -= to_rial
+                    system_credit.pound_credit += increasing_credit
+                    description = 'افزایش اعتبار پوند سامانه به میزان %s پوند' % increasing_credit
 
                 system_credit.save()
                 HistoryOfAdminActivities.objects.create(type='Charge', description=description)

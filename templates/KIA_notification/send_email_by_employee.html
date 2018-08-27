@@ -1,64 +1,81 @@
 {% extends "master.html" %}
 
 {% block content %}
-  <head>
-    <link rel="stylesheet" href="/static/Panels.css">
-  </head>
+    <head>
+        <link rel="stylesheet" href="/static/Panels.css">
+    </head>
 
-  <div id="wrapper" class="row" style="padding-bottom:20px;">
+    <div id="wrapper" class="row" style="padding-bottom:20px;">
 
-    <!-- Sidebar -->
-    <div id="sidebar-wrapper" class="col-3" align="center" style="padding-right: 50px;">
-      <div class="list-group">
-        <a href="/emp/panel" class="list-group-item list-group-item-action">پنل کارمند</a>
-        <a href="/emp/transactions" class="list-group-item list-group-item-action">مشاهدهٔ تراکنش‌ها</a>
-        <a href="/emp/taken_transactions" class="list-group-item list-group-item-action">تراکنش‌های شما</a>
-        <a href="/send_email" class="list-group-item list-group-item-action active">ارسال پیام برای کاربر</a>
-      </div>
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper" class="col-3" align="center" style="padding-right: 50px;">
+            <div class="list-group">
+                <a href="/emp/panel" class="list-group-item list-group-item-action">پنل کارمند</a>
+                <a href="/emp/transactions" class="list-group-item list-group-item-action">مشاهدهٔ تراکنش‌ها</a>
+                <a href="/emp/taken_transactions" class="list-group-item list-group-item-action">تراکنش‌های شما</a>
+                <a href="/send_email" class="list-group-item list-group-item-action active">ارسال ایمیل برای کاربرر</a>
+            </div>
+        </div>
+
+        <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
+
+            {% if errors %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert" id="custom_errors">
+                    <ul>
+                        {% for key, value in errors.items %}
+                            <strong>خطاهای زیر پیش آمده:</strong>
+                            <li>{{ key }}: {{ value }}</li>
+                        {% endfor %}
+                    </ul>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group row" align="right">
+                    <h3 class="col-sm-6">ارسال ایمیل برای کاربر</h3>
+                </div>
+
+
+                <div class="form-group row">
+                    <label for="inputName" class="col-sm-2 col-form-label">نام کاربری</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="receiver_username" name="receiver_username"
+                               aria-describedby="emailHelp"
+                               placeholder="username" dir="ltr">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="inputName" class="col-sm-2 col-form-label">موضوع پیام</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="subject" name="subject" aria-describedby="emailHelp"
+                               placeholder="subject" dir="ltr">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-sm-2"><label for="exampleFormControlTextarea1">پیام مورد نظر</label></div>
+                    <div class="col-sm-7"><textarea class="form-control" id="message_body" name="message_body" rows="5"
+                                                    placeholder="پیام مورد نظر برای ارسال به کاربر را اینجا وارد کنید"></textarea>
+                    </div>
+
+                </div>
+
+
+                <div style="padding-left: 150px">
+                    <button type="submit" class="btn btn-primary" onclick="restrictionDone()" name="submit_button"
+                            id="submit_button">ثبت
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+
     </div>
-
-    <div id="page-content-wrapper" class="col-9" align="center" style="padding-left: 50px; padding-right: 50px">
-      <form method="post">
-        {% csrf_token %}
-        <div class="form-group row" align="right">
-          <h3 class="col-sm-6">ارسال پیام برای کاربر</h3>
-        </div>
-
-
-        <div class="form-group row">
-          <label for="inputName" class="col-sm-2 col-form-label">نام کاربری</label>
-          <div class="col-sm-7">
-            <input type="text" class="form-control" id="receiver_username" name="receiver_username"
-                   aria-describedby="emailHelp"
-                   placeholder="username" dir="ltr">
-          </div>
-        </div>
-
-        <div class="form-group row">
-          <label for="inputName" class="col-sm-2 col-form-label">موضوع پیام</label>
-          <div class="col-sm-7">
-            <input type="text" class="form-control" id="subject" name="subject" aria-describedby="emailHelp"
-                   placeholder="subject" dir="ltr">
-          </div>
-        </div>
-
-        <div class="form-group row">
-          <div class="col-sm-2"><label for="exampleFormControlTextarea1">پیام مورد نظر</label></div>
-          <div class="col-sm-7"><textarea class="form-control" id="message_body" name="message_body" rows="5"
-                                          placeholder="پیام مورد نظر برای ارسال به کاربر را اینجا وارد کنید"></textarea>
-          </div>
-
-        </div>
-
-
-        <div style="padding-left: 150px">
-          <button type="submit" class="btn btn-primary" onclick="restrictionDone()">ثبت</button>
-        </div>
-
-      </form>
-
-    </div>
-
-  </div>
 
 {% endblock content %}

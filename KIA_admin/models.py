@@ -1,9 +1,7 @@
 from django.db import models
 import jdatetime
+import datetime
 from django_jalali.db import models as jmodels
-from django.utils import timezone
-
-timezone.get_current_timezone()
 
 
 class SystemCredit(models.Model):
@@ -18,10 +16,17 @@ class HistoryOfAdminActivities(models.Model):
     type = models.CharField(max_length=32, default='Add user')
     description = models.CharField(max_length=256)
     message = models.CharField(max_length=512, default='')
-    date = jmodels.jDateTimeField(default=jdatetime.datetime.now)
+    date = jmodels.jDateTimeField(default=datetime.datetime.now)
 
 
 class SystemTransactions(models.Model):
     type = models.CharField(max_length=32, default='Charge')
     description = models.CharField(max_length=256)
-    date = jmodels.jDateTimeField(default=jdatetime.datetime.now)
+    date = jmodels.jDateTimeField(default=datetime.datetime.now)
+
+
+class ContactUsMessages(models.Model):
+    sender_name = models.CharField(max_length=32)
+    sender_phone_number = models.CharField(max_length=11)
+    sender_email = models.CharField(max_length=64)
+    message = models.CharField(max_length=256)
